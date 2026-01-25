@@ -127,4 +127,4 @@ const nextConfig = {
   // },
 }
 
-export default nextConfig
+export default nextConfig// Build trigger Sun Jan 25 01:51:58 -05 2026
