@@ -136,7 +136,7 @@ export default function CalendarBooking() {
   }
 
   return (
-    <div className="flex w-full h-full flex-col items-center justify-center gap-5 lg:flex-row lg:items-start lg:gap-8 p-6">
+    <div className="flex w-full h-full flex-col items-center justify-center gap-5 lg:flex-row lg:items-start lg:gap-8 p-6 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
       <BookingDetails
         selectedDuration={selectedDuration}
         selectedTimeZone={selectedTimeZone}

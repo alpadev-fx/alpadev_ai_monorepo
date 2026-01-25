@@ -25,9 +25,9 @@ export async function scheduleMeeting(data: unknown): Promise<ScheduleMeetingRes
     // 1. Validate Input
     const parsed = ScheduleMeetingSchema.parse(data);
 
-    // 2. Call internal API endpoint (tRPC is exposed via /api/trpc on the server)
-    // For server actions, we can make a direct fetch to the tRPC endpoint
-    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+    // 2. Call internal API endpoint
+    // Use relative URL for server-side fetch in Next.js, or internal host
+    const baseUrl = process.env.NEXTAUTH_URL || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
     
     const response = await fetch(`${baseUrl}/api/trpc/booking.scheduleMeeting`, {
       method: 'POST',
@@ -44,18 +44,35 @@ export async function scheduleMeeting(data: unknown): Promise<ScheduleMeetingRes
           timeZone: parsed.timeZone,
         }
       }),
+      // Use cache: 'no-store' to prevent caching issues
+      cache: 'no-store',
     });
 
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData?.error?.message || 'Failed to schedule meeting');
+      const errorText = await response.text();
+      console.error('API Response Error:', response.status, errorText);
+      
+      // Try to parse as JSON for structured error
+      try {
+        const errorData = JSON.parse(errorText);
+        throw new Error(errorData?.error?.message || errorData?.message || 'Failed to schedule meeting');
+      } catch {
+        throw new Error(`Failed to schedule meeting (${response.status})`);
+      }
     }
 
     const result = await response.json();
     
+    // Handle tRPC response structure
+    const meetLink = result?.result?.data?.json?.meetLink || result?.meetLink;
+    
+    if (!meetLink) {
+      console.warn('Meeting scheduled but no Meet link returned');
+    }
+    
     return {
       success: true,
-      meetLink: result?.result?.data?.json?.meetLink,
+      meetLink: meetLink || 'Meeting scheduled (no link generated)',
     };
 
   } catch (error: unknown) {

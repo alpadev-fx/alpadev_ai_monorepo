@@ -1,23 +1,59 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Card, CardHeader, CardBody, Input, Button, Textarea } from '@heroui/react';
 import { scheduleMeeting } from '../../actions/schedule-meeting';
 import { format, addMinutes } from 'date-fns';
+import type { DateValue } from '@heroui/react';
+import type { CalendarBookingStepType, TimeSlot } from './calendar-booking-types';
 
-export default function BookingForm() {
+interface BookingFormProps {
+  setCalendarBookingStep?: (step: CalendarBookingStepType) => void;
+  onSuccess?: (details: any) => void;
+  selectedDate?: DateValue;
+  selectedTimeSlotRange?: TimeSlot[];
+  selectedTimeZone?: string;
+}
+
+export default function BookingForm({
+  setCalendarBookingStep,
+  onSuccess,
+  selectedDate,
+  selectedTimeSlotRange,
+  selectedTimeZone,
+}: BookingFormProps) {
   const [loading, setLoading] = useState(false);
-  const [successData, setSuccessData] = useState<{ meetLink: string } | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Simple state for form for demo purposes. 
-  // Ideally use react-hook-form for complex forms.
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    datetime: '', // Using type="datetime-local" for native picker
     notes: '',
   });
+
+  // Calculate start/end from selected time slots
+  const { startDate, endDate, displayDateTime } = useMemo(() => {
+    if (!selectedDate || !selectedTimeSlotRange || selectedTimeSlotRange.length === 0) {
+      return { startDate: null, endDate: null, displayDateTime: 'Not selected' };
+    }
+
+    const dateStr = `${selectedDate.year}-${String(selectedDate.month).padStart(2, '0')}-${String(selectedDate.day).padStart(2, '0')}`;
+    const firstSlot = selectedTimeSlotRange[0];
+    const lastSlot = selectedTimeSlotRange[selectedTimeSlotRange.length - 1];
+
+    const start = new Date(`${dateStr}T${firstSlot.time}:00`);
+    const end = new Date(`${dateStr}T${lastSlot.time}:00`);
+    // Add 15 mins to end to account for slot duration
+    const adjustedEnd = addMinutes(end, 15);
+
+    const display = format(start, 'EEEE, MMMM d, yyyy') + ' at ' + format(start, 'h:mm a') + ' - ' + format(adjustedEnd, 'h:mm a');
+
+    return {
+      startDate: start,
+      endDate: adjustedEnd,
+      displayDateTime: display,
+    };
+  }, [selectedDate, selectedTimeSlotRange]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,10 +61,9 @@ export default function BookingForm() {
     setError(null);
 
     try {
-      if (!formData.datetime) throw new Error("Please select a date and time");
-
-      const startDate = new Date(formData.datetime);
-      const endDate = addMinutes(startDate, 30); // Default 30 min slot
+      if (!startDate || !endDate) {
+        throw new Error("Please select a date and time first");
+      }
 
       const payload = {
         name: formData.name,
@@ -36,13 +71,15 @@ export default function BookingForm() {
         notes: formData.notes,
         startDate: startDate.toISOString(),
         endDate: endDate.toISOString(),
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        timeZone: selectedTimeZone || Intl.DateTimeFormat().resolvedOptions().timeZone,
       };
 
       const result = await scheduleMeeting(payload);
 
       if (result.success && result.meetLink) {
-        setSuccessData({ meetLink: result.meetLink });
+        if (onSuccess) {
+          onSuccess({ meetLink: result.meetLink, ...payload });
+        }
       } else {
         setError(result.error || 'Failed to schedule meeting.');
       }
@@ -57,88 +94,75 @@ export default function BookingForm() {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  if (successData) {
-    return (
-      <Card className="max-w-md mx-auto p-6 bg-content1 border-success border-2">
-        <CardHeader className="flex flex-col gap-2 items-center">
-            <h2 className="text-xl font-bold text-success-600">Meeting Scheduled!</h2>
-        </CardHeader>
-        <CardBody className="text-center gap-4">
-            <p className="text-default-500">Your Google Meet link has been generated.</p>
-            <div className="p-4 bg-default-100 rounded-lg break-all">
-                <a href={successData.meetLink} target="_blank" rel="noreferrer" className="text-primary hover:underline">
-                    {successData.meetLink}
-                </a>
-            </div>
-            <Button color="primary" variant="flat" onClick={() => { setSuccessData(null); setFormData({name: '', email: '', datetime: '', notes: ''}); }}>
-                Book Another
-            </Button>
-        </CardBody>
-      </Card>
-    );
-  }
-
   return (
-    <Card className="max-w-md mx-auto p-4">
-        <CardHeader>
-            <h2 className="text-xl font-bold">Book a Video Call</h2>
-        </CardHeader>
-        <CardBody>
-            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                <Input 
-                    label="Name" 
-                    name="name"
-                    value={formData.name} 
-                    onChange={handleChange} 
-                    required 
-                    isDisabled={loading}
-                />
-                <Input 
-                    label="Email" 
-                    name="email"
-                    type="email"
-                    value={formData.email} 
-                    onChange={handleChange} 
-                    required 
-                    isDisabled={loading}
-                />
-                
-                {/* Native DateTime Picker for simplicity, can be replaced with HeroUI DatePicker if configured */}
-                <Input
-                    label="Date & Time"
-                    type="datetime-local"
-                    name="datetime"
-                    value={formData.datetime}
-                    onChange={handleChange}
-                    required
-                    isDisabled={loading}
-                    placeholder="Select date"
-                />
+    <Card className="w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
+      <CardHeader className="flex flex-col gap-1 pb-0">
+        <h2 className="text-xl font-bold text-white">Book a Video Call</h2>
+      </CardHeader>
+      <CardBody>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <Input 
+            label="Name" 
+            name="name"
+            value={formData.name} 
+            onChange={handleChange} 
+            required 
+            isDisabled={loading}
+            classNames={{
+              inputWrapper: "bg-white/5 border-white/10 hover:bg-white/10",
+              label: "text-white/70",
+              input: "text-white"
+            }}
+          />
+          <Input 
+            label="Email" 
+            name="email"
+            type="email"
+            value={formData.email} 
+            onChange={handleChange} 
+            required 
+            isDisabled={loading}
+            classNames={{
+              inputWrapper: "bg-white/5 border-white/10 hover:bg-white/10",
+              label: "text-white/70",
+              input: "text-white"
+            }}
+          />
+          
+          {/* Display selected date/time - READ ONLY */}
+          <div className="p-3 rounded-lg bg-white/5 border border-white/10">
+            <p className="text-xs text-white/50 mb-1">Date & Time</p>
+            <p className="text-sm text-white font-medium">{displayDateTime}</p>
+          </div>
 
-                <Textarea 
-                    label="Notes" 
-                    name="notes"
-                    value={formData.notes} 
-                    onChange={handleChange} 
-                    isDisabled={loading}
-                />
+          <Textarea 
+            label="Notes" 
+            name="notes"
+            value={formData.notes} 
+            onChange={handleChange} 
+            isDisabled={loading}
+            classNames={{
+              inputWrapper: "bg-white/5 border-white/10 hover:bg-white/10",
+              label: "text-white/70",
+              input: "text-white"
+            }}
+          />
 
-                {error && (
-                    <div className="p-2 text-sm text-danger bg-danger-50 rounded">
-                        {error}
-                    </div>
-                )}
+          {error && (
+            <div className="p-3 text-sm text-red-300 bg-red-500/20 rounded-lg border border-red-500/30">
+              {error}
+            </div>
+          )}
 
-                <Button 
-                    type="submit" 
-                    color="primary" 
-                    isLoading={loading}
-                    className="w-full"
-                >
-                    {loading ? 'Booking...' : 'Confirm Meeting'}
-                </Button>
-            </form>
-        </CardBody>
+          <Button 
+            type="submit" 
+            isLoading={loading}
+            className="w-full bg-gradient-to-r from-cyan-500 to-purple-500 text-white font-semibold"
+          >
+            {loading ? 'Booking...' : 'Confirm Meeting'}
+          </Button>
+        </form>
+      </CardBody>
     </Card>
   );
-};
+}
