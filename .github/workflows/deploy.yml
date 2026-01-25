@@ -1,4 +1,4 @@
-name: alpadev deploy
+name: alpadev.xyz
 
 on:
   push:
