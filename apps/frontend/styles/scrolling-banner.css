@@ -1,0 +1,25 @@
+@keyframes scrolling-banner {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+}
+
+@keyframes scrolling-banner-vertical {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+  }
+}
+
+.animate-scrolling-banner {
+  animation: scrolling-banner var(--duration) linear infinite;
+}
+
+.animate-scrolling-banner-vertical {
+  animation: scrolling-banner-vertical var(--duration) linear infinite;
+} 

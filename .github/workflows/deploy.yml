@@ -1,0 +1,153 @@
+name: alpadev.xyz
+
+on:
+  push:
+    branches: ['main']
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # Filter changes to avoid unnecessary builds
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'apps/frontend/**'
+              - 'packages/**'
+              - 'Dockerfile'
+              - 'pnpm-lock.yaml'
+              - 'turbo.json'
+              - '.dockerignore'
+
+  # Build Job
+  build-frontend:
+    needs: changes
+    if: needs.changes.outputs.frontend == 'true' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: 📥 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🐳 Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🔑 Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GH_TOKEN }}
+
+      - name: 📦 Build and Push Frontend
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile
+          target: runner
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:alpadev-frontend
+          cache-from: type=gha,scope=frontend-full
+          cache-to: type=gha,mode=max,scope=frontend-full
+          build-args: |
+             NEXT_PUBLIC_APP_ENV=production
+             NEXT_PUBLIC_APP_URL=${{ secrets.NEXT_PUBLIC_APP_URL }}
+
+  # Deploy Job
+  deploy:
+    needs: [build-frontend]
+    if: |
+      always() &&
+      (needs.build-frontend.result == 'success' || needs.build-frontend.result == 'skipped') &&
+      !(needs.build-frontend.result == 'skipped')
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: 🚀 Deploy to VPS
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          command_timeout: 30m
+          script: |
+            # 1. Login
+            echo "${{ secrets.GH_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+            # 2. Config
+            mkdir -p ~/alpadev-ai
+            cat > ~/alpadev-ai/.env <<EOF
+            # Environment
+            NODE_ENV=production
+            NEXT_PUBLIC_APP_ENV=production
+            NEXT_PUBLIC_APP_URL=${{ secrets.NEXT_PUBLIC_APP_URL }}
+            
+            # Auth
+            NEXTAUTH_URL=${{ secrets.NEXTAUTH_URL }}
+            NEXTAUTH_SECRET=${{ secrets.NEXTAUTH_SECRET }}
+            
+            # Google Integration
+            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+            GOOGLE_REFRESH_TOKEN=${{ secrets.GOOGLE_REFRESH_TOKEN }}
+            GOOGLE_CALENDAR_ID=${{ secrets.GOOGLE_CALENDAR_ID }}
+            
+            # Database (External/Railway or Internal)
+            # Secrets should contain the full connection string if external
+            MONGO_URL=${{ secrets.MONGO_URL }}
+            
+            # Integrations
+            RESEND_KEY=${{ secrets.RESEND_KEY }}
+            RESEND_EMAIL_DOMAIN=${{ secrets.RESEND_EMAIL_DOMAIN }}
+            
+            GITHUB_CLIENT_ID=${{ secrets.GITHUB_CLIENT_ID }}
+            GITHUB_CLIENT_SECRET=${{ secrets.GITHUB_CLIENT_SECRET }}
+
+            # Cloudflare R2
+            R2_ACCESS_KEY=${{ secrets.R2_ACCESS_KEY }}
+            R2_ACCOUNT_ID=${{ secrets.R2_ACCOUNT_ID }}
+            R2_ACCOUNT_TOKEN=${{ secrets.R2_ACCOUNT_TOKEN }}
+            R2_BUCKET_NAME=${{ secrets.R2_BUCKET_NAME }}
+            R2_PUBLIC_DOMAIN=${{ secrets.R2_PUBLIC_DOMAIN }}
+            R2_SECRET_KEY=${{ secrets.R2_SECRET_KEY }}
+            S3_API=${{ secrets.S3_API }}
+            EOF
+            chmod 600 ~/alpadev-ai/.env
+
+            # 3. Docker Compose
+            cat > ~/alpadev-ai/docker-compose.yml <<'DOCKERCOMPOSE'
+            services:
+              frontend:
+                image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:alpadev-frontend
+                container_name: alpadev-frontend
+                restart: always
+                ports:
+                  - "3000:3000"
+                env_file: .env
+                # No internal mongo dependency if using external URL from secrets
+                # If using internal mongo, ensure MONGO_URL in .env points to it
+            
+            # Removed internal mongo service to rely on MONGO_URL secret (e.g. Railway/Atlas)
+            # or keep it if you want dual-mode support. 
+            # Assuming MONGO_URL provided in .env.production is external based on "mongodb.railway.internal"
+            DOCKERCOMPOSE
+
+            # 4. Run
+            cd ~/alpadev-ai
+            docker compose pull
+            docker compose up -d --remove-orphans

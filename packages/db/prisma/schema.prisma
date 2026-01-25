@@ -1,0 +1,223 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGO_URL")
+}
+
+model Account {
+  id                       String  @id @default(auto()) @map("_id") @db.ObjectId
+  userId                   String  @db.ObjectId
+  type                     String
+  provider                 String
+  providerAccountId        String
+  refresh_token            String?
+  refresh_token_expires_in Int?
+  access_token             String?
+  expires_at               Int?
+  token_type               String?
+  scope                    String?
+  id_token                 String?
+  session_state            String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  sessionToken String @unique
+  userId       String @db.ObjectId
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VerificationToken {
+  id         String @id @default(auto()) @map("_id") @db.ObjectId
+  identifier String
+  token      String @unique
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  expires   DateTime
+
+  @@unique([identifier, token])
+}
+
+model User {
+  id    String  @id @default(auto()) @map("_id") @db.ObjectId
+  email String? @unique
+  name  String
+  phone String  @unique
+  role  Role    @default(GUEST)
+  image String?
+
+  accounts     Account[]
+  sessions     Session[]
+  request      Request[]
+  transactions Transaction[]
+  bills        Bill[]
+  invoices     Invoice[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Request {
+  id          String          @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String          @db.ObjectId
+  type        RequestType
+  status      RequestStatus   @default(pending)
+  priority    RequestPriority @default(medium)
+  title       String
+  description String
+
+  user User @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  email     String   @unique
+  name      String?
+  language  Language @default(en)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Transaction {
+  id          String            @id @default(auto()) @map("_id") @db.ObjectId
+  userId      String            @db.ObjectId
+  amount      Float
+  date        DateTime
+  category    String
+  status      TransactionStatus @default(PENDING)
+  description String?
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Bill {
+  id      String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId  String     @db.ObjectId
+  vendor  String
+  amount  Float
+  dueDate DateTime
+  status  BillStatus @default(UNPAID)
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Invoice {
+  id      String        @id @default(auto()) @map("_id") @db.ObjectId
+  userId  String        @db.ObjectId
+  client  String
+  amount  Float
+  dueDate DateTime
+  status  InvoiceStatus @default(DRAFT)
+  items   Json?
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+enum Role {
+  USER
+  ADMIN
+  GUEST
+}
+
+enum RequestType {
+  ticket
+  quote
+  other
+}
+
+enum RequestStatus {
+  pending
+  accepted
+  rejected
+  resolved
+  cancelled
+}
+
+enum RequestPriority {
+  low
+  medium
+  high
+  critical
+}
+
+enum SubscriptionStatus {
+  active
+  canceled
+  incomplete
+  incomplete_expired
+  past_due
+  paused
+  trialing
+  unpaid
+  expired
+}
+
+enum BillingInterval {
+  day
+  week
+  month
+  year
+}
+
+enum Language {
+  en
+  es
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum BillStatus {
+  UNPAID
+  PAID
+  OVERDUE
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+model Booking {
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  email         String
+  startTime     DateTime
+  endTime       DateTime
+  meetLink      String?
+  googleEventId String?
+  status        BookingStatus @default(CONFIRMED)
+  notes         String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+}
+
+enum BookingStatus {
+  CONFIRMED
+  CANCELLED
+}

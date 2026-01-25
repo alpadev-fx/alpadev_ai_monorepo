@@ -1,0 +1,8 @@
+{
+  "name": "@package/typescript-config",
+  "version": "1.0.0",
+  "private": true,
+  "devDependencies": {
+    "typescript": "5.8.3"
+  }
+}

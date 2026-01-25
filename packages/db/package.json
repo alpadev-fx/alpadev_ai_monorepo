@@ -1,0 +1,28 @@
+{
+  "name": "@package/db",
+  "version": "1.0.0",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "scripts": {
+    "dev": "prisma studio",
+    "db:migrate": "prisma migrate dev",
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push --skip-generate",
+    "db:deploy": "prisma migrate deploy",
+    "db:pull": "prisma db pull",
+    "db:seed": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" prisma/seed.ts",
+    "db:reset": "prisma migrate reset --force",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.15.0"
+  },
+  "devDependencies": {
+    "@package/eslint-config": "workspace:*",
+    "@package/typescript-config": "workspace:*",
+    "@types/node": "^22.13.1",
+    "prisma": "^6.15.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  }
+}

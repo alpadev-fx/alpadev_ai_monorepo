@@ -1,0 +1,12 @@
+{
+  "folders": [
+    {
+      "name": "alpadev-ai",
+      "path": "/Users/alpadev/Desktop/alpadev-ai/alpadev"
+    }
+  ],
+  "settings": {
+    "workbench.colorTheme": "Aura Dark",
+    "typescript.tsdk": "node_modules/typescript/lib"
+  }
+} 

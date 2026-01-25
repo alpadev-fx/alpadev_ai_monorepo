@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Next.js",
+  "extends": "./base.json",
+  "include": [
+    ".eslint.config.js",
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.mjs",
+    ".next/types/**/*.ts"
+  ],
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "lib": ["es2022", "dom", "dom.iterable"],
+    "jsx": "preserve",
+    "plugins": [{ "name": "next" }],
+    "module": "ESNext"
+  }
+}

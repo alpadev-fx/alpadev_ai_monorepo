@@ -1,0 +1,37 @@
+{
+  "name": "@package/email",
+  "version": "1.0.0",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "dev": "email dev --dir ./src/templates --port 3333",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives",
+    "format": "eslint . --ext ts,tsx --fix"
+  },
+  "dependencies": {
+    "@package/tailwind-config": "workspace:*",
+    "@package/utils": "workspace:*",
+    "@react-email/components": "0.0.41",
+    "react": "^19.1.0",
+    "resend": "^4.5.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@package/eslint-config": "workspace:*",
+    "@package/prettier-config": "workspace:*",
+    "@package/typescript-config": "workspace:*",
+    "@react-email/preview-server": "^4.3.0",
+    "@types/node": "^20.16.10",
+    "@types/react": "^19.1.4",
+    "@types/react-dom": "^19.1.5",
+    "autoprefixer": "10.4.17",
+    "postcss": "8.4.33",
+    "react-email": "4.3.0",
+    "tailwindcss": "3.4.1"
+  },
+  "peerDependencies": {
+    "react": "^19.1.0"
+  }
+}

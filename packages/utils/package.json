@@ -1,0 +1,24 @@
+{
+  "name": "@package/utils",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "scripts": {
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives",
+    "format": "eslint . --ext ts,tsx --fix"
+  },
+  "dependencies": {
+    "@package/db": "workspace:*",
+    "clsx": "^2.1.1",
+    "date-fns": "^3.6.0",
+    "tailwind-merge": "^2.5.2",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@package/eslint-config": "workspace:*",
+    "@package/prettier-config": "workspace:*",
+    "@package/typescript-config": "workspace:*",
+    "@types/node": "^20.16.10"
+  }
+}
