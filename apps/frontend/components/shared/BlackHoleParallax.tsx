@@ -59,6 +59,10 @@ export const BlackHoleParallax = () => {
           style={{ opacity: heroOpacity, y: heroY }}
           className="absolute text-center px-6 max-w-4xl will-change-[opacity,transform]"
         >
+          {/* Branding subtitle for Google OAuth */}
+          <p className="text-sm md:text-base text-cyan-400 font-medium tracking-widest uppercase mb-4">
+            Alpadev - AI Software Development
+          </p>
           <TextGenerateEffect 
             words={t("section.title")}
             className="text-5xl md:text-8xl tracking-tighter leading-[1.05] mb-6"
@@ -85,6 +89,15 @@ export const BlackHoleParallax = () => {
             {t("features.subtitle")}
           </p>
         </motion.div>
+
+        {/* Privacy/Terms Links for Google OAuth */}
+        <div className="absolute bottom-8 left-0 right-0 text-center z-30">
+          <div className="flex justify-center gap-4 text-xs text-neutral-500">
+            <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>
+            <span>|</span>
+            <a href="/terms" className="hover:text-white transition-colors">Terms of Service</a>
+          </div>
+        </div>
 
       </div>
       

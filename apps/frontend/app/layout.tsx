@@ -1,5 +1,6 @@
 import "@/styles/globals.css"
 import { Metadata, Viewport } from "next"
+import Script from "next/script"
 import clsx from "clsx"
 
 import { siteConfig } from "../config/site"
@@ -10,6 +11,8 @@ import Navbar from "./_components/landing/Navbar"
 import Footer from "./_components/landing/Footer"
 import WhatsAppButton from "./_components/ui/WhatsAppButton"
 import { FPSMonitor } from "./_components/diagnostics/FPSMonitor"
+
+const GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID
 
 export const metadata: Metadata = {
   title: {
@@ -45,6 +48,19 @@ export default function RootLayout({
       style={{ scrollBehavior: "smooth" }}
     >
       <head>
+        {/* Google Analytics */}
+        <Script
+          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '${GA_MEASUREMENT_ID}');
+          `}
+        </Script>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link

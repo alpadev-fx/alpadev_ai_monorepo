@@ -79,7 +79,7 @@ export default function TermsAndConditionsPage() {
 
             <section className="mb-12">
                 <h2 className="text-2xl font-semibold text-white mb-6">{t("terms.contact.title")}</h2>
-                <p>{t("terms.contact.desc")} <a href="mailto:privacy@alpadev.ai" className="text-white underline decoration-white/30 hover:decoration-white">privacy@alpadev.ai</a></p>
+                <p>{t("terms.contact.desc")} <a href="mailto:founder@alpadev.xyz" className="text-white underline decoration-white/30 hover:decoration-white">founder@alpadev.xyz</a></p>
             </section>
 
             <section className="mb-12 pt-12 border-t border-white/10">

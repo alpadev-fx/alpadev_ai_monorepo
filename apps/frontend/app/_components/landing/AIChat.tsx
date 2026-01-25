@@ -54,7 +54,7 @@ export default function AIChat() {
       <div className="flex flex-col gap-2 w-full items-center px-4">
         <PromptInputWithActions onSubmit={handlePromptSubmit} />
         <p className="text-tiny text-white/40 px-2 text-center">
-          On Shapers AI can make mistakes. Consider checking important information.
+          Alpadev AI can make mistakes. Consider checking important information.
         </p>
       </div>
     </div>

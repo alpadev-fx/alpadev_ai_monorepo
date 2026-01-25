@@ -123,7 +123,7 @@ export default function PrivacyPolicyPage() {
 
             <section className="mb-12">
                 <h2 className="text-2xl font-semibold text-white mb-6">{t("privacy.minors.title")}</h2>
-                <p>{t("privacy.minors.desc")} <a href="mailto:privacy@alpadev.ai" className="text-white underline decoration-white/30 hover:decoration-white">privacy@alpadev.ai</a>.</p>
+                <p>{t("privacy.minors.desc")} <a href="mailto:founder@alpadev.xyz" className="text-white underline decoration-white/30 hover:decoration-white">founder@alpadev.xyz</a>.</p>
             </section>
 
              <section className="mb-12">
@@ -145,7 +145,7 @@ export default function PrivacyPolicyPage() {
                     <li>{t("privacy.rights.item2")}</li>
                     <li>{t("privacy.rights.item3")}</li>
                 </ul>
-                 <p>{t("privacy.rights.contact")} <a href="mailto:privacy@alpadev.ai" className="text-white underline decoration-white/30 hover:decoration-white">privacy@alpadev.ai</a>.</p>
+                 <p>{t("privacy.rights.contact")} <a href="mailto:founder@alpadev.xyz" className="text-white underline decoration-white/30 hover:decoration-white">founder@alpadev.xyz</a>.</p>
             </section>
 
              <section className="mb-12">
@@ -160,7 +160,7 @@ export default function PrivacyPolicyPage() {
 
              <section className="mb-12 pt-12 border-t border-white/10">
                 <h2 className="text-2xl font-semibold text-white mb-6">{t("privacy.contact.title")}</h2>
-                <p>{t("privacy.contact.desc")} <a href="mailto:privacy@alpadev.ai" className="text-white underline decoration-white/30 hover:decoration-white">privacy@alpadev.ai</a></p>
+                <p>{t("privacy.contact.desc")} <a href="mailto:founder@alpadev.xyz" className="text-white underline decoration-white/30 hover:decoration-white">founder@alpadev.xyz</a></p>
             </section>
 
         </article>

@@ -34,7 +34,7 @@ export default function Component(props: NavbarProps) {
 
   const menuItems = React.useMemo(
     () => [
-      { name: t("nav.home"), href: "/about-us" },
+      { name: t("nav.home"), href: "/" },
       { name: t("nav.services"), href: "#features" },
       { name: t("nav.plans"), href: "#pricing" },
       { name: t("nav.faq"), href: "#faq" },
@@ -79,7 +79,7 @@ export default function Component(props: NavbarProps) {
         justify="center"
       >
         <NavbarItem>
-          <Link className="text-gray-300 hover:text-white" href="/about-us" size="sm">
+          <Link className="text-gray-300 hover:text-white" href="/" size="sm">
             {t("nav.home")}
           </Link>
         </NavbarItem>

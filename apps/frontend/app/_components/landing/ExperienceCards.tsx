@@ -42,7 +42,7 @@ const featuresCategories = [
     descriptions: [
       "Explore All Services",
       "Contact Support",
-      "About On Shapers",
+      "About Alpadev",
     ],
   },
 ];
