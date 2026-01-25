@@ -32,9 +32,14 @@ export function TRPCReactProvider({ children }: { children: React.ReactNode }) {
     new QueryClient({
       defaultOptions: {
         queries: {
-          // With SSR, we usually want to set some default staleTime
-          // above 0 to avoid refetching immediately on the client
-          staleTime: Infinity,
+          // SWR Strategy: Data considered fresh for 5 minutes
+          staleTime: 1000 * 60 * 5,
+          // Keep data in cache for 30 minutes
+          gcTime: 1000 * 60 * 30,
+          // Revalidate when user returns to tab
+          refetchOnWindowFocus: true,
+          // Revalidate on network reconnect
+          refetchOnReconnect: true,
           retry: 2,
         },
       },

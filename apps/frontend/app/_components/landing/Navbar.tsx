@@ -48,7 +48,7 @@ export default function Component(props: NavbarProps) {
       {...props}
       isBordered
       classNames={{
-        base: cn("bg-black/80 backdrop-blur-md border-b border-gray-800", {
+        base: cn("bg-transparent backdrop-blur-md border-b border-gray-800/50", {
           "bg-black": isMenuOpen,
         }),
         wrapper: "w-full justify-between md:justify-center",

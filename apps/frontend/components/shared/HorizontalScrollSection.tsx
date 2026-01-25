@@ -37,7 +37,7 @@ const cards: CardData[] = [
     id: 4,
     title: 'Code Architecture',
     category: 'Development',
-    image: getAssetUrl('software_10.jpg'),
+    image: getAssetUrl('software.jpg'),
   },
   {
     id: 5,
