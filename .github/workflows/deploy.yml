@@ -127,6 +127,9 @@ jobs:
             R2_PUBLIC_DOMAIN=${{ secrets.R2_PUBLIC_DOMAIN }}
             R2_SECRET_KEY=${{ secrets.R2_SECRET_KEY }}
             S3_API=${{ secrets.S3_API }}
+
+            # Analytics
+            GA_MEASUREMENT_ID=${{ secrets.GA_MEASUREMENT_ID }}
             EOF
             chmod 600 ~/alpadev-ai/.env
 
