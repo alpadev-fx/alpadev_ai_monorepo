@@ -9,25 +9,32 @@ const ensureDirectConnectionParam = (url: string) => {
   try {
     console.log("[db] Original URL (masked):", url.replace(/\/\/[^:]+:[^@]+@/, '//***:***@'))
 
+    // MongoDB Atlas SRV URLs (mongodb+srv://) don't support directConnection
+    // and have different requirements than standalone MongoDB
+    const isAtlasSRV = url.startsWith('mongodb+srv://')
+    
+    if (isAtlasSRV) {
+      console.log("[db] MongoDB Atlas SRV detected - using Atlas-compatible settings")
+      // Atlas SRV URLs should NOT be modified - they handle their own configuration
+      // Just ensure the database name is in the path
+      return url
+    }
+
+    // For non-SRV URLs (Railway, standalone MongoDB)
+    console.log("[db] Standard MongoDB URL detected - applying Railway-compatible settings")
     const parsed = new URL(url)
 
-    // Parámetros esenciales para MongoDB Atlas/Railway - FORCE override existing values
+    // Parámetros esenciales para Railway standalone MongoDB
     parsed.searchParams.set("authSource", "admin")
     parsed.searchParams.set("directConnection", "true")
     parsed.searchParams.set("retryWrites", "false")
-
-    // Parámetros adicionales para mejorar la conectividad
     parsed.searchParams.set("connectTimeoutMS", "10000")
     parsed.searchParams.set("serverSelectionTimeoutMS", "10000")
-
-    // Parámetros específicos para Railway MongoDB
     parsed.searchParams.set("ssl", "false")
     parsed.searchParams.set("authMechanism", "SCRAM-SHA-1")
 
     const normalizedUrl = parsed.toString()
     console.log("[db] Normalized MongoDB URL (without credentials):", normalizedUrl.replace(/\/\/[^:]+:[^@]+@/, '//***:***@'))
-    console.log("[db] Auth source:", parsed.searchParams.get("authSource"))
-    console.log("[db] Direct connection:", parsed.searchParams.get("directConnection"))
 
     return normalizedUrl
   } catch (error) {
