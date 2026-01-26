@@ -12,7 +12,7 @@ import Footer from "./_components/landing/Footer"
 import WhatsAppButton from "./_components/ui/WhatsAppButton"
 import { FPSMonitor } from "./_components/diagnostics/FPSMonitor"
 
-const GA_MEASUREMENT_ID = process.env.GA_MEASUREMENT_ID
+const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
 
 export const metadata: Metadata = {
   title: {
