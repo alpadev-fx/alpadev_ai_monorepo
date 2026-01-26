@@ -55,15 +55,15 @@ export default function BookingForm({
     const firstSlot = selectedTimeSlotRange[0];
     const lastSlot = selectedTimeSlotRange[selectedTimeSlotRange.length - 1];
 
-    // Validate time slots exist and have valid time property
-    if (!firstSlot?.time || !lastSlot?.time) {
+    // Validate time slots exist and have valid value property
+    if (!firstSlot?.value || !lastSlot?.value) {
       return { startDate: null, endDate: null, displayDateTime: 'Not selected' };
     }
 
     try {
       const dateStr = `${selectedDate.year}-${String(selectedDate.month).padStart(2, '0')}-${String(selectedDate.day).padStart(2, '0')}`;
-      const start = new Date(`${dateStr}T${firstSlot.time}:00`);
-      const end = new Date(`${dateStr}T${lastSlot.time}:00`);
+      const start = new Date(`${dateStr}T${firstSlot.value}:00`);
+      const end = new Date(`${dateStr}T${lastSlot.value}:00`);
       
       // Validate dates are valid
       if (isNaN(start.getTime()) || isNaN(end.getTime())) {
