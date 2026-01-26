@@ -59,9 +59,12 @@ export const BlackHoleParallax = () => {
           style={{ opacity: heroOpacity, y: heroY }}
           className="absolute text-center px-6 max-w-4xl will-change-[opacity,transform]"
         >
-          {/* Branding subtitle for Google OAuth */}
-          <p className="text-sm md:text-base text-cyan-400 font-medium tracking-widest uppercase mb-4">
-            Alpadev - AI Software Development
+          {/* Alpadev Branding - Large and Visible for Google OAuth */}
+          <h1 className="text-2xl md:text-3xl font-bold text-cyan-400 mb-2">
+            Alpadev
+          </h1>
+          <p className="text-sm md:text-base text-neutral-400 mb-6">
+            AI-Powered Software Development & Scheduling Platform
           </p>
           <TextGenerateEffect 
             words={t("section.title")}
@@ -90,12 +93,12 @@ export const BlackHoleParallax = () => {
           </p>
         </motion.div>
 
-        {/* Privacy/Terms Links for Google OAuth */}
+        {/* Privacy/Terms Links - More Visible for Google OAuth */}
         <div className="absolute bottom-8 left-0 right-0 text-center z-30">
-          <div className="flex justify-center gap-4 text-xs text-neutral-500">
-            <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>
-            <span>|</span>
-            <a href="/terms" className="hover:text-white transition-colors">Terms of Service</a>
+          <div className="flex justify-center gap-6 text-sm text-neutral-400">
+            <a href="/privacy" className="underline hover:text-white transition-colors">Privacy Policy</a>
+            <span>•</span>
+            <a href="/terms" className="underline hover:text-white transition-colors">Terms of Service</a>
           </div>
         </div>
 
