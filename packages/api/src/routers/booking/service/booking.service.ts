@@ -38,6 +38,37 @@ export class BookingService {
       notes: data.notes,
     });
 
+    // 3. Send Confirmation Email
+    try {
+      const { resend, BookingConfirmation } = await import("@package/email");
+      const { format } = await import("date-fns");
+      const { enUS } = await import("date-fns/locale");
+
+      // Format date and time for email
+      const startDate = new Date(data.startDate);
+      const endDate = new Date(data.endDate);
+      
+      const meetingDate = format(startDate, "EEEE, MMMM d, yyyy", { locale: enUS });
+      const meetingTime = `${format(startDate, "h:mm a")} - ${format(endDate, "h:mm a")}`;
+
+      await resend.emails.send({
+        from: `Alpadev <${process.env.RESEND_EMAIL_DOMAIN || 'onboarding@resend.dev'}>`,
+        to: [data.email],
+        subject: "Booking Confirmed: Video Call with Alpadev",
+        react: BookingConfirmation({
+          guestName: data.name,
+          meetingDate,
+          meetingTime,
+          meetLink: calendarResult.meetLink,
+          meetingDescription: data.notes,
+        }),
+      });
+      console.log("[Booking] Confirmation email sent to:", data.email);
+    } catch (emailError) {
+      console.warn("[Booking] Failed to send confirmation email:", emailError);
+      // Don't fail the request if email fails
+    }
+
     return {
       success: true,
       meetLink: calendarResult.meetLink,

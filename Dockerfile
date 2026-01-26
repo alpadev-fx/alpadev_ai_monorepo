@@ -28,6 +28,11 @@ RUN pnpm install --frozen-lockfile
 COPY --from=pruner /app/out/full/ .
 
 # Build the project
+ARG NEXT_PUBLIC_APP_URL
+ARG GA_MEASUREMENT_ID
+ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
+ENV GA_MEASUREMENT_ID=$GA_MEASUREMENT_ID
+
 RUN pnpm turbo build --filter=next-app-template
 
 # 3. Production image, copy all the files and run next
