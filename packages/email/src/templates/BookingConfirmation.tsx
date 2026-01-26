@@ -56,12 +56,12 @@ export default function BookingConfirmation({
           },
         }}
       >
-        <Body className="font-sans bg-black text-white">
-          <Container className="mx-auto px-4 py-5 font-sans">
+        <Body className="font-sans bg-black text-white" style={{ backgroundColor: "#000000", color: "#ffffff" }}>
+          <Container className="mx-auto px-4 py-5 font-sans" style={{ backgroundColor: "#000000" }}>
             <Section className="mt-8">
               <Link href="https://alpadev.xyz">
                 <Img
-                  src="https://assets.alpadev.xyz/logo.jpg"
+                  src="https://alpadev.xyz/logo.svg"
                   width="50"
                   height="50"
                   alt="Alpadev Logo"
