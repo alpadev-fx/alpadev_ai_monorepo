@@ -17,6 +17,10 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
+        hostname: "assets.alpadev.xyz",
+      },
+      {
+        protocol: "https",
         hostname: "alpadev.xyz",
       },
       {
