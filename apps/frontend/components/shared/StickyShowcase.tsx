@@ -49,8 +49,8 @@ export const StickyShowcase = () => {
       <div className="flex w-full flex-col lg:flex-row">
         
         {/* LEFT COLUMN: Sticky Images */}
-        <div className="sticky top-0 flex h-[50vh] w-full items-center justify-center overflow-hidden bg-neutral-950 lg:h-screen lg:w-1/2">
-          <div className="relative h-4/5 w-4/5">
+        <div className="sticky top-0 flex h-[40vh] md:h-[50vh] w-full items-center justify-center overflow-hidden bg-neutral-950 lg:h-screen lg:w-1/2">
+          <div className="relative h-full w-full lg:h-4/5 lg:w-4/5">
              {features.map((item, index) => {
                 const start = index * step;
                 const end = (index + 1) * step;
@@ -97,7 +97,7 @@ export const StickyShowcase = () => {
                return (
                   <motion.div 
                     key={item.id}
-                    className="flex h-screen items-center justify-center px-8 lg:px-24"
+                    className="flex h-[60vh] lg:h-screen items-center justify-center px-6 lg:px-24"
                     style={{ opacity: textOpacity }}
                   >
                      <div className="max-w-xl">

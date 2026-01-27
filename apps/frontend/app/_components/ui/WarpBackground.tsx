@@ -18,19 +18,14 @@ export const WarpBackground: React.FC<WarpBackgroundProps> = ({ className }) => 
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
-    // Star properties
-    const stars: { x: number; y: number; z: number; o: number }[] = [];
-    const STAR_COUNT = 800; // Density of stars
-    const BASE_SPEED = 2; // Normal drift speed
-    let warpSpeed = 0; // Dynamic speed added by scroll/animation (controlled via css variable/ref if needed, but for now we might simulate burst)
-    
-    // We will read a CSS variable or a global var to control speed if we want to sync perfectly with GSAP,
-    // but a visual hack is to just have them moving fast, and use opacity to reveal them locally.
-    // OR: We can just make them move very fast constantly, and the GSAP timeline fades the container in/out.
-    // "Light speed" usually implies streaking.
+    // --- CONFIGURACIÓN DE RENDIMIENTO ---
+    // Determinamos si es móvil (menor a 768px) para reducir la carga de partículas.
+    const isMobile = window.innerWidth < 768;
+    const STAR_COUNT = isMobile ? 550 : 800; 
 
-    // Let's implement a "Streak" draw function.
+    const stars: { x: number; y: number; z: number; o: number }[] = [];
     
+    // Inicialización de estrellas
     for (let i = 0; i < STAR_COUNT; i++) {
         stars.push({
             x: (Math.random() - 0.5) * width,
@@ -43,44 +38,38 @@ export const WarpBackground: React.FC<WarpBackgroundProps> = ({ className }) => 
     let animationFrameId: number;
 
     const draw = () => {
-      // Create trailing effect
-      ctx.fillStyle = "rgba(0, 0, 0, 0.3)"; // Fade out trails
+      // Create trailing effect (fondo con opacidad para dejar estela)
+      ctx.fillStyle = "rgba(0, 0, 0, 0.3)"; 
       ctx.fillRect(0, 0, width, height);
       
       const cx = width / 2;
       const cy = height / 2;
 
-      // Calculate speed based on... allow it to be fast.
-      // We'll treat this as a constant "Hyperdrive" tunnel.
-      // The parent component will check ScrollTrigger to fade this canvas in/out.
-      const speed = 40; 
+      const speed = 40; // Velocidad del efecto warp
 
       stars.forEach((star) => {
+        // Mover la estrella hacia el espectador
         star.z -= speed;
 
+        // Resetear estrella si pasa la pantalla
         if (star.z <= 0) {
           star.z = width;
           star.x = (Math.random() - 0.5) * width;
           star.y = (Math.random() - 0.5) * height;
         }
 
+        // Proyección 3D
         const x = (star.x / star.z) * width + cx;
         const y = (star.y / star.z) * height + cy;
         
-        // Calculate size based on proximity
-        const size = (1 - star.z / width) * 4; // Max size
+        // Tamaño basado en proximidad
+        const size = (1 - star.z / width) * 2;
 
-        // Draw star/streak
-        // To make it look like "light speed", we draw a line from previous position?
-        // Simpler: Just elongated rects radiating from center?
-        // Let's keep it as localized particles for "Starfield" transitioning to "Warp".
-        // Actually user wants "Light Speed" -> Streaks.
-        
+        // Dibujar solo si está dentro de los límites visibles
         if (x >= 0 && x <= width && y >= 0 && y <= height) {
             const opacity = (1 - star.z / width);
-            ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
             
-            // Draw streak
+            // Posición anterior para dibujar la línea (streak)
             const prevX = (star.x / (star.z + speed * 0.5)) * width + cx;
             const prevY = (star.y / (star.z + speed * 0.5)) * height + cy;
 
@@ -96,14 +85,18 @@ export const WarpBackground: React.FC<WarpBackgroundProps> = ({ className }) => 
       animationFrameId = requestAnimationFrame(draw);
     };
 
+    // Iniciar animación
     draw();
 
     const handleResize = () => {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
+      // Nota: No reinicializamos el array 'stars' en resize para evitar 
+      // saltos bruscos en la animación, solo ajustamos el canvas.
     };
 
     window.addEventListener("resize", handleResize);
+    
     return () => {
       cancelAnimationFrame(animationFrameId);
       window.removeEventListener("resize", handleResize);

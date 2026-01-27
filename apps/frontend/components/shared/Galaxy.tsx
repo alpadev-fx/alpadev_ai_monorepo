@@ -413,7 +413,7 @@ export default function Galaxy({
             <p className="text-white/50 text-sm md:text-base mb-4 uppercase tracking-widest">
               Explore the Universe
             </p>
-            <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+            <h2 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
               Infinite <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-pink-400 to-cyan-400">Possibilities</span>
             </h2>
             <p className="text-white/60 text-base md:text-lg mb-8 max-w-xl mx-auto">
@@ -421,14 +421,10 @@ export default function Galaxy({
             </p>
             <div className="flex gap-4 justify-center flex-wrap">
               <button 
-                onPress={onOpen}
                 onClick={onOpen}
                 className="px-8 py-4 bg-gradient-to-r from-cyan-400 to-purple-500 text-white rounded-full font-semibold hover:opacity-90 transition-all duration-300 hover:scale-105 shadow-[0_0_20px_rgba(168,85,247,0.4)]"
               >
                 Get Started
-              </button>
-              <button className="px-8 py-4 border border-white/30 text-white rounded-full font-semibold hover:bg-white/10 transition-all duration-300 hover:scale-105 backdrop-blur-sm">
-                Learn More
               </button>
             </div>
           </div>

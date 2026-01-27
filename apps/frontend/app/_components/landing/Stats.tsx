@@ -71,7 +71,7 @@ export default function Stats() {
   return (
     <div
       ref={containerRef}
-      className="bg-black relative w-full h-[80vh] py-12 md:py-32 overflow-hidden justify-center items-center flex"
+      className="bg-black relative w-full min-h-[80vh] py-12 md:py-32 overflow-hidden justify-center items-center flex"
       id="servicios"
     >
         {/* Apple-style minimalist ambient background */}

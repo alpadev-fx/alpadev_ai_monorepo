@@ -133,11 +133,11 @@ export default function PrimaryFeatures() {
 
         {/* Header Content - Relative (Part of flow) */}
         <div className="relative z-10 w-full pt-20 pl-6 md:pl-24 pr-6 flex-none">
-            <h2 className="text-xs font-semibold text-[alpadev-light-blue] tracking-widest uppercase mb-2">
+            <h2 className="text-xl font-semibold text-[alpadev-light-blue] tracking-widest uppercase mb-2">
               {t("bento.title")}
             </h2>
-            <h3 className="text-[40px] text-justify md:text-5xl font-bold text-white tracking-tight drop-shadow-xl powering-title opacity-0 leading-tight">
-              {t("features.title")}
+            <h3 className="text-5xl text-justify md:text-5xl font-bold text-white tracking-tight drop-shadow-xl powering-title opacity-0 leading-tight">
+              {t("features.hero.title")}
             </h3>
         </div>
 
@@ -179,7 +179,7 @@ export default function PrimaryFeatures() {
                      <h4 className={`text-[40px] md:text-3xl font-bold text-white mb-2 md:mb-3 tracking-tight ${feature.id === "03" && language === "es" ? "break-words hyphens-auto" : ""}`}>
                          {feature.title}
                      </h4>
-                     <p className="text-lg md:text-xl text-gray-200 leading-relaxed font-normal opacity-80 group-hover:opacity-100">
+                     <p className="text-lg md:text-xl text-gray-200 leading-relaxed font-normal opacity-80 group-hover:opacity-100 min-h-[140px]">
                          {feature.description}
                      </p>
                  </div>

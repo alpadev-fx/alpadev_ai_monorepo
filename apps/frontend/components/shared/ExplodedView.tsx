@@ -142,23 +142,23 @@ export const ExplodedView = () => {
                     className={cn(
                       "absolute w-[180px] md:w-[220px] pointer-events-none flex flex-col justify-center",
                       index % 2 === 0 
-                        ? "-right-[200px] md:-right-[260px] items-start text-left" 
-                        : "-left-[200px] md:-left-[260px] items-end text-right"
+                        ? "-right-[160px] md:-right-[260px] items-start text-left" 
+                        : "-left-[160px] md:-left-[260px] items-end text-right"
                     )}
                   >
-                    <h3 className="text-lg md:text-xl font-bold text-white mb-0.5">{layer.title}</h3>
-                    <p className="text-xs md:text-sm text-neutral-400">{layer.description}</p>
+                    <h3 className="text-sm md:text-xl font-bold text-white mb-0.5">{layer.title}</h3>
+                    <p className="text-[10px] md:text-sm text-neutral-400 leading-tight">{layer.description}</p>
                     
                     <div className={cn(
-                      "absolute top-1/2 -translate-y-1/2 h-[1px] w-12 md:w-16",
+                      "absolute top-1/2 -translate-y-1/2 h-[1px] w-8 md:w-16",
                       index % 2 === 0 
-                        ? "-left-14 md:-left-20 bg-gradient-to-r from-white/40 to-transparent" 
-                        : "-right-14 md:-right-20 bg-gradient-to-l from-white/40 to-transparent"
+                        ? "-left-10 md:-left-20 bg-gradient-to-r from-white/40 to-transparent" 
+                        : "-right-10 md:-right-20 bg-gradient-to-l from-white/40 to-transparent"
                     )} />
                     
                     <div className={cn(
-                      "absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_8px_white]",
-                      index % 2 === 0 ? "-left-14 md:-left-20" : "-right-14 md:-right-20"
+                      "absolute top-1/2 -translate-y-1/2 w-1 md:w-1.5 h-1 md:h-1.5 rounded-full bg-white shadow-[0_0_8px_white]",
+                      index % 2 === 0 ? "-left-10 md:-left-20" : "-right-10 md:-right-20"
                     )} />
                   </motion.div>
 

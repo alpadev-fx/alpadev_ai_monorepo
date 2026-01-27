@@ -22,7 +22,7 @@ const ExperienceCard = React.forwardRef<HTMLDivElement, ExperienceCardProps>(
       <Card 
         ref={ref} 
         isPressable 
-        onPress={onClick}
+        onClick={onClick}
         className="bg-content2/50 backdrop-blur-md border border-white/10 h-full" 
         shadow="sm" 
         {...props}

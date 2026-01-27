@@ -46,9 +46,9 @@ export default function Component(props: NavbarProps) {
   return (
     <Navbar
       {...props}
-      isBordered
+      {...props}
       classNames={{
-        base: cn("bg-transparent backdrop-blur-md border-b border-gray-800/50", {
+        base: cn("bg-black", {
           "bg-black": isMenuOpen,
         }),
         wrapper: "w-full justify-between md:justify-center",
@@ -75,7 +75,7 @@ export default function Component(props: NavbarProps) {
         />
       </NavbarBrand>
       <NavbarContent
-        className="border-small border-gray-700/20 bg-gray-900/60 shadow-medium hidden h-11 gap-4 rounded-full px-4 backdrop-blur-md backdrop-saturate-150 md:flex"
+        className="shadow-medium hidden h-11 gap-4 rounded-full px-4 backdrop-blur-md backdrop-saturate-150 md:flex"
         justify="center"
       >
         <NavbarItem>

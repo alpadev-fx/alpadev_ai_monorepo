@@ -5,7 +5,7 @@ import { useLanguage } from "@/contexts/LanguageContext"
 import { OrbitSystem } from "@/components/animate-ui/components/community/radial-intro"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { CodeBlock } from "@/components/ui/code-block"
 import { getAssetUrl } from "@/lib/r2"
 
@@ -70,6 +70,23 @@ export default function IntegrationSection() {
   const { t } = useLanguage()
   const scrollRef = useRef<HTMLDivElement>(null)
   const contentRef = useRef<HTMLDivElement>(null)
+  const [stageSize, setStageSize] = useState(450)
+  const [imageSize, setImageSize] = useState(80)
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
+        setStageSize(320)
+        setImageSize(50)
+      } else {
+        setStageSize(450)
+        setImageSize(80)
+      }
+    }
+    handleResize()
+    window.addEventListener("resize", handleResize)
+    return () => window.removeEventListener("resize", handleResize)
+  }, [])
 
   const items = useMemo(() => [
     { id: 1, name: t("integration.orbit.revenue"), src: getAssetUrl("bitcoin.jpg") },
@@ -123,12 +140,6 @@ export default function IntegrationSection() {
                 <button className="px-6 py-2.5 rounded-full border border-white/20 text-white font-medium hover:bg-white/5 transition-colors">
                     {t("integration.button.call")}
                 </button>
-                <button className="px-6 py-2.5 rounded-full bg-white text-black font-medium hover:bg-cyan-400 transition-colors flex items-center gap-2">
-                    {t("integration.button.build")}
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M1 8h14m-7-7l7 7-7 7" />
-                    </svg>
-                </button>
             </div>
         </div>
 
@@ -147,8 +158,8 @@ export default function IntegrationSection() {
                  
                  <OrbitSystem 
                     orbitItems={items} 
-                    stageSize={450} 
-                    imageSize={80} 
+                    stageSize={stageSize} 
+                    imageSize={imageSize} 
                   
                  />
             </div>

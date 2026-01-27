@@ -24,7 +24,7 @@ export const TextReveal = ({ text, className, textClassName, boxClassName }: Tex
 
   return (
     <div ref={targetRef} className={cn("relative z-20 min-h-[60vh]", className)}>
-      <div className={cn("sticky top-0 mx-auto flex h-[50%] max-w-5xl items-center bg-transparent px-[1rem] py-[5rem]", boxClassName)}>
+      <div className={cn("sticky top-0 mx-auto flex h-[50%] max-w-5xl items-center bg-black px-[1rem] py-[5rem]", boxClassName)}>
         <p
           className={cn(
             "flex flex-wrap p-5 text-3xl font-bold text-white/20 md:p-8 md:text-5xl lg:p-10 lg:text-6xl xl:text-7xl",

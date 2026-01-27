@@ -5,6 +5,9 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { SingularityShaders } from "@/app/_components/ui/SingularityShaders";
 import { TextGenerateEffect } from "@/app/_components/ui/text-generate-effect";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Button, useDisclosure } from "@heroui/react";
+import Modal from "@/app/_components/ui/Modal";
+import CalendarBooking from "@/components/booking/calendar-booking";
 
 /**
  * BlackHoleParallax - Apple-style scroll-driven parallax with TextGenerateEffect.
@@ -12,6 +15,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 export const BlackHoleParallax = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { t } = useLanguage();
+  const {isOpen, onOpen, onClose} = useDisclosure();
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -25,10 +29,12 @@ export const BlackHoleParallax = () => {
   // Hero Text (Section 1): Fades out
   const heroOpacity = useTransform(scrollYProgress, [0, 0.25], [1, 0]);
   const heroY = useTransform(scrollYProgress, [0, 0.25], [0, -100]);
+  const heroPointerEvents = useTransform(scrollYProgress, (v) => v < 0.25 ? "auto" : "none");
 
   // Secondary Text (Section 2): Fades in then out
   const secondaryOpacity = useTransform(scrollYProgress, [0.3, 0.5, 0.8], [0, 1, 0]);
   const secondaryY = useTransform(scrollYProgress, [0.3, 0.5], [60, 0]);
+  const secondaryPointerEvents = useTransform(scrollYProgress, (v) => v > 0.25 && v < 0.85 ? "auto" : "none");
 
   return (
     <section ref={containerRef} className="relative h-[200vh] bg-black">
@@ -56,41 +62,52 @@ export const BlackHoleParallax = () => {
         
         {/* Hero Text with TextGenerateEffect */}
         <motion.div
-          style={{ opacity: heroOpacity, y: heroY }}
+          style={{ opacity: heroOpacity, y: heroY, pointerEvents: heroPointerEvents as any }}
           className="absolute text-center px-6 max-w-4xl will-change-[opacity,transform]"
         >
-          {/* Alpadev Branding - Large and Visible for Google OAuth */}
-          <h1 className="text-2xl md:text-3xl font-bold text-cyan-400 mb-2">
-            Alpadev
-          </h1>
-          <p className="text-sm md:text-base text-neutral-400 mb-6">
-            AI-Powered Software Development & Scheduling Platform
-          </p>
           <TextGenerateEffect 
             words={t("section.title")}
             className="text-5xl md:text-8xl tracking-tighter leading-[1.05] mb-6"
             duration={2}
             delay={0.15}
           />
-          <p className="text-lg md:text-xl text-neutral-400 max-w-xl mx-auto">
+          <p className="text-lg md:text-xl text-white max-w-xl mx-auto">
             {t("hero.description")}
           </p>
+          <br />
+           <Button
+            onClick={onOpen}
+            className="mt-8 px-8 py-8 bg-transparent border border-white/30 rounded-xl font-medium text-lg text-white transition-all duration-700 hover:scale-105 hover:border-transparent hover:bg-gradient-to-r hover:from-indigo-500 hover:via-fuchsia-500 hover:via-blue-500 hover:to-teal-500 bg-[length:200%_auto] bg-left hover:bg-right hover:shadow-[0_0_40px_rgba(79,70,229,0.5)]"
+            variant="solid"
+          >
+            {t("hero.cta.primary")}
+          </Button>
         </motion.div>
 
         {/* Secondary Text with TextGenerateEffect */}
         <motion.div
-          style={{ opacity: secondaryOpacity, y: secondaryY }}
+          style={{ opacity: secondaryOpacity, y: secondaryY, pointerEvents: secondaryPointerEvents as any }}
           className="absolute text-center px-6 max-w-3xl will-change-[opacity,transform]"
         >
           <TextGenerateEffect 
             words={t("features.title")}
-            className="text-4xl md:text-7xl tracking-tighter mb-6"
+            className="text-4xl md:text-7xl  tracking-tighter mb-6"
             duration={2}
             delay={0.12}
           />
-          <p className="text-lg md:text-xl text-neutral-400 max-w-xl mx-auto">
+          <p className="text-lg  md:text-xl text-white max-w-xl mx-auto">
             {t("features.subtitle")}
           </p>
+          <br />
+          <Button
+            onClick={onOpen}
+            className="mt-8 px-8 py-6 bg-transparent border border-white/30 rounded-xl font-medium text-lg text-white transition-all duration-700 hover:scale-105 hover:border-transparent hover:bg-gradient-to-r hover:from-indigo-500 hover:via-fuchsia-500 hover:via-blue-500 hover:to-teal-500 bg-[length:200%_auto] bg-left hover:bg-right hover:shadow-[0_0_40px_rgba(79,70,229,0.5)]"
+            variant="solid"
+          >
+            {t("hero.cta.secondary")}
+          </Button>
+
+
         </motion.div>
 
         {/* Privacy/Terms Links - More Visible for Google OAuth */}
@@ -106,6 +123,15 @@ export const BlackHoleParallax = () => {
       
       {/* Gradient Connector */}
       <div className="absolute bottom-0 w-full h-40 bg-gradient-to-t from-black to-transparent z-20 pointer-events-none" />
+
+      <Modal
+        open={isOpen}
+        onClose={onClose}
+        size="5xl"
+        isTransparent
+      >
+        <CalendarBooking />
+      </Modal>
     </section>
   );
 };

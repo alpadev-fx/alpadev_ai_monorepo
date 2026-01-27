@@ -9,15 +9,7 @@ import { Modal, ModalContent, ModalHeader, ModalBody, useDisclosure } from "@her
 
 import { useLanguage } from "@/contexts/LanguageContext"
 
-// Lazy load Form
-const SimpleForm = dynamic(() => import("@/app/_components/forms/SimpleForm"), {
-  loading: () => (
-    <div className="flex items-center justify-center p-8">
-      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-500"></div>
-    </div>
-  ),
-  ssr: false,
-})
+import CalendarBooking from "@/components/booking/calendar-booking"
 
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger)
@@ -44,7 +36,7 @@ export default function Pricing() {
   const plans: Plan[] = React.useMemo(
     () => [
       {
-        cta: t("pricing.cta"),
+        cta: t("pricing.parttime.cta"),
         description: t("pricing.parttime.description"),
         discount: 0,
         features: [
@@ -60,7 +52,7 @@ export default function Pricing() {
         title: t("pricing.parttime.title"),
       },
       {
-        cta: t("pricing.cta"),
+        cta: t("pricing.fulltime.cta"),
         description: t("pricing.fulltime.description"),
         discount: 0,
         features: [
@@ -77,7 +69,7 @@ export default function Pricing() {
         title: t("pricing.fulltime.title"),
       },
       {
-        cta: t("pricing.cta"),
+        cta: t("pricing.consulting.cta"),
         description: t("pricing.consulting.description"),
         features: [
           t("pricing.feature1.cs"),
@@ -165,7 +157,7 @@ export default function Pricing() {
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mb-10 md:mb-20 text-center pricing-title">
-          <h1 className="text-5xl md:text-8xl font-bold tracking-tighter text-white mb-6 md:mb-8 leading-none">
+          <h1 className="text-5xl md:text-8xl font-bold tracking-tighter text-white mb-6 md:mb-8 leading-[1.1] md:leading-none text-balance">
             {t("pricing.program.title")}
           </h1>
           <p className="text-base md:text-lg text-gray-400 font-normal leading-relaxed max-w-2xl mx-auto">
@@ -191,7 +183,7 @@ export default function Pricing() {
                 <ul className="flex-1 space-y-4 mb-8 md:mb-10">
                     {plans[0].features.map((feature, idx) => (
                         <li key={idx} className="flex items-start gap-3 text-sm font-medium text-gray-300">
-                            <span className="mt-0.5 text-[alpadev-orange] text-lg">•</span>
+                            <span className="mt-0.5 text-indigo-400 text-lg">•</span>
                             {feature}
                         </li>
                      ))}
@@ -206,8 +198,8 @@ export default function Pricing() {
             </div>
 
             {/* Plan 2: Medium Scaling (Highlighted) */}
-            <div className="pricing-card group relative flex flex-col overflow-hidden rounded-[2rem] md:rounded-[2.5rem] bg-[#1c1c1e] p-6 md:p-10 transition-transform duration-500 hover:scale-[1.02] ring-1 ring-white/10 shadow-2xl shadow-black/50">
-                <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-[alpadev-light-blue] to-cyan-400 opacity-80" />
+            <div className="pricing-card group relative flex flex-col overflow-hidden rounded-[2rem] md:rounded-[2.5rem] bg-[#1c1c1e] p-6 md:p-10 transition-transform duration-500 hover:scale-[1.02] ring-1 ring-cyan-500/50 shadow-[0_0_50px_-12px_rgba(6,182,212,0.3)]">
+                <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-cyan-500 to-blue-600 opacity-100" />
                 
                 <h2 className="text-xl md:text-2xl font-semibold text-white mb-2 !leading-none">{plans[1].title}</h2>
                 <div className="mb-4">
@@ -222,7 +214,7 @@ export default function Pricing() {
                 <ul className="flex-1 space-y-4 mb-8 md:mb-10">
                     {plans[1].features.map((feature, idx) => (
                         <li key={idx} className="flex items-start gap-3 text-sm font-medium text-gray-300">
-                             <span className="mt-0.5 text-[alpadev-light-blue] text-lg">•</span>
+                             <span className="mt-0.5 text-cyan-400 text-lg">•</span>
                             {feature}
                         </li>
                      ))}
@@ -251,7 +243,7 @@ export default function Pricing() {
                 <ul className="flex-1 space-y-4 mb-8 md:mb-10">
                     {plans[2].features.map((feature, idx) => (
                         <li key={idx} className="flex items-start gap-3 text-sm font-medium text-gray-300">
-                             <span className="mt-0.5 text-[alpadev-dark-blue] text-lg">•</span>
+                             <span className="mt-0.5 text-purple-400 text-lg">•</span>
                             {feature}
                         </li>
                      ))}
@@ -285,22 +277,23 @@ export default function Pricing() {
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        size="2xl"
+        size="5xl"
         backdrop="blur"
+        isTransparent
         classNames={{
-            base: "bg-[#1c1c1e] border border-white/10 rounded-3xl shadow-2xl",
-            header: "border-b border-white/10 pb-4 text-white",
-            body: "py-6",
-            closeButton: "text-white hover:bg-white/10 rounded-full",
-            backdrop: "bg-black/60 backdrop-blur-md"
+            base: "bg-transparent shadow-none",
+            header: "hidden",
+            body: "p-0",
+            closeButton: "z-50 text-white hover:bg-white/10 rounded-full top-4 right-4",
+            backdrop: "bg-black/80 backdrop-blur-xl"
         }}
       >
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1 text-xl font-semibold">
             {t("pricing.cta")} - {selectedPlan}
           </ModalHeader>
-          <ModalBody>
-            <SimpleForm onSuccess={onClose} />
+          <ModalBody className="p-0">
+            <CalendarBooking />
           </ModalBody>
         </ModalContent>
       </Modal>

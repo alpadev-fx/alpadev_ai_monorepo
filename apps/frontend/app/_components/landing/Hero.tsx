@@ -37,7 +37,7 @@ export default function Hero() {
 
   const texts = [
     { 
-      text: "AI Architect", 
+      text: "Architecting Intelligence.", 
       id: "gradient-blue",
       colors: ["#3b82f6", "#06b6d4", "#22d3ee", "#60a5fa", "#93c5fd"], 
       fireValid: "from-blue-500 via-indigo-600",
@@ -45,7 +45,7 @@ export default function Hero() {
       fireTip: "from-white via-cyan-200"
     },
     { 
-      text: "Cloud Native", 
+      text: "Cloud Native DNA.", 
       id: "gradient-purple",
       colors: ["#a855f7", "#d946ef", "#ec4899", "#8b5cf6", "#c084fc"], 
       fireValid: "from-purple-600 via-fuchsia-600",
@@ -53,12 +53,12 @@ export default function Hero() {
       fireTip: "from-white via-fuchsia-200"
     },
     { 
-      text: "Global Engineer", 
+      text: "World-Class Engineering.", 
       id: "gradient-orange",
-      colors: ["#f97316", "#ef4444", "#eab308", "#f59e0b", "#fbbf24"], 
-      fireValid: "from-orange-600 via-red-600",
-      fireTrail: "from-amber-400 via-orange-500",
-      fireTip: "from-white via-amber-200"
+      colors: ["#3b82f6", "#06b6d4", "#22d3ee", "#60a5fa", "#93c5fd"], 
+      fireValid: "from-blue-500 via-indigo-600",
+      fireTrail: "from-cyan-400 via-blue-500",
+      fireTip: "from-white via-cyan-200"
     }
   ]
 
@@ -175,13 +175,13 @@ export default function Hero() {
         <div className="mx-auto max-w-4xl text-center">
            <div ref={badgeRef} className="hidden sm:mb-8 sm:flex sm:justify-center">
              <div className="relative rounded-full px-3 py-1 text-sm leading-6 text-gray-400 ring-1 ring-white/10 hover:ring-white/20">
-               {t("hero.badge")}
+               {t("hero.badge")}a
              </div>
            </div>
            
            <h1 ref={titleRef} className="text-5xl md:text-7xl font-bold tracking-tighter leading-[1.1] text-white mb-8">
               <span className="bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-neutral-400">
-                {t("section.title")}
+                {t("features.hero.title")}
               </span>
            </h1>
 

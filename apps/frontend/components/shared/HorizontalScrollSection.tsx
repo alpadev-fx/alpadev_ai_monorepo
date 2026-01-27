@@ -74,18 +74,23 @@ const FeatureCard = ({ card, scrollX }: { card: CardData; scrollX: MotionValue<n
   const x = useTransform(scrollX, [0, 1], ['-10%', '10%']);
   
   return (
-    <div className="group relative h-[50vh] w-[50vw] shrink-0 overflow-hidden bg-neutral-900 transform-gpu">
+    <div 
+      className={cn(
+        "group relative shrink-0 overflow-hidden bg-neutral-900 transform-gpu",
+        "h-[60vh] w-[86vw] md:h-[60vh] md:w-[60vw]"
+      )}
+    >
       {/* Parallax Image Container */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
           style={{ x, scale: 1.2 }} // Scale up to cover the parallax movement (10% movement requires 1.2 scale)
-          className="h-full w-full will-change-transform"
+          className="h-full w-full will-change-transform sm:w-[80vw] sm:h-[80vh]"
         >
           <Image
             src={card.image}
             alt={card.title}
             fill
-            sizes="(max-width: 768px) 100vw, 50vw"
+            sizes="(max-width: 768px) 100vw, 50vw " 
             className="object-cover transition-transform duration-500"
             priority={card.id <= 2} // Prioritize loading for the first 2 cards
           />
@@ -99,7 +104,7 @@ const FeatureCard = ({ card, scrollX }: { card: CardData; scrollX: MotionValue<n
         <span className="mb-2 block text-sm font-bold uppercase tracking-wider text-white">
           {card.category}
         </span>
-        <h3 className="text-3xl font-bold text-white">{card.title}</h3>
+        <h3 className="text-2xl md:text-3xl font-bold text-white">{card.title}</h3>
       </div>
     </div>
   );
@@ -127,7 +132,7 @@ export const HorizontalScrollSection = () => {
   // The exact percentage depends on the total width of the content vs the viewport.
   // With 6 cards @ 350px + gaps, total width is approx 2300px.
   // Viewport is ~1000-1900px.
-  const x = useTransform(smoothProgress, [0, 1], ['1%', '-80%']);
+  const x = useTransform(smoothProgress, [0, 1], ['1%', '-90%']);
   // Removed textColor transition to optimize FPS (avoid per-frame style recalc)
 
   return (
@@ -140,7 +145,7 @@ export const HorizontalScrollSection = () => {
           
           {/* Header Card (Static text that scrolls away) */}
           <div className="flex h-[450px] w-[300px] flex-shrink-0 flex-col justify-center pr-12">
-            <h2 className="mb-4 text-4xl font-extrabold leading-tight tracking-tight text-white md:text-6xl">
+            <h2 className="mb-4 text-5xl font-extrabold leading-tight tracking-tight text-white md:text-6xl">
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500">
                 {t("scroll.transition.titleA")}
               </span>
