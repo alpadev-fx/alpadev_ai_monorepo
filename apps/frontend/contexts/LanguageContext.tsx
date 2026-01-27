@@ -385,10 +385,11 @@ const translations = {
     "nav.faq": "FAQ",
 
     // Hero
-    "hero.badge": "Ingeniería Crítica para Ingresos",
-    "hero.description": "Diseñamos y desplegamos ecosistemas de software a medida para empresas que no pueden permitirse tiempos de inactividad.",
-    "hero.cta.primary": "Iniciar Descubrimiento",
-    "hero.cta.secondary": "Ver Trabajo Seleccionado",
+    // Hero
+    "hero.badge": "Sistemas Críticos. Resueltos.",
+    "hero.description": "Diseñamos ecosistemas digitales para empresas que no pueden permitirse tiempos de inactividad. Escala tu visión. Sin deuda técnica.",
+    "hero.cta.primary": "Auditar mi Sistema",
+    "hero.cta.secondary": "Ver Casos de Éxito",
 
     // El Enfoque (Features)
     "features.title": "El Enfoque",
@@ -535,7 +536,7 @@ const translations = {
 
     // Section
     "section.subtitle": "Construye rápido, escala sin límites, piensa en grande.",
-    "section.title": "Ingeniería de Arquitecturas Críticas para Ingresos.",
+    "section.title": "Ingeniería de Ingresos.",
     "section.description": "Diseñamos y desplegamos ecosistemas de software a medida para empresas que no pueden permitirse tiempos de inactividad.",
     "section.feature1.title": "Consistencia y transformación",
     "section.feature1.description": "Nos integramos con tu equipo para construir una base de estabilidad e innovación. Con marcos probados y metodologías ágiles, impulsamos tu crecimiento tecnológico y estratégico: sólido, escalable y listo para los próximos desafíos.",

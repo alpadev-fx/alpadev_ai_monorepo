@@ -179,13 +179,13 @@ export default function Hero() {
              </div>
            </div>
            
-           <h1 ref={titleRef} className="text-5xl md:text-8xl font-bold tracking-tighter leading-[1.1] text-white mb-8">
+           <h1 ref={titleRef} className="text-5xl md:text-7xl font-bold tracking-tighter leading-[1.1] text-white mb-8">
               <span className="bg-clip-text text-transparent bg-gradient-to-b from-white via-white to-neutral-400">
                 {t("section.title")}
               </span>
            </h1>
 
-           <p ref={paragraphRef} className="mt-4 text-lg leading-8 text-gray-300 md:text-xl max-w-2xl mx-auto mb-8">
+           <p ref={paragraphRef} className="mt-4 text-lg leading-8 text-gray-400 md:text-xl max-w-2xl mx-auto mb-8">
              {t("hero.description")}
            </p>
 
