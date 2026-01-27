@@ -280,20 +280,21 @@ export default function Pricing() {
         size="5xl"
         backdrop="blur"
         isTransparent
+        hideCloseButton
         classNames={{
-            base: "bg-transparent shadow-none",
+            base: "bg-transparent shadow-none flex justify-center items-center", // Added center alignment
             header: "hidden",
-            body: "p-0",
-            closeButton: "z-50 text-white hover:bg-white/10 rounded-full top-4 right-4",
-            backdrop: "bg-black/80 backdrop-blur-xl"
+            body: "p-0 flex justify-center items-center",
+            backdrop: "bg-black/80 backdrop-blur-xl",
+            closeButton: "hidden"
         }}
       >
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1 text-xl font-semibold">
             {t("pricing.cta")} - {selectedPlan}
           </ModalHeader>
-          <ModalBody className="p-0">
-            <CalendarBooking />
+          <ModalBody className="p-0 flex justify-center items-center">
+            <CalendarBooking onClose={onClose} />
           </ModalBody>
         </ModalContent>
       </Modal>

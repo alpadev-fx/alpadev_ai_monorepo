@@ -77,7 +77,7 @@ export const BlackHoleParallax = () => {
           <br />
            <Button
             onClick={onOpen}
-            className="mt-8 px-8 py-8 bg-transparent border border-white/30 rounded-xl font-medium text-lg text-white transition-all duration-700 hover:scale-105 hover:border-transparent hover:bg-gradient-to-r hover:from-indigo-500 hover:via-fuchsia-500 hover:via-blue-500 hover:to-teal-500 bg-[length:200%_auto] bg-left hover:bg-right hover:shadow-[0_0_40px_rgba(79,70,229,0.5)]"
+            className="mt-8 px-8 py-8 bg-transparent border border-white/30 rounded-full font-medium text-lg text-white transition-all duration-700 hover:scale-105 hover:border-transparent hover:bg-gradient-to-r hover:from-indigo-500 hover:via-fuchsia-500 hover:via-blue-500 hover:to-teal-500 bg-[length:200%_auto] bg-left hover:bg-right hover:shadow-[0_0_40px_rgba(79,70,229,0.5)]"
             variant="solid"
           >
             {t("hero.cta.primary")}
@@ -101,7 +101,7 @@ export const BlackHoleParallax = () => {
           <br />
           <Button
             onClick={onOpen}
-            className="mt-8 px-8 py-6 bg-transparent border border-white/30 rounded-xl font-medium text-lg text-white transition-all duration-700 hover:scale-105 hover:border-transparent hover:bg-gradient-to-r hover:from-indigo-500 hover:via-fuchsia-500 hover:via-blue-500 hover:to-teal-500 bg-[length:200%_auto] bg-left hover:bg-right hover:shadow-[0_0_40px_rgba(79,70,229,0.5)]"
+            className="mt-8 px-8 py-6 bg-transparent border border-white/30 rounded-full font-medium text-lg text-white transition-all duration-700 hover:scale-105 hover:border-transparent hover:bg-gradient-to-r hover:from-indigo-500 hover:via-fuchsia-500 hover:via-blue-500 hover:to-teal-500 bg-[length:200%_auto] bg-left hover:bg-right hover:shadow-[0_0_40px_rgba(79,70,229,0.5)]"
             variant="solid"
           >
             {t("hero.cta.secondary")}
@@ -127,10 +127,11 @@ export const BlackHoleParallax = () => {
       <Modal
         open={isOpen}
         onClose={onClose}
-        size="5xl"
+        size="auto"
         isTransparent
+        hideCloseButton={true}
       >
-        <CalendarBooking />
+        <CalendarBooking onClose={onClose} />
       </Modal>
     </section>
   );

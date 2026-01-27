@@ -43,15 +43,16 @@ export class BookingService {
     // 3. Send Confirmation Email
     try {
       const { resend, BookingConfirmation } = await import("@package/email");
-      const { format } = await import("date-fns");
+      const { formatInTimeZone } = await import("date-fns-tz");
       const { enUS } = await import("date-fns/locale");
 
-      // Format date and time for email
+      // Format date and time for email using the requested timezone
       const startDate = new Date(data.startDate);
       const endDate = new Date(data.endDate);
+      const timeZone = data.timeZone || "UTC";
       
-      const meetingDate = format(startDate, "EEEE, MMMM d, yyyy", { locale: enUS });
-      const meetingTime = `${format(startDate, "h:mm a")} - ${format(endDate, "h:mm a")}`;
+      const meetingDate = formatInTimeZone(startDate, timeZone, "EEEE, MMMM d, yyyy", { locale: enUS });
+      const meetingTime = `${formatInTimeZone(startDate, timeZone, "h:mm a", { locale: enUS })} - ${formatInTimeZone(endDate, timeZone, "h:mm a", { locale: enUS })}`;
 
       await resend.emails.send({
         from: `Alpadev <${process.env.RESEND_EMAIL_DOMAIN || 'onboarding@resend.dev'}>`,

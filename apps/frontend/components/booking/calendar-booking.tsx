@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { getLocalTimeZone, isWeekend, today } from '@internationalized/date';
 import { format } from 'date-fns';
 import { enUS } from 'date-fns/locale';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 
 import BookingDetails from './booking-details';
 import { DurationEnum, durations, type TimeSlot } from './calendar';
@@ -50,10 +51,27 @@ const LoadingSkeleton = () => (
   </div>
 );
 
-export default function CalendarBooking() {
+export default function CalendarBooking({ onClose }: { onClose?: () => void }) {
   const [isLoading, setIsLoading] = useState(true);
+  const [calendarWidth, setCalendarWidth] = useState("390px");
   const [calendarBookingStep, setCalendarBookingStep] =
     useState<CalendarBookingStepType>('booking_initial');
+  // ... existing state ...
+
+  // Update width on resize
+  useEffect(() => {
+    const handleResize = () => {
+        setCalendarWidth(window.innerWidth < 1024 ? "372px" : "390px");
+    };
+    
+    // Initial check
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  // ... rest of state initialization ...
   const [selectedTimeZone, setSelectedTimeZone] = useState<string>(
     Intl.DateTimeFormat().resolvedOptions().timeZone,
   );
@@ -119,24 +137,66 @@ export default function CalendarBooking() {
   
   if (calendarBookingStep === 'booking_form') {
     return (
-      <CalendarBookingForm
-        selectedDate={selectedDate}
-        selectedTimeSlotRange={selectedTimeSlotRange}
-        setCalendarBookingStep={setCalendarBookingStep}
-        onBookingSuccess={onBookingSuccess}
-      />
+      <div className="relative flex  w-[80vw] lg:w-fit flex-col items-center justify-center p-6 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
+          {onClose && (
+            <button 
+                onClick={onClose}
+                className="absolute top-4 right-4 z-50 p-2 rounded-full text-white/50 hover:text-white hover:bg-white/10 transition-all"
+            >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 18 18"/></svg>
+            </button>
+          )}
+          <CalendarBookingForm
+            selectedDate={selectedDate}
+            selectedTimeSlotRange={selectedTimeSlotRange}
+            setCalendarBookingStep={setCalendarBookingStep}
+            onBookingSuccess={onBookingSuccess}
+          />
+      </div>
     );
   }
 
-  if (calendarBookingStep === 'booking_confirmation') {
-    return <CalendarBookingConfirmation 
-        setCalendarBookingStep={setCalendarBookingStep} 
-        bookingDetails={bookingSuccessDetails}
-    />;
+  if (calendarBookingStep === 'booking_confirmation') { 
+    return (
+        <div className="relative flex w-[80vw] lg:w-fit flex-col items-center justify-center p-6 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
+            {onClose && (
+                <button 
+                    onClick={onClose}
+                    className="absolute top-4 right-4 z-50 p-2 rounded-full text-white/50 hover:text-white hover:bg-white/10 transition-all"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 18 18"/></svg>
+                </button>
+            )}
+            <CalendarBookingConfirmation 
+                setCalendarBookingStep={setCalendarBookingStep} 
+                bookingDetails={bookingSuccessDetails}
+            />
+        </div>
+    );
   }
 
   return (
-    <div className="flex w-full h-full flex-col items-center justify-center gap-5 lg:flex-row lg:items-start lg:gap-8 p-6 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
+    <div className="relative flex w-[90vw] lg:w-fit max-h-[85vh] flex-col items-center gap-5 overflow-y-auto lg:flex-row lg:items-start lg:gap-8 lg:overflow-visible p-6 lg:pr-16 rounded-3xl bg-black/40 backdrop-blur-2xl border border-white/10 shadow-2xl scrollbar-hide">
+      <style jsx>{`
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+      `}</style>
+      
+      {onClose && (
+        <button 
+            onClick={onClose}
+            className="sticky top-0 right-0 self-end z-50 p-2 rounded-full text-white/70 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-all active:scale-95 lg:absolute lg:top-4 lg:right-4 shadow-lg backdrop-blur-md"
+            aria-label="Close"
+        >
+             <XMarkIcon className="w-5 h-5" />
+        </button>
+      )}
+
       <BookingDetails
         selectedDuration={selectedDuration}
         selectedTimeZone={selectedTimeZone}
@@ -146,7 +206,7 @@ export default function CalendarBooking() {
         selectedTimeSlotRange={selectedTimeSlotRange}
       />
       <Calendar
-        calendarWidth="372px"
+        calendarWidth={calendarWidth}
         className="shadow-none dark:bg-transparent"
         classNames={{
           headerWrapper: 'bg-transparent px-3 pt-1.5 pb-3',

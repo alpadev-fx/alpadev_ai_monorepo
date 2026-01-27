@@ -43,16 +43,16 @@ export default function BookingDetails({
   }, [selectedDate]);
 
   return (
-    <div className={cn('flex flex-col p-6 lg:w-[220px] lg:px-4 lg:pt-8', className)}>
+    <div className={cn('flex flex-col p-6 lg:w-[300px] lg:px-4 lg:pt-8', className)}>
       <Avatar
         className="mb-3 shadow-md"
         size="sm"
-        src="https://i.pravatar.cc/150?u=a042581f4e29026704k"
+        src="https://assets.alpadev.xyz/logo.jpg"
       />
-      <p className="text-default-500 text-xs font-medium">Zoey Lang</p>
-      <p className="text-default-foreground mb-2 text-lg font-semibold">Demo call</p>
+      <p className="text-default-500 text-xs font-medium">Book now</p>
+      <p className="text-default-foreground mb-2 text-lg font-semibold">Meeting with Alpadev</p>
       <p className="text-small text-default-500 mb-4">
-        Lorem ipsum dolor sit amet cons ectetur. Turpis gravida eget felis senectus eleifend.
+        Your customized product is just a video call away
       </p>
       <div className="mb-6 flex flex-col gap-3">
         <div
@@ -63,7 +63,7 @@ export default function BookingDetails({
           <Icon className="text-default-300" icon="solar:calendar-minimalistic-bold" width={16} />
           <div className="text-default-600 text-xs font-medium">
             <p>{bookingDate}</p>
-            <p>{`${selectedTimeSlotRange?.[0]?.label} - ${selectedTimeSlotRange?.[1]?.label}`}</p>
+            <p>{`${selectedTimeSlotRange?.[0]?.label} - ${selectedTimeSlotRange?.[1]?.label}`} </p>
           </div>
         </div>
         <div className="flex items-center gap-2">

@@ -36,12 +36,14 @@ export default function WelcomeEmail() {
           },
         }}
       >
-        <Body className="font-sans bg-black text-white" style={{ backgroundColor: "#000000", color: "#ffffff" }}>
-          <Container className="mx-auto px-4 py-5" style={{ backgroundColor: "#000000" }}>
+        <Body className="font-sans bg-black text-white" style={{ backgroundColor: "#000000", color: "#ffffff", margin: 0, padding: 0 }}>
+           {/* Wrapper div to force full width background in clients that strip Body styles */}
+          <div style={{ backgroundColor: "#000000", width: "100%", height: "100%", minHeight: "100vh" }}>
+           <Container className="mx-auto px-4 py-5" style={{ backgroundColor: "#000000", color: "#ffffff", border: "1px solid #000000" }}>
             <Section className="mt-8">
               <Link href="https://alpadev.xyz">
                 <Img
-                  src="https://alpadev.xyz/logo.svg"
+                  src="https://assets.alpadev.xyz/logo.jpg"
                   width="50"
                   height="50"
                   alt="Alpadev Logo"
@@ -80,6 +82,7 @@ export default function WelcomeEmail() {
               <Text className="m-0 p-0">AI-Powered Software Development</Text>
             </Section>
           </Container>
+          </div>
         </Body>
       </Tailwind>
     </Html>

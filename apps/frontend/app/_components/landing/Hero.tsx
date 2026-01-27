@@ -138,11 +138,26 @@ export default function Hero() {
     return () => ctx.revert();
   }, []); 
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   return (
     <div ref={containerRef} className="h-screen w-full bg-black overflow-hidden relative isolate flex items-center justify-center font-sans">
       
-      {/* Background Particles (Subtle) */}
-      <Particles className="absolute inset-0 z-0 h-full w-full opacity-40 blur-[1px]" quantity={600} ease={100} color={color} refresh />
+      {/* Background Particles (Subtle) - Optimized for Mobile */}
+      <Particles 
+        className="absolute inset-0 z-0 h-full w-full opacity-40 blur-[1px]" 
+        quantity={isMobile ? 150 : 600} 
+        ease={100} 
+        color={color} 
+        refresh 
+      />
       
       <div ref={warpRef} className="absolute inset-0 z-10 opacity-0 pointer-events-none mix-blend-screen">
             <WarpBackground className="w-full h-full" />
@@ -160,9 +175,9 @@ export default function Hero() {
                  <div className="w-full h-full">
                      <TextHoverEffect text={item.text} id={item.id} colors={item.colors} />
                  </div>
-                 <div className={`absolute top-1/2 -translate-y-1/2 z-0 flex items-center opacity-0 fire-trail-container mix-blend-screen pointer-events-none transition-all ${isLaunchRight ? "right-full translate-x-4 justify-end origin-right" : "left-full -translate-x-4 justify-start origin-left rotate-180" }`}>
-                    <div className={`w-[400px] h-24 bg-gradient-to-l ${item.fireValid} to-transparent rounded-l-[100%] blur-3xl opacity-60`} />
-                    <div className={`absolute right-0 w-[250px] h-12 bg-gradient-to-l ${item.fireTrail} to-transparent rounded-l-full blur-xl opacity-90`} />
+                 <div className={`absolute top-1/2 -translate-y-1/2 z-0 flex items-center opacity-0 fire-trail-container lg:mix-blend-screen pointer-events-none transition-all ${isLaunchRight ? "right-full translate-x-4 justify-end origin-right" : "left-full -translate-x-4 justify-start origin-left rotate-180" }`}>
+                    <div className={`w-[400px] h-24 bg-gradient-to-l ${item.fireValid} to-transparent rounded-l-[100%] blur-md lg:blur-3xl opacity-60`} />
+                    <div className={`absolute right-0 w-[250px] h-12 bg-gradient-to-l ${item.fireTrail} to-transparent rounded-l-full blur-sm lg:blur-xl opacity-90`} />
                  </div>
             </div>
          </div>

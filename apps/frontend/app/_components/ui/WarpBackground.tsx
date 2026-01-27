@@ -21,7 +21,7 @@ export const WarpBackground: React.FC<WarpBackgroundProps> = ({ className }) => 
     // --- CONFIGURACIÓN DE RENDIMIENTO ---
     // Determinamos si es móvil (menor a 768px) para reducir la carga de partículas.
     const isMobile = window.innerWidth < 768;
-    const STAR_COUNT = isMobile ? 550 : 800; 
+    const STAR_COUNT = isMobile ? 250 : 800; 
 
     const stars: { x: number; y: number; z: number; o: number }[] = [];
     

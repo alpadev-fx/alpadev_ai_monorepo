@@ -31,6 +31,7 @@ const translations = {
     
     // The Approach (Features)
     "features.title": "Impact. Not Hours.",
+    "features.subtitle": "We don't just write code. We engineer systems that scale.",
     "features.hero.title": "Vision",
     "bento.title": "The Engine",
   

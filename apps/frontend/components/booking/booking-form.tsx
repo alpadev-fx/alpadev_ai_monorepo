@@ -111,7 +111,7 @@ export default function BookingForm({
   const loading = scheduleMeetingMutation.isPending;
 
   return (
-    <Card className="w-full max-w-md bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
+    <Card className="w-[80vw] lg:w-fit max-w-md bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
       <CardHeader className="flex flex-col gap-1 pb-0">
         <h2 className="text-xl font-bold text-white">Book a Video Call</h2>
       </CardHeader>
