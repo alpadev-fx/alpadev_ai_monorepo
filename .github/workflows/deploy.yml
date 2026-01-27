@@ -157,7 +157,7 @@ jobs:
             cd ~/alpadev-ai
             # Force remove orphaned container if exists
             docker stop alpadev-frontend 2>/dev/null || true
-            docker rm alpadev-frontend 2>/dev/null || true
+            docker rm -f alpadev-frontend 2>/dev/null || true
             docker compose down --remove-orphans || true
             docker compose pull
             docker compose up -d --remove-orphans
