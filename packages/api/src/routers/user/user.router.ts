@@ -41,4 +41,9 @@ export const userRouter = createTRPCRouter({
   deleteMe: protectedProcedure.mutation(({ ctx }: { ctx: any }) => {
     return userService.deleteUserById(ctx.session.user)
   }),
+  inviteUser: protectedProcedure
+    .input(z.object({ email: z.string().email(), name: z.string() }))
+    .mutation(({ input }: { input: any }) => {
+      return userService.inviteUser(input)
+    }),
 })

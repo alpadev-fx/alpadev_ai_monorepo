@@ -57,7 +57,7 @@ model User {
   id    String  @id @default(auto()) @map("_id") @db.ObjectId
   email String? @unique
   name  String
-  phone String  @unique
+  phone String? @unique
   role  Role    @default(GUEST)
   image String?
 
@@ -67,6 +67,7 @@ model User {
   transactions Transaction[]
   bills        Bill[]
   invoices     Invoice[]
+  bookings     Booking[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -213,8 +214,13 @@ model Booking {
   googleEventId String?
   status        BookingStatus @default(CONFIRMED)
   notes         String?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+
+  // Relation to User
+  userId String? @db.ObjectId
+  user   User?   @relation(fields: [userId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 enum BookingStatus {

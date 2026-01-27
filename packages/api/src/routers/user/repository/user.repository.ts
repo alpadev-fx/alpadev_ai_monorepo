@@ -43,6 +43,21 @@ class UserRepository {
       },
     })
   }
+
+  public findByEmail(email: string) {
+    return db.user.findUnique({
+      where: { email },
+    })
+  }
+
+  public create(data: { email: string; name: string }) {
+    return db.user.create({
+      data: {
+        email: data.email,
+        name: data.name,
+      },
+    })
+  }
 }
 
 export const userRepository = new UserRepository()

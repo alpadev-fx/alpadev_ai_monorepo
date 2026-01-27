@@ -11,6 +11,7 @@ export class BookingRepository {
     meetLink?: string;
     googleEventId?: string;
     notes?: string;
+    userId?: string;
   }) {
     return this.db.booking.create({
       data: {

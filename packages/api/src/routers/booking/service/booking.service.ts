@@ -16,6 +16,7 @@ export class BookingService {
     startDate: string; // ISO
     endDate: string;   // ISO
     timeZone: string;
+    userId?: string;
   }) {
     // 1. Create Google Calendar Event
     const calendarResult = await CalendarService.createEventWithMeet({
@@ -36,6 +37,7 @@ export class BookingService {
       meetLink: calendarResult.meetLink,
       googleEventId: calendarResult.eventId,
       notes: data.notes,
+      userId: data.userId,
     });
 
     // 3. Send Confirmation Email

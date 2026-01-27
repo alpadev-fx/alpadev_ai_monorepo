@@ -8,6 +8,7 @@ export const bookingRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       // Instantiate Service with DB from context
       const service = new BookingService(ctx.db);
-      return await service.scheduleMeeting(input);
+      const userId = ctx.session?.user?.id;
+      return await service.scheduleMeeting({ ...input, userId });
     }),
 });
