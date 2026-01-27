@@ -13,7 +13,7 @@ import WhatsAppButton from "./_components/ui/WhatsAppButton"
 import { FPSMonitor } from "./_components/diagnostics/FPSMonitor"
 
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
-const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID
+const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID || "2137727916632815"
 
 export const metadata: Metadata = {
   title: {
@@ -23,10 +23,10 @@ export const metadata: Metadata = {
   description: siteConfig.description,
   icons: {
     icon: [
-      { url: "/logo.png", type: "image/svg+xml" },
-      { url: "/logo.png", sizes: "any" },
+      { url: "https://assets.alpadev.xyz/assets/logo.jpg", type: "image/jpeg" },
+      { url: "https://assets.alpadev.xyz/assets/logo.jpg", sizes: "any" },
     ],
-    apple: "/logo.png",
+    apple: "https://assets.alpadev.xyz/assets/logo.jpg",
   },
 }
 
