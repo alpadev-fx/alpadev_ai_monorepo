@@ -30,6 +30,7 @@ jobs:
               - 'pnpm-lock.yaml'
               - 'turbo.json'
               - '.dockerignore'
+              - '.github/workflows/deploy.yml'
 
   # Build Job
   build-frontend:
