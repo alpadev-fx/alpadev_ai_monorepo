@@ -24,7 +24,7 @@ const translations = {
     "nav.faq": "FAQ",
 
     // Hero
-    "hero.badge": "Revenue-Critical Engineering",
+    "hero.badge": "Critical Systems. Solved.",
     "hero.description": "We design and deploy bespoke software ecosystems for enterprises that cannot afford downtime.",
     "hero.cta.primary": "Initiate Discovery",
     "hero.cta.secondary": "View Selected Work",
@@ -33,7 +33,7 @@ const translations = {
     "features.title": "The Approach",
     "features.subtitle": "We do not sell hours. We sell operational capacity.",
     "features.software.title": "Discovery",
-    "features.software.description": "The Audit. We begin by deconstructing your current bottleneck. We analyze code, infrastructure, and business logic to identify exactly where efficiency is bleeding out.",
+    "features.software.description": "The Audit. Deep analysis. We find the bottleneck. We crush it.",
     "features.ai.title": "Execution",
     "features.ai.description": "The Build. Deployment of high-velocity teams using Go, Rust, and React. We work in vertical slices, delivering testable, production-ready value every sprint. No black boxes.",
     "features.cloud.title": "Handoff",
@@ -51,7 +51,7 @@ const translations = {
 
     // Bento Grid
     "bento.title": "The Tech Stack",
-    "bento.subtitle": "Robust, Type-Safe, Scalable.",
+    "bento.subtitle": "Robust. Type-Safe. Unbreakable.",
     "bento.mobile.title": "Cross-Platform Native",
     "bento.mobile.description": "React Native & Expo for iOS/Android. Native modules, 60fps animations, and shared core logic.",
     "bento.performance.title": "High Performance",
@@ -176,7 +176,7 @@ const translations = {
 
     // Section
     "section.subtitle": "Build fast, scale limitless, think big.",
-    "section.title": "Engineering Revenue-Critical Architectures.",
+    "section.title": "Software that never fails. Engineered for scale. Built for revenue.",
     "section.description": "We design and deploy bespoke software ecosystems for enterprises that cannot afford downtime.",
     "section.feature1.title": "Consistency and transformation",
     "section.feature1.description": "We integrate with your team to build a foundation of stability and innovation. With proven frameworks and agile methodologies, we drive your technological and strategic growth: solid, scalable and ready for the next challenges.",
@@ -247,7 +247,7 @@ const translations = {
     "footer.madeBy": "Powered by: Alpadev.xyz",
     "trustedBy.title": "Trusted by innovative companies", // Added default
     "integration.subtitle": "For Developers",
-    "integration.title": "Integrate with Alpadev",
+    "integration.title": "Seamless Integration.",
     "integration.description": "Seamlessly integrate your business logic onto our ecosystem to enable secure, autonomous, and powerful execution across all channels.",
     "integration.button.call": "Setup a Call",
     "integration.button.build": "Start Building",

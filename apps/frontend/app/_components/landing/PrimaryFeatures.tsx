@@ -179,7 +179,7 @@ export default function PrimaryFeatures() {
                      <h4 className={`text-[40px] md:text-3xl font-bold text-white mb-2 md:mb-3 tracking-tight ${feature.id === "03" && language === "es" ? "break-words hyphens-auto" : ""}`}>
                          {feature.title}
                      </h4>
-                     <p className="text-sm md:text-base text-gray-300 leading-relaxed font-light opacity-80 group-hover:opacity-100">
+                     <p className="text-lg md:text-xl text-gray-200 leading-relaxed font-normal opacity-80 group-hover:opacity-100">
                          {feature.description}
                      </p>
                  </div>

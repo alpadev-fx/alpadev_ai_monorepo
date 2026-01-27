@@ -39,7 +39,7 @@ export default function BentoGrid() {
                 <p className="font-medium max-lg:text-center mt-2 text-lg text-white tracking-tight">
                   {t("bento.mobile.title")}
                 </p>
-                <p className="group-hover:text-gray-300 max-lg:text-center max-w-lg mt-2 text-gray-400 text-sm/6 transition-colors duration-300">
+                <p className="group-hover:text-gray-300 max-lg:text-center max-w-lg mt-2 text-gray-400 text-lg/relaxed transition-colors duration-300">
                   {t("bento.mobile.description")}
                 </p>
               </div>
@@ -66,7 +66,7 @@ export default function BentoGrid() {
                 <p className="font-medium max-lg:text-center mt-2 text-lg text-white tracking-tight">
                   {t("bento.performance.title")}
                 </p>
-                <p className="group-hover:text-gray-300 max-lg:text-center max-w-lg mt-2 text-gray-400 text-sm/6 transition-colors duration-300">
+                <p className="group-hover:text-gray-300 max-lg:text-center max-w-lg mt-2 text-gray-400 text-lg/relaxed transition-colors duration-300">
                   {t("bento.performance.description")}
                 </p>
               </div>
@@ -90,7 +90,7 @@ export default function BentoGrid() {
                 <p className="font-medium max-lg:text-center mt-2 text-lg text-white tracking-tight">
                   {t("bento.security.title")}
                 </p>
-                <p className="group-hover:text-gray-300 max-lg:text-center max-w-lg mt-2 text-gray-400 text-sm/6 transition-colors duration-300">
+                <p className="group-hover:text-gray-300 max-lg:text-center max-w-lg mt-2 text-gray-400 text-lg/relaxed transition-colors duration-300">
                   {t("bento.security.description")}
                 </p>
               </div>
@@ -116,7 +116,7 @@ export default function BentoGrid() {
                 <p className="font-medium max-lg:text-center mt-2 text-lg text-white tracking-tight">
                   {t("bento.apis.title")}
                 </p>
-                <p className="group-hover:text-gray-300 max-lg:text-center max-w-lg mt-2 text-gray-400 text-sm/6 transition-colors duration-300">
+                <p className="group-hover:text-gray-300 max-lg:text-center max-w-lg mt-2 text-gray-400 text-lg/relaxed transition-colors duration-300">
                   {t("bento.apis.description")}
                 </p>
               </div>

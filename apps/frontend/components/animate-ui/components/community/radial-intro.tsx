@@ -12,6 +12,7 @@ import {
   LayoutGroup,
 } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import Image from 'next/image';
 
 // --- Types ---
 
@@ -154,20 +155,26 @@ export function OrbitSystem({
                 data-angle={i * step}
                 layoutId={`arm-${item.id}`}
             >
-                <motion.img
+                <motion.div
                 data-arm-image
-                className="rounded-full object-cover absolute left-1/2 top-1/2 aspect-square -translate-x-1/2 -translate-y-1/2" // Fixed centering
+                className="rounded-full overflow-hidden absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 aspect-square"
                 style={{
                     width: imageSize,
                     height: imageSize,
                     opacity: i === 0 ? 1 : 0,
-                    top: '50%', // Start centered
+                    top: 'center', 
                 }}
-                src={item.src}
-                alt={item.name}
-                draggable={false}
                 layoutId={`arm-img-${item.id}`}
-                />
+                >
+                  <Image
+                    src={item.src}
+                    alt={item.name}
+                    width={imageSize} 
+                    height={imageSize}
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                  />
+                </motion.div>
             </motion.div>
             ))}
         </motion.div>
