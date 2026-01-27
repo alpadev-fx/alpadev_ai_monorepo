@@ -43,7 +43,7 @@ export default function WelcomeEmail() {
             <Section className="mt-8">
               <Link href="https://alpadev.xyz">
                 <Img
-                  src="https://assets.alpadev.xyz/logo.jpg"
+                  src="https://assets.alpadev.xyz/assets/logo.jpg"
                   width="50"
                   height="50"
                   alt="Alpadev Logo"

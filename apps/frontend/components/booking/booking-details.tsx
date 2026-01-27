@@ -47,7 +47,7 @@ export default function BookingDetails({
       <Avatar
         className="mb-3 shadow-md"
         size="sm"
-        src="https://assets.alpadev.xyz/logo.jpg"
+        src="https://assets.alpadev.xyz/assets/logo.jpg"
       />
       <p className="text-default-500 text-xs font-medium">Book now</p>
       <p className="text-default-foreground mb-2 text-lg font-semibold">Meeting with Alpadev</p>

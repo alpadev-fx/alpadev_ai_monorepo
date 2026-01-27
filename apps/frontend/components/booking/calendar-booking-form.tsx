@@ -40,7 +40,7 @@ export default function CalendarBookingForm({
   };
 
   return (
-    <div className="rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl flex w-[393px] flex-col items-center gap-5 md:w-fit md:flex-row md:items-start md:px-6 p-6">
+    <div className="flex w-[393px] flex-col items-center gap-5 md:w-fit md:flex-row md:items-start md:px-6">
       <CalendarBookingDetails
         className="md:w-[220px] md:px-4 md:pt-8"
         selectedDate={selectedDate}

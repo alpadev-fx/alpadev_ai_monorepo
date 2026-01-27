@@ -47,7 +47,7 @@ export default function PaymentPackageEmail({
             <Section className="mt-8">
               <Link href="https://alpadev.xyz">
                 <Img
-                  src="https://alpadev.xyz/logo.svg"
+                  src="https://assets.alpadev.xyz/assets/logo.jpg"
                   width="50"
                   height="50"
                   alt="Alpadev Logo"

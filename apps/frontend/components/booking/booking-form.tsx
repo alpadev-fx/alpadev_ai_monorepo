@@ -111,11 +111,11 @@ export default function BookingForm({
   const loading = scheduleMeetingMutation.isPending;
 
   return (
-    <Card className="w-[80vw] lg:w-fit max-w-md bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
+    <Card className="w-[80vw] lg:w-fit max-w-md bg-transparent shadow-none">
       <CardHeader className="flex flex-col gap-1 pb-0">
         <h2 className="text-xl font-bold text-white">Book a Video Call</h2>
       </CardHeader>
-      <CardBody>
+      <CardBody className="bg-transparent">
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <Input 
             label="Name" 

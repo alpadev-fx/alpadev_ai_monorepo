@@ -61,7 +61,13 @@ export default function CalendarBooking({ onClose }: { onClose?: () => void }) {
   // Update width on resize
   useEffect(() => {
     const handleResize = () => {
-        setCalendarWidth(window.innerWidth < 1024 ? "372px" : "390px");
+        if (window.innerWidth < 380) {
+            setCalendarWidth(`${window.innerWidth - 48}px`);
+        } else if (window.innerWidth < 1024) {
+            setCalendarWidth("372px");
+        } else {
+            setCalendarWidth("390px");
+        }
     };
     
     // Initial check
@@ -137,13 +143,14 @@ export default function CalendarBooking({ onClose }: { onClose?: () => void }) {
   
   if (calendarBookingStep === 'booking_form') {
     return (
-      <div className="relative flex  w-[80vw] lg:w-fit flex-col items-center justify-center p-6 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
+      <div className="relative flex  w-[80vw] lg:w-fit flex-col items-center justify-center p-6 rounded-3xl bg-black/40 backdrop-blur-2xl border border-white/10 shadow-2xl">
           {onClose && (
             <button 
                 onClick={onClose}
-                className="absolute top-4 right-4 z-50 p-2 rounded-full text-white/50 hover:text-white hover:bg-white/10 transition-all"
+                className="sticky top-0 right-0 self-end z-50 p-2 rounded-full text-white/70 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-all active:scale-95 lg:absolute lg:top-4 lg:right-4 shadow-lg backdrop-blur-md"
+                aria-label="Close"
             >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 18 18"/></svg>
+                 <XMarkIcon className="w-5 h-5" />
             </button>
           )}
           <CalendarBookingForm
@@ -158,13 +165,14 @@ export default function CalendarBooking({ onClose }: { onClose?: () => void }) {
 
   if (calendarBookingStep === 'booking_confirmation') { 
     return (
-        <div className="relative flex w-[80vw] lg:w-fit flex-col items-center justify-center p-6 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
+        <div className="relative flex w-[80vw] lg:w-fit flex-col items-center justify-center p-6 rounded-3xl bg-black/40 backdrop-blur-2xl border border-white/10 shadow-2xl">
             {onClose && (
                 <button 
                     onClick={onClose}
-                    className="absolute top-4 right-4 z-50 p-2 rounded-full text-white/50 hover:text-white hover:bg-white/10 transition-all"
+                    className="sticky top-0 right-0 self-end z-50 p-2 rounded-full text-white/70 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-all active:scale-95 lg:absolute lg:top-4 lg:right-4 shadow-lg backdrop-blur-md"
+                    aria-label="Close"
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18"/><path d="m6 6 18 18"/></svg>
+                     <XMarkIcon className="w-5 h-5" />
                 </button>
             )}
             <CalendarBookingConfirmation 
@@ -176,7 +184,7 @@ export default function CalendarBooking({ onClose }: { onClose?: () => void }) {
   }
 
   return (
-    <div className="relative flex w-[90vw] lg:w-fit max-h-[85vh] flex-col items-center gap-5 overflow-y-auto lg:flex-row lg:items-start lg:gap-8 lg:overflow-visible p-6 lg:pr-16 rounded-3xl bg-black/40 backdrop-blur-2xl border border-white/10 shadow-2xl scrollbar-hide">
+    <div className="relative z-[60] pointer-events-auto flex w-[90vw] lg:w-fit max-h-[85vh] flex-col items-center gap-5 overflow-y-auto lg:flex-row lg:items-start lg:gap-8 lg:overflow-visible p-4 md:p-6 lg:pr-16 rounded-3xl bg-black/40 backdrop-blur-2xl border border-white/10 shadow-2xl scrollbar-hide">
       <style jsx>{`
         .scrollbar-hide::-webkit-scrollbar {
             display: none;
@@ -190,7 +198,7 @@ export default function CalendarBooking({ onClose }: { onClose?: () => void }) {
       {onClose && (
         <button 
             onClick={onClose}
-            className="sticky top-0 right-0 self-end z-50 p-2 rounded-full text-white/70 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-all active:scale-95 lg:absolute lg:top-4 lg:right-4 shadow-lg backdrop-blur-md"
+            className="sticky top-0 right-0 self-end z-50 p-2 rounded-full text-white/70 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 transition-all active:scale-95 lg:absolute lg:top-4 lg:right-4 shadow-lg backdrop-blur-md cursor-pointer"
             aria-label="Close"
         >
              <XMarkIcon className="w-5 h-5" />
@@ -205,28 +213,30 @@ export default function CalendarBooking({ onClose }: { onClose?: () => void }) {
         selectedDate={selectedDate}
         selectedTimeSlotRange={selectedTimeSlotRange}
       />
-      <Calendar
-        calendarWidth={calendarWidth}
-        className="shadow-none dark:bg-transparent"
-        classNames={{
-          headerWrapper: 'bg-transparent px-3 pt-1.5 pb-3',
-          title: 'text-default-700 text-small font-semibold',
-          gridHeader: 'bg-transparent shadow-none',
-          gridHeaderCell: 'font-medium text-default-400 text-xs p-0 w-full',
-          gridHeaderRow: 'px-3 pb-3',
-          gridBodyRow: 'gap-x-1 px-3 mb-1 first:mt-4 last:mb-0',
-          gridWrapper: 'pb-3',
-          cell: 'p-1.5 w-full',
-          
-          cellButton:
-            'w-full h-9 rounded-medium data-[selected=true]:!bg-gradient-to-r data-[selected=true]:!from-cyan-400 data-[selected=true]:!to-purple-500 data-[selected=true]:!text-white data-[selected=true]:shadow-[0_2px_12px_0] data-[selected=true]:shadow-purple-500/30 text-small font-medium',
-        }}
-        isDateUnavailable={isDateUnavailable}
-        value={selectedDate}
-        weekdayStyle="short"
-        onChange={onDateChange}
-        color="secondary"
-      />
+      <div className="w-full lg:w-auto flex justify-center shrink-0 min-h-[360px] pointer-events-auto">
+        <Calendar
+            calendarWidth={calendarWidth}
+            className="shadow-none dark:bg-transparent"
+            classNames={{
+            headerWrapper: 'bg-transparent px-3 pt-1.5 pb-3',
+            title: 'text-default-700 text-small font-semibold',
+            gridHeader: 'bg-transparent shadow-none',
+            gridHeaderCell: 'font-medium text-default-400 text-xs p-0 w-full',
+            gridHeaderRow: 'px-3 pb-3',
+            gridBodyRow: 'gap-x-1 px-3 mb-1 first:mt-4 last:mb-0',
+            gridWrapper: 'pb-3',
+            cell: 'p-1.5 w-full',
+            
+            cellButton:
+                'w-full h-9 rounded-medium data-[selected=true]:!bg-gradient-to-r data-[selected=true]:!from-cyan-400 data-[selected=true]:!to-purple-500 data-[selected=true]:!text-white data-[selected=true]:shadow-[0_2px_12px_0] data-[selected=true]:shadow-purple-500/30 text-small font-medium pointer-events-auto touch-manipulation',
+            }}
+            isDateUnavailable={isDateUnavailable}
+            value={selectedDate}
+            weekdayStyle="short"
+            onChange={onDateChange}
+            color="secondary"
+        />
+      </div>
       <CalendarTimeSelect
         day={selectedDate.day}
         duration={selectedDuration}
