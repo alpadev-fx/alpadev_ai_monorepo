@@ -14,51 +14,6 @@ interface CardData {
 }
 
 // --- Dummy Data ---
-const cards: CardData[] = [
-  {
-    id: 1,
-    title: 'AI Analytics',
-    category: 'Intelligence',
-    image: getAssetUrl('trading.jpg'),
-  },
-  {
-    id: 2,
-    title: 'Global Scale',
-    category: 'Infrastructure',
-    image: getAssetUrl('network.jpg'),
-  },
-  {
-    id: 3,
-    title: 'Smart Contracts',
-    category: 'Security',
-    image: getAssetUrl('smart_contract.jpg'),
-  },
-  {
-    id: 4,
-    title: 'Code Architecture',
-    category: 'Development',
-    image: getAssetUrl('software.jpg'),
-  },
-  {
-    id: 5,
-    title: 'Neural Networks',
-    category: 'Innovation',
-    image: getAssetUrl('neural_network.jpg'),
-  },
-  {
-    id: 6,
-    title: 'Data Management',
-    category: 'Sustainability',
-    image: getAssetUrl('data_analytic.jpg'),
-  },
-  {
-    id: 7,
-    title: 'Immersive Reality',
-    category: 'Experience',
-    image: getAssetUrl('vr.jpg'),
-  },
-];
-
 // --- Sub-Components ---
 
 /**
@@ -115,6 +70,52 @@ const FeatureCard = ({ card, scrollX }: { card: CardData; scrollX: MotionValue<n
 export const HorizontalScrollSection = () => {
   const targetRef = useRef<HTMLDivElement>(null);
   const { t } = useLanguage();
+
+  // Move cards inside to use t()
+  const cards: CardData[] = [
+    {
+      id: 1,
+      title: t("card.analytics.title"),
+      category: t("card.analytics.cat"),
+      image: getAssetUrl('trading.jpg'),
+    },
+    {
+      id: 2,
+      title: t("card.scale.title"),
+      category: t("card.scale.cat"),
+      image: getAssetUrl('network.jpg'),
+    },
+    {
+      id: 3,
+      title: t("card.contracts.title"),
+      category: t("card.contracts.cat"),
+      image: getAssetUrl('smart_contract.jpg'),
+    },
+    {
+      id: 4,
+      title: t("card.code.title"),
+      category: t("card.code.cat"),
+      image: getAssetUrl('software.jpg'),
+    },
+    {
+      id: 5,
+      title: t("card.neural.title"),
+      category: t("card.neural.cat"),
+      image: getAssetUrl('neural_network.jpg'),
+    },
+    {
+      id: 6,
+      title: t("card.data.title"),
+      category: t("card.data.cat"),
+      image: getAssetUrl('data_analytic.jpg'),
+    },
+    {
+      id: 7,
+      title: t("card.vr.title"),
+      category: t("card.vr.cat"),
+      image: getAssetUrl('vr.jpg'),
+    },
+  ];
 
   const { scrollYProgress } = useScroll({
     target: targetRef,

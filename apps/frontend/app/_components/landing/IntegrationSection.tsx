@@ -8,6 +8,8 @@ import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { useEffect, useState } from "react"
 import { CodeBlock } from "@/components/ui/code-block"
 import { getAssetUrl } from "@/lib/r2"
+import { Modal, ModalContent, ModalBody, useDisclosure } from "@heroui/react";
+import CalendarBooking from "@/components/booking/calendar-booking";
 
 export function CodeBlockDemo() {
   const code = (
@@ -72,6 +74,7 @@ export default function IntegrationSection() {
   const contentRef = useRef<HTMLDivElement>(null)
   const [stageSize, setStageSize] = useState(450)
   const [imageSize, setImageSize] = useState(80)
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
   useEffect(() => {
     const handleResize = () => {
@@ -137,7 +140,10 @@ export default function IntegrationSection() {
                 {t("integration.description")}
             </p>
             <div className="flex items-center justify-center gap-4">
-                <button className="px-6 py-2.5 rounded-full border border-white/20 text-white font-medium hover:bg-white/5 transition-colors">
+                <button 
+                    onClick={onOpen}
+                    className="px-6 py-2.5 rounded-full border border-white/20 text-white font-medium hover:bg-white/5 transition-colors"
+                >
                     {t("integration.button.call")}
                 </button>
             </div>
@@ -165,6 +171,27 @@ export default function IntegrationSection() {
             </div>
         </div>
       </div>
+        <Modal 
+          isOpen={isOpen} 
+          onOpenChange={onOpenChange}
+          size="5xl"
+          classNames={{
+            body: "p-0 overflow-hidden",
+            base: "bg-black/30 backdrop-blur-md border border-white/10 shadow-2xl rounded-2xl",
+            closeButton: "hidden" 
+          }}
+          hideCloseButton
+        >
+          <ModalContent>
+            {(onClose) => (
+              <ModalBody>
+                 <div className="w-full h-full flex items-center justify-center p-4">
+                   <CalendarBooking />
+                 </div>
+              </ModalBody>
+            )}
+          </ModalContent>
+        </Modal>
     </section>
   )
 }

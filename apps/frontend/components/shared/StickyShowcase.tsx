@@ -75,7 +75,7 @@ export const StickyShowcase = () => {
                      <img 
                         src={item.imageUrl} 
                         alt={item.title} 
-                        className="h-full w-full object-cover opacity-90 hover:opacity-100 transition-opacity duration-500"
+                        className="h-full w-full object-cover transition-all duration-500 opacity-60 blur-[3px] lg:opacity-90 lg:blur-0 lg:hover:opacity-100"
                      />
                    </motion.div>
                 );
@@ -97,15 +97,15 @@ export const StickyShowcase = () => {
                return (
                   <motion.div 
                     key={item.id}
-                    className="flex h-[60vh] lg:h-screen items-center justify-center px-6 lg:px-24"
+                    className="flex min-h-[60vh] lg:h-screen items-center justify-center px-6 py-12 lg:px-24"
                     style={{ opacity: textOpacity }}
                   >
                      <div className="max-w-xl">
                         {/* Accent line - blue-to-indigo gradient */}
-                        <span className="mb-6 block h-[1px] w-20 bg-gradient-to-r from-blue-500 to-indigo-500" />
+                        <span className="mb-6 block h-[2px] w-20 bg-cyan-600" />
                         
                         {/* Industry Label */}
-                        <h2 className="mb-4 text-sm font-mono uppercase tracking-widest text-neutral-400">
+                        <h2 className="mb-4 text-sm font-bold font-mono uppercase tracking-widest text-white">
                             {item.title}
                         </h2>
                         
@@ -115,9 +115,9 @@ export const StickyShowcase = () => {
                         </h3>
                         
                         {/* Outcome */}
-                        <div className="pl-6 border-l border-neutral-800">
-                            <p className="font-mono text-sm tracking-wide mb-2 bg-gradient-to-r from-blue-500 to-indigo-500 bg-clip-text text-transparent">OUTCOME</p>
-                            <p className="text-xl text-neutral-300 font-medium">
+                        <div className="pl-6 border-l border-white">
+                            <p className="font-mono text-sm font-semibold tracking-wide mb-2 bg-cyan-600 bg-clip-text text-transparent">OUTCOME</p>
+                            <p className="text-xl text-white font-medium">
                                 {item.outcome}
                             </p>
                         </div>

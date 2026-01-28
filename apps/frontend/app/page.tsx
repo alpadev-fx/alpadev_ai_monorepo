@@ -1,6 +1,7 @@
 "use client"
 
 // --- HERO: Single Black Hole Parallax ---
+import { useLanguage } from "@/contexts/LanguageContext"
 import { BlackHoleParallax } from "@/components/shared/BlackHoleParallax"
 
 // --- SCROLL SECTIONS ---
@@ -23,6 +24,8 @@ import Galaxy from "@/components/shared/Galaxy"
 import { ColorScrollTransition } from "@/components/shared/ColorScrollTransition"
 
 export default function Home() {
+  const { t } = useLanguage()
+
   return (
     <main className="bg-black min-h-screen selection:bg-white/20 selection:text-white">
       {/* --- HERO: Apple-Style Black Hole Parallax --- */}
@@ -45,10 +48,10 @@ export default function Home() {
               content: (
                 <div className="text-center max-w-4xl mx-auto px-6">
                   <h2 className="text-5xl md:text-7xl font-bold mb-6 tracking-tighter">
-                    Phase 1: Foundation
+                    {t("phase1.title")}
                   </h2>
                   <p className="text-xl md:text-2xl text-white/70 max-w-2xl mx-auto leading-none">
-                    Absolute stability. Robust infrastructure. Scalable architecture. We build the power plant for your AI future.
+                    {t("phase1.desc")}
                   </p>
                 </div>
               ),
@@ -59,10 +62,10 @@ export default function Home() {
               content: (
                 <div className="text-center max-w-4xl mx-auto px-6">
                   <h2 className="text-5xl md:text-7xl font-bold mb-6 tracking-tighter text-black">
-                    Phase 2: Intelligence
+                    {t("phase2.title")}
                   </h2>
                   <p className="text-xl md:text-2xl text-black/70 max-w-2xl mx-auto leading-none">
-                    The neural core. Advanced agents deeply integrated into your business. It doesn’t just process. It thinks.
+                    {t("phase2.desc")}
                   </p>
                 </div>
               ),
@@ -73,10 +76,10 @@ export default function Home() {
               content: (
                 <div className="text-center max-w-4xl mx-auto px-6">
                   <h2 className="text-5xl md:text-7xl font-bold mb-6 tracking-tighter text-white">
-                    Phase 3: Evolution
+                    {t("phase3.title")}
                   </h2>
                   <p className="text-xl md:text-2xl text-white/70 max-w-2xl mx-auto leading-none">
-                    Beyond automation. True autonomy. Systems that adapt, learn, and improve. On their own.
+                    {t("phase3.desc")}
                   </p>
                 </div>
               ),

@@ -33,15 +33,15 @@ const translations = {
     "features.title": "Impact. Not Hours.",
     "features.subtitle": "We don't just write code. We engineer systems that scale.",
     "features.hero.title": "Vision",
-    "bento.title": "The Engine",
+    // "features.hero.title": "Vision", // Removed duplicate bento.title
   
-    "features.software.title": "Insight",
+    "features.software.title": "Analysis",
     "features.software.description": "The Audit. Radical clarity. We deconstruct your architecture to expose the bottleneck. We isolate friction and resolve it. Your system, fully optimized.",
   
-    "features.ai.title": "Velocity",
-    "features.ai.description": "The Build. Rapid engineering with Go and Rust. We deliver vertical, production-ready value every single sprint. Transparent code. No black boxes. Just results.",
+    "features.ai.title": "Execution",
+    "features.ai.description": "The Build. Rapid engineering with Go and TypeScript. We deliver vertical, production-ready value every single sprint. Transparent code. No black boxes. Just results.",
   
-    "features.cloud.title": "Ownership",
+    "features.cloud.title": "Deployment",
     "features.cloud.description": "The Transfer. We deliver capability, not just code. Comprehensive documentation and training ensure you command the system. You own the machine we built.",
   
     "features.blockchain.title": "Defense",
@@ -257,8 +257,8 @@ const translations = {
     "vision.restructure.tech": "Technology",
     "vision.restructure.creative": "Creative Strategy",
     "vision.restructure.sales": "Sales Operations",
-    "faq.cta": "Contact us on WhatsApp",
-    "footer.madeBy": "Powered by: Alpadev.xyz",
+    // "faq.cta": "Contact us on WhatsApp", // Removed duplicate
+    // "footer.madeBy": "Powered by: Alpadev.xyz", // Removed duplicate
     "trustedBy.title": "Trusted by innovative companies", // Added default
     "integration.subtitle": "For Companies",
     "integration.title": "Native Integration.",
@@ -370,6 +370,50 @@ const translations = {
     "scroll.transition.descB": "From MVP to Enterprise Scale. Precision engineering for real-world results.",
     "scroll.transition.cta": "Start Building",
     
+    // Hero Animated Text
+    "hero.anim.1": "Architecting Intelligence.",
+    "hero.anim.2": "Cloud Native DNA.",
+    "hero.anim.3": "World-Class Engineering.",
+
+    // Phases (ColorScrollTransition)
+    "phase1.title": "Phase 1: Foundation",
+    "phase1.desc": "Absolute stability. Robust infrastructure. Scalable architecture. We build the power plant for your AI future.",
+    "phase2.title": "Phase 2: Intelligence",
+    "phase2.desc": "The neural core. Advanced agents deeply integrated into your business. It doesn't just process. It thinks.",
+    "phase3.title": "Phase 3: Evolution",
+    "phase3.desc": "Beyond automation. True autonomy. Systems that adapt, learn, and improve. On their own.",
+
+    // Galaxy
+    "galaxy.pretitle": "Explore the Universe",
+    "galaxy.title": "Infinite",
+    "galaxy.titleHighlight": "Possibilities",
+    "galaxy.desc": "Transform your business with cutting-edge AI solutions that scale with your ambitions.",
+    "galaxy.cta": "Get Started",
+    
+    // Horizontal Scroll (Cards)
+    "card.analytics.title": "AI Analytics",
+    "card.analytics.cat": "Intelligence",
+    "card.scale.title": "Global Scale",
+    "card.scale.cat": "Infrastructure",
+    "card.contracts.title": "Smart Contracts",
+    "card.contracts.cat": "Security",
+    "card.code.title": "Code Architecture",
+    "card.code.cat": "Development",
+    "card.neural.title": "Neural Networks",
+    "card.neural.cat": "Innovation",
+    "card.data.title": "Data Management",
+    "card.data.cat": "Sustainability",
+    "card.vr.title": "Immersive Reality",
+    "card.vr.cat": "Experience",
+
+    // Projects (Renamed from Stacked Cards to avoid collision)
+    "projects.card1.title": "PowerFeud",
+    "projects.card1.desc": "Mobile app (iOS - Android) to save energy and earn points in the process to redeem for vouchers.",
+    "projects.card2.title": "OnShapers",
+    "projects.card2.desc": "A cutting-edge corporate platform that leverages AI to deliver scalable technological and financial solutions for modern businesses.",
+    "projects.card3.title": "Adminia",
+    "projects.card3.desc": "Native AI platform for condominiums seeking to optimize their business processes.",
+
     // Stacked Cards
     "stacked.title": "Why Alpadev?",
     "stacked.subtitle": "Strategic advantages that drive your success.",
@@ -401,17 +445,23 @@ const translations = {
     // Hero
     "hero.badge": "Sistemas Críticos. Resueltos.",
     "hero.description": "Diseñamos ecosistemas digitales para empresas que no pueden permitirse tiempos de inactividad. Escala tu visión. Sin deuda técnica.",
-    "hero.cta.primary": "Auditar mi Sistema",
-    "hero.cta.secondary": "Ver Casos de Éxito",
+    "hero.cta.primary": "Agenda con un Especialista",
+    "hero.cta.secondary": "Hablemos",
+    
+    // Hero Animated Text
+    "hero.anim.1": "Arquitectura de Inteligencia.",
+    "hero.anim.2": "ADN Cloud Native.",
+    "hero.anim.3": "Ingeniería de Clase Mundial.",
 
     // El Enfoque (Features)
     "features.title": "El Enfoque",
     "features.subtitle": "No vendemos horas. Vendemos capacidad operativa.",
-    "features.software.title": "Descubrimiento",
+    "features.hero.title": "Visión", // Fixed translation
+    "features.software.title": "Analisis",
     "features.software.description": "La Auditoría. Comenzamos deconstruyendo tu cuello de botella actual. Analizamos código, infraestructura y lógica de negocio para identificar exactamente dónde se pierde la eficiencia.",
     "features.ai.title": "Ejecución",
-    "features.ai.description": "La Construcción. Despliegue de equipos de alta velocidad usando Go, Rust y React. Trabajamos en cortes verticales, entregando valor testeable y listo para producción cada sprint. Sin cajas negras.",
-    "features.cloud.title": "Transferencia",
+    "features.ai.description": "La Construcción. Despliegue de equipos de alta velocidad usando Go, TypeScript. Trabajamos en cortes verticales, entregando valor testeable y listo para producción cada sprint. Sin cajas negras.",
+    "features.cloud.title": "Despliegue",
     "features.cloud.description": "El Traspaso. No solo enviamos binarios; enviamos capacidad. Documentación exhaustiva, pipelines CI/CD y entrenamiento del equipo aseguran que seas dueño de la máquina que construimos.",
     "features.blockchain.title": "Seguridad",
     "features.blockchain.description": "Zero Trust por defecto. Implementamos encriptación de grado militar, pistas de auditoría y chequeos de cumplimiento automatizados para proteger tus activos más valiosos.",
@@ -514,6 +564,8 @@ const translations = {
     "pricing.customLink": "Discutamos tu roadmap",
     "pricing.perMonth": "USD / mes",
     "pricing.perYear": "USD / año",
+    "pricing.yearly": "Anual",
+    "pricing.monthly": "Mensual",
     "pricing.perHour": "USD / hora",
 
     // FAQ
@@ -624,8 +676,8 @@ const translations = {
     "vision.restructure.tech": "Tecnología",
     "vision.restructure.creative": "Estrategia Creativa",
     "vision.restructure.sales": "Operaciones de Ventas",
-    "faq.cta": "Contáctanos por WhatsApp",
-    "footer.madeBy": "Desarrollado por: Alpadev.xyz",
+    // "faq.cta": "Contáctanos por WhatsApp", // Removed duplicate
+    // "footer.madeBy": "Desarrollado por: Alpadev.xyz", // Removed duplicate
     "trustedBy.title": "Empresas innovadoras confían en nosotros", // Added default
     "integration.subtitle": "Para Desarrolladores",
     "integration.title": "Intégrate con Alpadev",
@@ -653,20 +705,54 @@ const translations = {
     "scroll.transition.descB": "Desde MVP hasta escala empresarial. Ingeniería de precisión para resultados reales.",
     "scroll.transition.cta": "Empieza a Construir",
 
-    // Stacked Cards
-    "stacked.title": "¿Por qué Alpadev?",
-    "stacked.subtitle": "Ventajas estratégicas que impulsan tu éxito.",
-    "stacked.card1.title": "Innovación Estratégica",
-    "stacked.card1.description": "No solo escribimos código; diseñamos soluciones a prueba de futuro. Aprovechamos tecnologías de vanguardia como IA y Blockchain para posicionar tu negocio por delante de la competencia.",
-    "stacked.card2.title": "Arquitectura Escalable",
-    "stacked.card2.description": "Construido para crecer. Nuestras arquitecturas de microservicios cloud-native aseguran que tu plataforma funcione impecablemente tanto con 100 como con 1,000,000 de usuarios.",
+    // Phases (ColorScrollTransition)
+    "phase1.title": "Fase 1: Cimientos",
+    "phase1.desc": "Estabilidad absoluta. Infraestructura robusta. Arquitectura escalable. Construimos la planta de energía para tu futuro con IA.",
+    "phase2.title": "Fase 2: Inteligencia",
+    "phase2.desc": "El núcleo neural. Agentes avanzados profundamente integrados en tu negocio. No solo procesa. Piensa.",
+    "phase3.title": "Fase 3: Evolución",
+    "phase3.desc": "Más allá de la automatización. Verdadera autonomía. Sistemas que se adaptan, aprenden y mejoran. Por sí mismos.",
+
+    // Galaxy
+    "galaxy.pretitle": "Explora el Universo",
+    "galaxy.title": "Infinitas",
+    "galaxy.titleHighlight": "Posibilidades",
+    "galaxy.desc": "Transforma tu negocio con soluciones de IA de vanguardia que escalan con tus ambiciones.",
+    "galaxy.cta": "Empezar",
+
+    // Horizontal Scroll (Cards)
+    "card.analytics.title": "Analítica IA",
+    "card.analytics.cat": "Inteligencia",
+    "card.scale.title": "Escala Global",
+    "card.scale.cat": "Infraestructura",
+    "card.contracts.title": "Smart Contracts",
+    "card.contracts.cat": "Seguridad",
+    "card.code.title": "Arquitectura de Código",
+    "card.code.cat": "Desarrollo",
+    "card.neural.title": "Redes Neuronales",
+    "card.neural.cat": "Innovación",
+    "card.data.title": "Gestión de Datos",
+    "card.data.cat": "Sostenibilidad",
+    "card.vr.title": "Realidad Inmersiva",
+    "card.vr.cat": "Experiencia",
+
+    // Projects (Renamed from Stacked Cards)
+    "projects.card1.title": "PowerFeud",
+    "projects.card1.desc": "Aplicacion mobile (iOS) para ahorrar energia y ganar puntos en el proceso para redimir en bonos.",
+    "projects.card2.title": "OnShapers",
+    "projects.card2.desc": "Una plataforma corporativa de vanguardia que aprovecha la IA para ofrecer soluciones tecnológicas, financieras, escalables para empresas modernas.",
+    "projects.card3.title": "Adminia",
+    "projects.card3.desc": "Plataforma AI native para propiedades horizontales que buscan optimizar sus procesos de negocio.",
     "stacked.card3.title": "Diseño de Experiencia",
     "stacked.card3.description": "Centrado en el usuario desde el núcleo. Creamos interfaces intuitivas y de alto rendimiento que encantan a los usuarios y mejoran las métricas de retención.",
     "stacked.card4.title": "Alianza Continua",
     "stacked.card4.description": "Somos más que proveedores; somos tus co-fundadores técnicos. Soporte dedicado, comunicación transparente y objetivos compartidos a largo plazo.",
-
-    "stacked.card4.title": "Alianza Continua",
-    "stacked.card4.description": "Somos más que proveedores; somos tus co-fundadores técnicos. Soporte dedicado, comunicación transparente y objetivos compartidos a largo plazo.",
+    "stacked.title": "¿Por qué Alpadev?",
+    "stacked.subtitle": "Ventajas estratégicas que impulsan tu éxito.",
+    "stacked.card1.title": "Innovación Estratégica",
+    "stacked.card1.description": "No solo escribimos código; diseñamos soluciones a prueba de futuro. Aprovechando tecnologías de vanguardia como IA y Blockchain, posicionamos tu negocio a la vanguardia.",
+    "stacked.card2.title": "Arquitectura Escalable",
+    "stacked.card2.description": "Construido para el crecimiento. Nuestras arquitecturas de microservicios nativas de la nube aseguran que tu plataforma funcione impecablemente ya sea que tengas 100 o 1,000,000 de usuarios.",
 
     // Text Reveal
     "textReveal.content": "En un mundo impulsado por el cambio constante, adaptarse no es suficiente. Debes liderar la evolución. En Alpadev, no solo construimos software; arquitectamos el futuro de tu negocio con precisión, inteligencia y un compromiso inquebrantable con la excelencia. Cada línea de código es un paso hacia tu visión.",

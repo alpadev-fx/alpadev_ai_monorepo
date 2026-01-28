@@ -35,9 +35,10 @@ export default function Hero() {
   const paragraphRef = useRef<HTMLDivElement>(null)
   const buttonsRef = useRef<HTMLDivElement>(null)
 
+  // Move texts inside component to use translations
   const texts = [
     { 
-      text: "Architecting Intelligence.", 
+      text: t("hero.anim.1"), 
       id: "gradient-blue",
       colors: ["#3b82f6", "#06b6d4", "#22d3ee", "#60a5fa", "#93c5fd"], 
       fireValid: "from-blue-500 via-indigo-600",
@@ -45,7 +46,7 @@ export default function Hero() {
       fireTip: "from-white via-cyan-200"
     },
     { 
-      text: "Cloud Native DNA.", 
+      text: t("hero.anim.2"), 
       id: "gradient-purple",
       colors: ["#a855f7", "#d946ef", "#ec4899", "#8b5cf6", "#c084fc"], 
       fireValid: "from-purple-600 via-fuchsia-600",
@@ -53,7 +54,7 @@ export default function Hero() {
       fireTip: "from-white via-fuchsia-200"
     },
     { 
-      text: "World-Class Engineering.", 
+      text: t("hero.anim.3"), 
       id: "gradient-orange",
       colors: ["#3b82f6", "#06b6d4", "#22d3ee", "#60a5fa", "#93c5fd"], 
       fireValid: "from-blue-500 via-indigo-600",

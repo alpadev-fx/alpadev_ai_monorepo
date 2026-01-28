@@ -131,24 +131,24 @@ export const StackedCards = () => {
   const items: CardData[] = useMemo(() => [
       {
         id: 1,
-        title: "PowerFeud",
-        description: "High-performance gaming server infrastructure enabling real-time multiplayer battles with zero latency.",
+        title: t("projects.card1.title"),
+        description: t("projects.card1.desc"),
         color: "#171717", // Neutral 900
         link: "https://powerfeud-server.vercel.app/",
         // No image -> Iframe
       },
        {
         id: 2,
-        title: "OnShapers",
-        description: "A cutting-edge corporate platform leveraging AI to deliver scalable tech solutions for modern enterprises.",
+        title: t("projects.card2.title"),
+        description: t("projects.card2.desc"),
         color: "#111111", // Very Dark Grey
         link: "https://onshapers.com/",
         image: getAssetUrl("onShapers_page.jpg") // Fallback because onshapers blocks iframes (X-Frame-Options)
       },
       {
         id: 3,
-        title: "Adminia",
-        description: "The ultimate SaaS command center for visualized analytics, user management, and revenue tracking.",
+        title: t("projects.card3.title"),
+        description: t("projects.card3.desc"),
         color: "#1c1c1c", // Slightly lighter
         link: "https://adminia.online/",
         // No image -> Iframe
