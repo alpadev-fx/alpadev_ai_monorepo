@@ -1,0 +1,14 @@
+[command]
+description = "Refactor code following Clean Architecture"
+
+[[steps]]
+agent = "codebase_investigator"
+instruction = "Analyze the target file. Identify violations of Single Responsibility Principle or Clean Architecture."
+
+[[steps]]
+agent = "backend-lead"
+instruction = "Propose a refactoring plan that separates Logic, Data Access, and Routing."
+
+[[steps]]
+agent = "backend-lead"
+instruction = "Apply the refactoring. Ensure all tests pass."

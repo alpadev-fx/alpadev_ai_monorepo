@@ -1,0 +1,14 @@
+[command]
+description = "Review staged changes for style and bugs"
+
+[[steps]]
+agent = "codebase_investigator"
+instruction = "Read `git diff --staged`. Summarize the changes."
+
+[[steps]]
+agent = "qa"
+instruction = "Identify potential regression risks or missing tests."
+
+[[steps]]
+agent = "backend-lead"
+instruction = "Check for type safety and adherence to coding standards."

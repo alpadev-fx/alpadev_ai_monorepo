@@ -9,8 +9,8 @@ import { fontSans } from "../config/fonts"
 import { Providers } from "./providers"
 import Navbar from "./_components/landing/Navbar"
 import Footer from "./_components/landing/Footer"
-import WhatsAppButton from "./_components/ui/WhatsAppButton"
-import { FPSMonitor } from "./_components/diagnostics/FPSMonitor"
+import ChatWidget from "@/components/chat/ChatWidget"
+//import { FPSMonitor } from "./_components/diagnostics/FPSMonitor"
 
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
 const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID || "2137727916632815"
@@ -128,9 +128,9 @@ export default function RootLayout({
           <div className="relative flex flex-col min-h-screen">
             <Navbar />
             <main className="w-full flex-grow">{children}</main>
-            <WhatsAppButton />
+            <ChatWidget />
             <Footer />
-            <FPSMonitor />
+            {/* <FPSMonitor /> */}
           </div>
         </Providers>
       </body>

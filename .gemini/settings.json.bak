@@ -1,0 +1,12 @@
+{
+  "experimental": {
+    "enableAgents": true,
+    "codebaseInvestigatorSettings": { "model": "gemini-3-pro-preview", "maxNumTurns": 30 }
+  },
+  "security": { "folderTrust": { "enabled": true } },
+  "tools": {
+    "sandbox": true,
+    "core": ["run_shell_command", "read_file", "write_file"],
+    "exclude": ["run_shell_command(rm -rf /)"]
+  }
+}

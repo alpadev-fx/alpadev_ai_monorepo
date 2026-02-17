@@ -1,0 +1,19 @@
+{
+  "project": "alpadev-ai-monorepo",
+  "version": "1.0.0",
+  "agents": {
+    "frontend": { "enabled": true, "source": "./agents/frontend.md" },
+    "backend": { "enabled": true, "source": "./agents/backend.md" },
+    "devops": { "enabled": true, "source": "./agents/devops.md" },
+    "qa": { "enabled": true, "source": "./agents/qa.md" },
+    "cybersec": { "enabled": true, "source": "./agents/cybersec.md" }
+  },
+  "memory": {
+    "auto_update": true,
+    "paths": [
+      "./memory/tech-stack.md",
+      "./memory/coding-standards.md",
+      "./memory/domain-model.md"
+    ]
+  }
+}

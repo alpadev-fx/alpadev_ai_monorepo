@@ -1,0 +1,7 @@
+[command]
+description = "Check system health and docker status"
+
+[[steps]]
+action = "run_shell_command"
+command = "docker ps && pnpm turbo run lint"
+description = "Check running containers and run code linting."

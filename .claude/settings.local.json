@@ -1,0 +1,23 @@
+{
+  "env": {},
+  "permissions": {
+    "allow": [
+      "Bash(pnpm ls:*)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm install:*)",
+      "Bash(pnpm db:push:*)",
+      "Bash(pnpm typecheck:*)",
+      "Bash(pnpm build:*)",
+      "Bash(find:*)",
+      "Bash(pnpm db:generate:*)",
+      "Bash(npx prisma generate)",
+      "Bash(npx tsc:*)",
+      "Bash(pnpm --filter @package/api typecheck:*)",
+      "Bash(curl:*)",
+      "Bash(python3:*)",
+      "Bash(pnpm dev:*)"
+    ],
+    "deny": []
+  },
+  "hooks": {}
+}

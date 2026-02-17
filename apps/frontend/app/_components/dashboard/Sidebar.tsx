@@ -10,7 +10,8 @@ import {
   CreditCardIcon,
   DocumentTextIcon,
   BanknotesIcon,
-  UserGroupIcon
+  UserGroupIcon,
+  ChatBubbleLeftRightIcon,
 } from "@heroicons/react/24/outline";
 
 const NAV_ITEMS = [
@@ -19,6 +20,7 @@ const NAV_ITEMS = [
   { name: "Bills", href: "/dashboard/bills", icon: CreditCardIcon },
   { name: "Invoices", href: "/dashboard/invoices", icon: DocumentTextIcon },
   { name: "Team", href: "/dashboard/team", icon: UserGroupIcon },
+  { name: "Live Chat", href: "/dashboard/chat", icon: ChatBubbleLeftRightIcon },
 ];
 
 export const Sidebar = () => {

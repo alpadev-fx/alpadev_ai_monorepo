@@ -1,0 +1,15 @@
+[policy]
+version = "1.0"
+
+[security]
+allow_env_commits = false
+require_mfa = true
+min_password_length = 12
+
+[compliance]
+gdpr = true
+ccpa = true
+
+[dependencies]
+audit_level = "high" # Fail build if high severity vulnerabilities found
+allowed_licenses = ["MIT", "Apache-2.0", "ISC", "BSD-3-Clause"]

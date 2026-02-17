@@ -67,7 +67,8 @@ model User {
   transactions Transaction[]
   bills        Bill[]
   invoices     Invoice[]
-  bookings     Booking[]
+  bookings             Booking[]
+  conversationSessions ConversationSession[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -226,4 +227,106 @@ model Booking {
 enum BookingStatus {
   CONFIRMED
   CANCELLED
+}
+
+// ==========================================
+// CHATBOT MODELS
+// ==========================================
+
+model ConversationSession {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId          String    @db.ObjectId
+  isActive        Boolean   @default(true)
+  currentAction   String?
+  pendingData     Json?
+  metadata        Json?
+  lastInteraction DateTime  @default(now())
+  endedAt         DateTime?
+
+  user     User                  @relation(fields: [userId], references: [id])
+  messages ConversationMessage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ConversationMessage {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  sessionId String   @db.ObjectId
+  role      String   // "user" | "assistant"
+  content   String
+  timestamp DateTime @default(now())
+
+  session ConversationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
+
+// ==========================================
+// LIVE CHAT MODELS (WebSocket)
+// ==========================================
+
+model ChatRoom {
+  id           String         @id @default(auto()) @map("_id") @db.ObjectId
+  status       ChatRoomStatus @default(bot_active)
+  visitorId    String         // UUID generated client-side for anonymous visitors
+  visitorName  String?
+  visitorEmail String?
+  visitorIp    String?        // IP address detected on room creation
+  metadata     Json?          // Project details collected by bot
+  closedAt     DateTime?
+
+  messages ChatMessage[]
+  jobs     ChatJob[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ChatMessage {
+  id         String          @id @default(auto()) @map("_id") @db.ObjectId
+  roomId     String          @db.ObjectId
+  senderType ChatSenderType
+  senderName String?
+  content    String
+
+  room ChatRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+enum ChatRoomStatus {
+  bot_active
+  waiting_for_agent
+  agent_joined
+  closed
+}
+
+enum ChatSenderType {
+  visitor
+  bot
+  agent
+}
+
+// ==========================================
+// CHAT JOB QUEUE MODELS
+// ==========================================
+
+model ChatJob {
+  id      String        @id @default(auto()) @map("_id") @db.ObjectId
+  roomId  String        @db.ObjectId
+  status  ChatJobStatus @default(pending)
+  payload Json          // { visitorMessage, roomId }
+  result  Json?         // { botMessageId, response }
+  error   String?
+
+  room ChatRoom @relation(fields: [roomId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum ChatJobStatus {
+  pending
+  processing
+  completed
+  failed
 }

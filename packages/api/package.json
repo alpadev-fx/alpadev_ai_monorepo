@@ -11,7 +11,9 @@
     "format": "eslint . --ext ts,tsx --fix",
     "webhooks": "tsx src/webhooks/index.ts",
     "webhooks:dev": "tsx watch src/webhooks/index.ts",
-    "typecheck": "tsc --noEmit"
+    "dev": "DOTENV_CONFIG_PATH=../../.env tsx watch src/jobs/chat/chat.worker.ts",
+    "typecheck": "tsc --noEmit",
+    "worker:chat": "tsx src/jobs/chat/chat.worker.ts"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.975.0",
@@ -28,11 +30,14 @@
     "dotenv": "^16.4.5",
     "express": "^5.1.0",
     "genkit": "^1.18.0",
+    "genkitx-deepseek": "^1.0.1",
     "genkitx-mistral": "^0.23.0",
     "googleapis": "^170.1.0",
     "mongoose": "^9.1.5",
     "superjson": "2.2.1",
     "twilio": "^5.9.0",
+    "bullmq": "^5.66.1",
+    "ioredis": "^5.8.2",
     "zod": "^3.23.8"
   },
   "devDependencies": {

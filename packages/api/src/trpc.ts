@@ -26,10 +26,13 @@ import { ZodError } from "zod"
  *
  * @see https://trpc.io/docs/server/context
  */
-type CreateContextOptions = FetchCreateContextFnOptions | { headers: Headers }
+type CreateContextOptions = (FetchCreateContextFnOptions | { headers: Headers }) & {
+  session?: { user: { id: string; name?: string | null; email?: string | null; role: string; hasOnboarded?: boolean; isBanned?: boolean } } | null
+}
 
 export const createTRPCContext = async (opts: CreateContextOptions) => {
-  const session = await serverSession()
+  // Use injected session (from v5-beta auth()) if available, otherwise fall back to v4 serverSession
+  const session = opts.session !== undefined ? opts.session : await serverSession()
 
   if ("req" in opts) {
     const { req, resHeaders, info } = opts

@@ -8,6 +8,8 @@ import { userRouter } from "./routers/user/user.router"
 import { cloudFlareR2Router } from "./routers/cloudflare/cloudFlareR2.router"
 import { bookingRouter } from "./routers/booking/booking.router"
 import { calendarRouter } from "./routers/google-calendar/calendar.router"
+import { chatbotRouter } from "./routers/chatbot/chatbot.router"
+import { chatRouter } from "./routers/chat/chat.router"
 import { createTRPCRouter } from "./trpc"
 
 export const appRouter = createTRPCRouter({
@@ -21,6 +23,8 @@ export const appRouter = createTRPCRouter({
   cloudflare: cloudFlareR2Router,
   booking: bookingRouter,
   calendar: calendarRouter,
+  chatbot: chatbotRouter,
+  chat: chatRouter,
 })
 
 // export type definition of API

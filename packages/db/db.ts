@@ -25,13 +25,17 @@ const ensureDirectConnectionParam = (url: string) => {
     const parsed = new URL(url)
 
     // Parámetros esenciales para Railway standalone MongoDB
-    parsed.searchParams.set("authSource", "admin")
     parsed.searchParams.set("directConnection", "true")
     parsed.searchParams.set("retryWrites", "false")
     parsed.searchParams.set("connectTimeoutMS", "10000")
     parsed.searchParams.set("serverSelectionTimeoutMS", "10000")
     parsed.searchParams.set("ssl", "false")
-    parsed.searchParams.set("authMechanism", "SCRAM-SHA-1")
+
+    // Only add auth params when credentials are provided
+    if (parsed.username && parsed.password) {
+      parsed.searchParams.set("authSource", "admin")
+      parsed.searchParams.set("authMechanism", "SCRAM-SHA-1")
+    }
 
     const normalizedUrl = parsed.toString()
     console.log("[db] Normalized MongoDB URL (without credentials):", normalizedUrl.replace(/\/\/[^:]+:[^@]+@/, '//***:***@'))

@@ -1,0 +1,123 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm install)",
+      "Bash(pnpm add *)",
+      "Bash(pnpm remove *)",
+      "Bash(pnpm dev)",
+      "Bash(pnpm build)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm lint)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm test)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm db:push)",
+      "Bash(pnpm db:seed)",
+      "Bash(pnpm db:studio)",
+      "Bash(pnpm db:generate)",
+      "Bash(pnpm email:dev)",
+      "Bash(npx prisma *)",
+      "Bash(npx playwright *)",
+      "Bash(npx turbo *)",
+      "Bash(turbo *)",
+      "Bash(docker compose up *)",
+      "Bash(docker compose down *)",
+      "Bash(docker compose build *)",
+      "Bash(docker compose logs *)",
+      "Bash(docker compose ps)",
+      "Bash(git status)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(git pull *)",
+      "Bash(git checkout *)",
+      "Bash(git branch *)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git merge *)",
+      "Bash(git stash *)",
+      "Bash(git rebase *)",
+      "Bash(cat *)",
+      "Bash(ls *)",
+      "Bash(find *)",
+      "Bash(grep *)",
+      "Bash(head *)",
+      "Bash(tail *)",
+      "Bash(wc *)",
+      "Bash(mkdir *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Bash(touch *)",
+      "Bash(echo *)",
+      "Bash(curl *)",
+      "Bash(node *)",
+      "Bash(npx tsx *)"
+    ],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(rm -rf /*)",
+      "Bash(pnpm db:reset)",
+      "Bash(npx prisma db reset)",
+      "Bash(npx prisma migrate reset)",
+      "Bash(docker compose down -v)",
+      "Bash(git push --force *)",
+      "Bash(git reset --hard *)",
+      "Bash(git clean -fd *)",
+      "Bash(chmod 777 *)",
+      "Bash(> .env*)",
+      "Bash(cat .env*)",
+      "Bash(echo * > .env*)",
+      "Bash(curl * | bash)",
+      "Bash(wget * | bash)"
+    ]
+  },
+  "env": {
+    "TURBO_TELEMETRY_DISABLED": "1",
+    "NEXT_TELEMETRY_DISABLED": "1",
+    "NODE_ENV": "development"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hook": "block_sensitive",
+        "config": {
+          "patterns": [
+            "\\.env",
+            "NEXTAUTH_SECRET",
+            "GOOGLE_CLIENT_SECRET",
+            "GITHUB_CLIENT_SECRET",
+            "MONGODB_URI",
+            "RESEND_API_KEY",
+            "TWILIO_AUTH_TOKEN",
+            "TWILIO_ACCOUNT_SID",
+            "MISTRAL_API_KEY",
+            "GOOGLE_GENAI_API_KEY",
+            "AWS_SECRET_ACCESS_KEY",
+            "R2_SECRET_ACCESS_KEY",
+            "PASSWORD_PROTECTED"
+          ],
+          "message": "⚠️ Comando bloqueado: posible exposición de secrets o env vars sensibles."
+        }
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hook": "lint_check",
+        "config": {
+          "filePatterns": ["*.ts", "*.tsx"],
+          "command": "npx turbo lint --filter=...[HEAD] 2>/dev/null || true"
+        }
+      }
+    ],
+    "Stop": [
+      {
+        "hook": "session_reminder",
+        "config": {
+          "message": "📋 Recuerda: (1) Verificar que el build compila, (2) Tests pasan, (3) No secrets expuestos, (4) Commit con conventional commits."
+        }
+      }
+    ]
+  }
+}

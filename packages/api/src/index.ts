@@ -32,3 +32,7 @@ type RouterOutputs = inferRouterOutputs<AppRouter>
 export { createTRPCContext, appRouter, createCaller }
 export type { AppRouter, RouterInputs, RouterOutputs }
 
+// Chat service exports (used by WebSocket server)
+export { getChatService } from "./routers/chat/chat.service"
+export type { ChatEvent, ChatEventType } from "./routers/chat/chat.service"
+
