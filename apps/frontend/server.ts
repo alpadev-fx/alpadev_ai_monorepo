@@ -59,7 +59,13 @@ app.prepare().then(async () => {
       // Send room events to all agents (for dashboard)
       if (
         client.isAgent &&
-        (event.type === "room.created" || event.type === "room.statusChange")
+        (event.type === "room.created" ||
+         event.type === "room.statusChange" ||
+         event.type === "handoff.reminder" ||
+         event.type === "handoff.timeout" ||
+         event.type === "handoff.cancelled" ||
+         event.type === "booking.created" ||
+         event.type === "whatsapp.link_sent")
       ) {
         client.ws.send(payload);
       }

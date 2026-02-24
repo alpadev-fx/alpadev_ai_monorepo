@@ -13,6 +13,21 @@ interface ChatMessage {
   createdAt: string | Date;
 }
 
+interface OrchestrationFields {
+  name: string | null;
+  email: string | null;
+  phone: string | null;
+  timezone: string | null;
+  reason: string | null;
+  language: string | null;
+}
+
+interface OrchestrationData {
+  state: string;
+  fallbackMode: string | null;
+  collectedFields: OrchestrationFields;
+}
+
 interface ChatRoom {
   id: string;
   status: "bot_active" | "waiting_for_agent" | "agent_joined" | "closed";
@@ -20,6 +35,7 @@ interface ChatRoom {
   visitorName: string | null;
   visitorEmail: string | null;
   visitorIp: string | null;
+  metadata: { orchestration?: OrchestrationData } | null;
   createdAt: string | Date;
   updatedAt: string | Date;
   messages: ChatMessage[];
@@ -92,7 +108,15 @@ export default function AgentDashboard() {
         }
       }
 
-      if (msg.type === "room.created" || msg.type === "room.statusChange") {
+      if (
+        msg.type === "room.created" ||
+        msg.type === "room.statusChange" ||
+        msg.type === "handoff.reminder" ||
+        msg.type === "handoff.timeout" ||
+        msg.type === "handoff.cancelled" ||
+        msg.type === "booking.created" ||
+        msg.type === "whatsapp.link_sent"
+      ) {
         activeRooms.refetch();
       }
     },
@@ -351,6 +375,14 @@ export default function AgentDashboard() {
                   {selectedRoom?.visitorIp && (
                     <span className="ml-1 text-zinc-700">· IP {selectedRoom.visitorIp}</span>
                   )}
+                  {selectedRoom?.metadata?.orchestration && (
+                    <span className="ml-1 text-cyan-600">
+                      · {selectedRoom.metadata.orchestration.state.replace(/_/g, " ").toLowerCase()}
+                      {selectedRoom.metadata.orchestration.fallbackMode && (
+                        <span> ({selectedRoom.metadata.orchestration.fallbackMode})</span>
+                      )}
+                    </span>
+                  )}
                 </p>
               </div>
 
@@ -379,6 +411,22 @@ export default function AgentDashboard() {
                 )}
               </div>
             </div>
+
+            {/* ── Collected Fields (from orchestration) ────────────── */}
+            {selectedRoom?.metadata?.orchestration?.collectedFields && (() => {
+              const fields = selectedRoom.metadata.orchestration!.collectedFields;
+              const hasFields = fields.name || fields.email || fields.phone || fields.reason;
+              if (!hasFields) return null;
+              return (
+                <div className="border-b border-white/[0.04] bg-white/[0.02] px-3 py-1.5 flex flex-wrap gap-x-4 gap-y-0.5 text-[10px]">
+                  {fields.name && <span className="text-zinc-500">Name: <span className="text-zinc-300">{fields.name}</span></span>}
+                  {fields.email && <span className="text-zinc-500">Email: <span className="text-zinc-300">{fields.email}</span></span>}
+                  {fields.phone && <span className="text-zinc-500">Phone: <span className="text-zinc-300">{fields.phone}</span></span>}
+                  {fields.timezone && <span className="text-zinc-500">TZ: <span className="text-zinc-300">{fields.timezone}</span></span>}
+                  {fields.reason && <span className="text-zinc-500 truncate max-w-[200px]">Reason: <span className="text-zinc-300">{fields.reason}</span></span>}
+                </div>
+              );
+            })()}
 
             {/* ── Messages ───────────────────────────────────────────── */}
             <div className="flex-1 overflow-y-auto overscroll-contain px-3 py-3 sm:px-4 space-y-2">

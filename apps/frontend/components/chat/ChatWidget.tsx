@@ -80,6 +80,8 @@ export default function ChatWidget() {
   const [isTyping, setIsTyping] = useState(false);
   const [agentName, setAgentName] = useState<string | null>(null);
   const [roomStatus, setRoomStatus] = useState<string>("bot_active");
+  const [orchestrationState, setOrchestrationState] = useState<string | null>(null);
+  const [showFallbackButtons, setShowFallbackButtons] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const visitorId = useRef(getVisitorId());
@@ -113,6 +115,30 @@ export default function ChatWidget() {
         if (msg.data.senderType !== "visitor") {
           setIsTyping(msg.data.isTyping as boolean);
         }
+      }
+
+      // Handoff timeout — show quick-action buttons
+      if (msg.type === "handoff.timeout" && msg.data) {
+        setShowFallbackButtons(true);
+        setOrchestrationState(msg.data.orchestrationState as string || "FALLBACK_CHOICE");
+      }
+
+      // Handoff cancelled — agent joined during fallback
+      if (msg.type === "handoff.cancelled") {
+        setShowFallbackButtons(false);
+        setOrchestrationState("HUMAN_CONNECTED");
+      }
+
+      // Booking created
+      if (msg.type === "booking.created") {
+        setShowFallbackButtons(false);
+        setOrchestrationState("BOOKING_CREATED");
+      }
+
+      // WhatsApp link sent
+      if (msg.type === "whatsapp.link_sent") {
+        setShowFallbackButtons(false);
+        setOrchestrationState("WHATSAPP_REDIRECTED");
       }
     },
     []
@@ -174,7 +200,7 @@ export default function ChatWidget() {
     };
     setMessages((prev) => [...prev, optimisticMsg]);
 
-    if (roomStatus === "bot_active") {
+    if (roomStatus === "bot_active" || roomStatus === "waiting_for_agent") {
       setIsTyping(true);
     }
 
@@ -362,11 +388,78 @@ export default function ChatWidget() {
               </div>
             )}
 
+            {/* Quick-action fallback buttons */}
+            {showFallbackButtons && (
+              <div className="flex justify-start">
+                <div className="flex items-end gap-2 max-w-[85%]">
+                  <div className="w-6 shrink-0" />
+                  <div className="flex flex-col gap-1.5">
+                    <button
+                      onClick={() => {
+                        setShowFallbackButtons(false);
+                        if (roomId) {
+                          sendMessage.mutate({
+                            roomId,
+                            content: "call",
+                            senderType: "visitor",
+                            visitorId: visitorId.current,
+                          });
+                          setMessages((prev) => [
+                            ...prev,
+                            {
+                              id: `temp-fb-${Date.now()}`,
+                              roomId: roomId,
+                              senderType: "visitor",
+                              senderName: null,
+                              content: "Schedule a call",
+                              createdAt: new Date().toISOString(),
+                            },
+                          ]);
+                        }
+                      }}
+                      className="flex items-center gap-2 rounded-xl border border-blue-500/20 bg-blue-500/10 px-3.5 py-2 text-left text-[12.5px] font-medium text-blue-300 transition-all hover:bg-blue-500/20 hover:border-blue-500/30 active:scale-[0.98]"
+                    >
+                      <span className="text-sm">📅</span>
+                      <span>Schedule a call</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowFallbackButtons(false);
+                        if (roomId) {
+                          sendMessage.mutate({
+                            roomId,
+                            content: "whatsapp",
+                            senderType: "visitor",
+                            visitorId: visitorId.current,
+                          });
+                          setMessages((prev) => [
+                            ...prev,
+                            {
+                              id: `temp-fb-${Date.now()}`,
+                              roomId: roomId,
+                              senderType: "visitor",
+                              senderName: null,
+                              content: "Continue on WhatsApp",
+                              createdAt: new Date().toISOString(),
+                            },
+                          ]);
+                        }
+                      }}
+                      className="flex items-center gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-3.5 py-2 text-left text-[12.5px] font-medium text-emerald-300 transition-all hover:bg-emerald-500/20 hover:border-emerald-500/30 active:scale-[0.98]"
+                    >
+                      <span className="text-sm">💬</span>
+                      <span>Continue on WhatsApp</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <div ref={messagesEndRef} />
           </div>
 
           {/* ── Status banners ─────────────────────────────────────── */}
-          {roomStatus === "waiting_for_agent" && (
+          {roomStatus === "waiting_for_agent" && !showFallbackButtons && (
             <div className="border-t border-amber-500/10 bg-amber-500/[0.06] px-4 py-2 text-center text-[11px] font-medium text-amber-400/80">
               A team member will be with you shortly
             </div>
@@ -374,6 +467,11 @@ export default function ChatWidget() {
           {roomStatus === "agent_joined" && agentName && (
             <div className="border-t border-emerald-500/10 bg-emerald-500/[0.06] px-4 py-2 text-center text-[11px] font-medium text-emerald-400/80">
               Connected with {agentName}
+            </div>
+          )}
+          {orchestrationState === "BOOKING_CREATED" && (
+            <div className="border-t border-blue-500/10 bg-blue-500/[0.06] px-4 py-2 text-center text-[11px] font-medium text-blue-400/80">
+              Call scheduled — check your email for confirmation
             </div>
           )}
 

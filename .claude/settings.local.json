@@ -15,7 +15,9 @@
       "Bash(pnpm --filter @package/api typecheck:*)",
       "Bash(curl:*)",
       "Bash(python3:*)",
-      "Bash(pnpm dev:*)"
+      "Bash(pnpm dev:*)",
+      "Bash(head:*)",
+      "Bash(grep:*)"
     ],
     "deny": []
   },

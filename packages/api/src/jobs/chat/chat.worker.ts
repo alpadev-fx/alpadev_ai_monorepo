@@ -16,6 +16,7 @@ import { ChatJobRepository } from "./chat-job.repository";
 import { ChatRepository } from "../../routers/chat/chat.repository";
 import { AIChatService } from "../../routers/chatbot/service/ai.service";
 import { MessageAnalysisService } from "../../routers/chatbot/service/analysis.service";
+import { getOrchestrationService } from "../../routers/chat/orchestration.service";
 
 const chatJobRepo = new ChatJobRepository();
 const chatRepo = new ChatRepository();
@@ -203,6 +204,14 @@ async function processJob(job: { data: ChatJobData }): Promise<void> {
           data: { message: escalationMessage },
         })
       );
+
+      // Start handoff timers (30s reminder, 90s timeout)
+      try {
+        const orchestrationService = getOrchestrationService();
+        await orchestrationService.startHandoffTimers(roomId);
+      } catch (err) {
+        console.warn("[ChatWorker] Failed to start handoff timers:", (err as Error).message);
+      }
 
       console.log(`[ChatWorker] Room ${roomId} escalated to human (reason: ${escalationReason})`);
     }

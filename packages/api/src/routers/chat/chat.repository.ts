@@ -1,4 +1,5 @@
 import { db } from "@package/db";
+import type { Prisma } from "@package/db";
 import type { ChatRoomStatus, ChatSenderType } from "@package/validations";
 
 export class ChatRepository {
@@ -47,6 +48,13 @@ export class ChatRepository {
     return db.chatRoom.update({
       where: { id: roomId },
       data,
+    });
+  }
+
+  async updateRoomMetadata(roomId: string, metadata: Prisma.InputJsonValue) {
+    return db.chatRoom.update({
+      where: { id: roomId },
+      data: { metadata },
     });
   }
 

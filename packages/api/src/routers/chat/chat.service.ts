@@ -3,6 +3,7 @@ import { ChatRepository } from "./chat.repository";
 import { ChatJobRepository } from "../../jobs/chat/chat-job.repository";
 import { chatQueue, CHAT_EVENTS_CHANNEL } from "../../jobs/chat/chat.queue";
 import { createSubscriberConnection, createPublisherConnection } from "../../jobs/connection";
+import { getOrchestrationService } from "./orchestration.service";
 import type { ChatRoomStatus } from "@package/validations";
 import type Redis from "ioredis";
 
@@ -10,7 +11,13 @@ export type ChatEventType =
   | "message.new"
   | "room.created"
   | "room.statusChange"
-  | "room.typing";
+  | "room.typing"
+  | "handoff.reminder"
+  | "handoff.timeout"
+  | "handoff.cancelled"
+  | "booking.created"
+  | "whatsapp.link_sent"
+  | "orchestration.stateChange";
 
 export interface ChatEvent {
   type: ChatEventType;
@@ -179,6 +186,14 @@ export class ChatService {
 
     await this.repository.updateRoomStatus(roomId, "agent_joined");
 
+    // Cancel handoff timers and update orchestration state
+    try {
+      const orchestrationService = getOrchestrationService();
+      await orchestrationService.onAgentJoined(roomId);
+    } catch (err) {
+      console.warn("[ChatService] Orchestration onAgentJoined failed (non-critical):", (err as Error).message);
+    }
+
     // Send transition message
     const transitionMessage = await this.repository.createMessage({
       roomId,
@@ -270,10 +285,24 @@ export class ChatService {
       data: { message },
     });
 
-    // If room is bot_active and sender is visitor, enqueue AI response job.
-    // The bot always responds first; escalation happens in the worker after the bot replies.
-    if (room.status === "bot_active" && data.senderType === "visitor") {
-      await this.enqueueBotResponse(data.roomId, data.content);
+    // If sender is visitor, check orchestration state first.
+    // If orchestration handles it (fallback flow, contact collection, booking), skip AI.
+    if (data.senderType === "visitor") {
+      try {
+        const orchestrationService = getOrchestrationService();
+        const handled = await orchestrationService.handleVisitorMessage(data.roomId, data.content);
+        if (handled) {
+          return message;
+        }
+      } catch (err) {
+        console.warn("[ChatService] Orchestration handleVisitorMessage failed:", (err as Error).message);
+      }
+
+      // If room is bot_active, enqueue AI response job.
+      // The bot always responds first; escalation happens in the worker after the bot replies.
+      if (room.status === "bot_active") {
+        await this.enqueueBotResponse(data.roomId, data.content);
+      }
     }
 
     return message;
@@ -306,6 +335,14 @@ export class ChatService {
       roomId,
       data: { message: transitionMessage },
     });
+
+    // Start handoff timers (30s reminder, 90s timeout)
+    try {
+      const orchestrationService = getOrchestrationService();
+      await orchestrationService.startHandoffTimers(roomId);
+    } catch (err) {
+      console.warn("[ChatService] Failed to start handoff timers (non-critical):", (err as Error).message);
+    }
 
     console.log(`[ChatService] Room ${roomId} escalated to human (reason: ${reason})`);
   }
