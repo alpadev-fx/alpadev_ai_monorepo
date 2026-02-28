@@ -1,0 +1,6 @@
+project_id         = "alpadev-ai-prod"
+region             = "us-central1"
+github_repo        = "alpadev/alpadev_ai_monorepo"
+billing_account_id = "XXXXXX-XXXXXX-XXXXXX"
+alert_email        = "founder.alpadev@gmail.com"
+custom_domain      = "alpadev.xyz"

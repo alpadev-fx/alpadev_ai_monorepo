@@ -60,8 +60,11 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/frontend/.next/static ./apps
 COPY --from=pruner --chown=nextjs:nodejs /app/apps/frontend/public ./apps/frontend/public
 COPY --from=pruner --chown=nextjs:nodejs /app/apps/frontend/public ./public
 
+# Copy start.sh entrypoint (parses GCP Secret Manager JSON into env vars)
+COPY --from=pruner --chown=nextjs:nodejs /app/start.sh ./start.sh
+
 # Environment variables must be redefined at run time
 ENV NODE_ENV=production
 ENV PORT=3000
 
-CMD ["node", "apps/frontend/server.js"]
+CMD ["sh", "start.sh"]
