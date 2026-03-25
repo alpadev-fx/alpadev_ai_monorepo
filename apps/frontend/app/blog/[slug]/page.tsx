@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import Link from "next/link"
 import { notFound } from "next/navigation"
 import ClientBlogPost from "./ClientBlogPost"
 
@@ -43,7 +42,7 @@ export async function generateMetadata({
     title: post.en.title,
     description: post.en.description,
     alternates: {
-      canonical: \`/blog/\${post.slug}\`,
+      canonical: "/blog/" + post.slug,
     },
     keywords: post.seoKeywords,
     authors: [{ name: post.author.name }],
