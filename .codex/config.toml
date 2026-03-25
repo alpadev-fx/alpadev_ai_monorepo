@@ -1,0 +1,139 @@
+# Project-scoped Codex configuration for Alpadev AI Monorepo.
+# Tuned for Turborepo + Next.js + tRPC + Prisma/MongoDB + Genkit.
+
+model = "gpt-5.3-codex"
+model_reasoning_effort = "medium"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "disabled"
+
+# Keep long sessions stable with balanced token spend.
+tool_output_token_limit = 1800
+model_auto_compact_token_limit = 240000
+project_doc_max_bytes = 65536
+
+# Use a smaller model for reviews by default.
+review_model = "gpt-5.1-codex-mini"
+
+[sandbox_workspace_write]
+network_access = false
+
+[features]
+shell_snapshot = true
+
+[profiles.deep-reasoning]
+model = "gpt-5.3-codex"
+model_reasoning_effort = "high"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "disabled"
+tool_output_token_limit = 2500
+model_auto_compact_token_limit = 280000
+
+[profiles.fast-iterate]
+model = "gpt-5.1-codex-mini"
+model_reasoning_effort = "medium"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "disabled"
+tool_output_token_limit = 1200
+model_auto_compact_token_limit = 180000
+
+[profiles.max-context]
+model = "gpt-5.4"
+model_reasoning_effort = "high"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "disabled"
+tool_output_token_limit = 3200
+model_auto_compact_token_limit = 320000
+project_doc_max_bytes = 98304
+
+[profiles.cost-save]
+model = "gpt-5.1-codex-mini"
+model_reasoning_effort = "medium"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "disabled"
+tool_output_token_limit = 1000
+model_auto_compact_token_limit = 160000
+project_doc_max_bytes = 32768
+
+[profiles.planner]
+model = "gpt-5.3-codex"
+model_reasoning_effort = "high"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "disabled"
+
+[profiles.executor]
+model = "gpt-5.3-codex"
+model_reasoning_effort = "high"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "disabled"
+tool_output_token_limit = 2200
+
+[profiles.reviewer]
+model = "gpt-5.1-codex-mini"
+model_reasoning_effort = "medium"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "disabled"
+
+[profiles.security]
+model = "gpt-5.3-codex"
+model_reasoning_effort = "high"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "disabled"
+
+[profiles.backend-deep]
+model = "gpt-5.3-codex"
+model_reasoning_effort = "high"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "disabled"
+tool_output_token_limit = 2400
+
+[profiles.frontend-deep]
+model = "gpt-5.3-codex"
+model_reasoning_effort = "high"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "disabled"
+tool_output_token_limit = 2200
+
+[profiles.ai-deep]
+model = "gpt-5.3-codex"
+model_reasoning_effort = "high"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "disabled"
+tool_output_token_limit = 2400
+
+[profiles.infra-deep]
+model = "gpt-5.3-codex"
+model_reasoning_effort = "high"
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+web_search = "disabled"
+tool_output_token_limit = 1800
+
+[mcp_servers.github]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-github"]
+
+[mcp_servers.github.env]
+GITHUB_PERSONAL_ACCESS_TOKEN = "${GITHUB_TOKEN}"
+
+[mcp_servers.filesystem]
+command = "npx"
+args = ["-y", "@modelcontextprotocol/server-filesystem", "."]
+
+# No database-specific MCP is wired by default here because this repo uses
+# Prisma on MongoDB plus selective Mongoose access, and the server choice
+# should stay explicit instead of assuming a Postgres workflow.
+
+[projects."/Users/alpadev/Desktop/alpadev_ai_monorepo/alpadev_ai_monorepo"]
+trust_level = "trusted"

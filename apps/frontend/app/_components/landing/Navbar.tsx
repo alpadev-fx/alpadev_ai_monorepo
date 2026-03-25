@@ -38,6 +38,7 @@ export default function Component(props: NavbarProps) {
       { name: t("nav.services"), href: "#features" },
       { name: t("nav.plans"), href: "#pricing" },
       { name: t("nav.faq"), href: "#faq" },
+      { name: t("nav.blog"), href: "/blog" },
       { name: t("nav.testimonials"), href: "#testimonios" },
     ],
     [language, t]
@@ -108,6 +109,15 @@ export default function Component(props: NavbarProps) {
             size="sm"
           >
             {t("nav.faq")}
+          </Link>
+        </NavbarItem>
+        <NavbarItem>
+          <Link
+            className="text-gray-300 hover:text-white"
+            href="/blog"
+            size="sm"
+          >
+            {t("nav.blog")}
           </Link>
         </NavbarItem>
         <NavbarItem>

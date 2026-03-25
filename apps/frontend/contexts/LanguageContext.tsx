@@ -22,6 +22,7 @@ const translations = {
     "nav.contact": "Availability",
     "nav.home": "Home",
     "nav.faq": "FAQ",
+    "nav.blog": "Blog",
 
     // Hero
     "hero.badge": "Critical Systems. Solved.",
@@ -440,6 +441,7 @@ const translations = {
     "nav.contact": "Disponibilidad",
     "nav.home": "Inicio",
     "nav.faq": "FAQ",
+    "nav.blog": "Blog",
 
     // Hero
     // Hero
