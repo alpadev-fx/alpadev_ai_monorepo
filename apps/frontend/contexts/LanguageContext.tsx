@@ -859,15 +859,17 @@ const translations = {
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>("en")
-  const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
-    // Load language from localStorage
-    const savedLanguage = localStorage.getItem("language") as Language
-    if (savedLanguage && (savedLanguage === "en" || savedLanguage === "es")) {
-      setLanguageState(savedLanguage)
+    try {
+      const savedLanguage = localStorage.getItem("language") as Language | null
+
+      if (savedLanguage === "en" || savedLanguage === "es") {
+        setLanguageState(savedLanguage)
+      }
+    } catch {
+      // Keep the default language when storage is unavailable.
     }
-    setIsLoaded(true)
   }, [])
 
   const setLanguage = (lang: Language) => {
@@ -886,11 +888,6 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       return key
     }
     return translation
-  }
-
-  // Don't render until language is loaded from localStorage
-  if (!isLoaded) {
-    return null
   }
 
   return (
