@@ -91,7 +91,10 @@ export function ProspectsPage() {
     [debouncedSearch, sorting, filters],
   )
 
-  const { data, isLoading } = api.prospect.getAll.useQuery(queryInput)
+  const { data, isLoading } = api.prospect.getAll.useQuery(queryInput, {
+    staleTime: 5 * 60 * 1000, // 5 min cache
+    refetchOnWindowFocus: false,
+  })
   const utils = api.useUtils()
 
   const importMutation = api.prospect.import.useMutation({
