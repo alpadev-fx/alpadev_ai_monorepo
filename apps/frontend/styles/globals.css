@@ -94,3 +94,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Force dark background to prevent light bleed-through during hydration */
+.dark body,
+html[class~="dark"] body {
+  background-color: #000000 !important;
+}

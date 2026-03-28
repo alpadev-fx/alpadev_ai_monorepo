@@ -92,7 +92,7 @@ export function ProspectsTable({ table, isLoading }: ProspectsTableProps) {
                         (cell.column.columnDef.meta as Record<string, unknown>)?.allowWrap
                           ? ""
                           : "whitespace-nowrap"
-                      } ${idx === 0 ? "sticky left-0 z-10 bg-[#131313]" : ""}`}
+                      } ${idx === 0 ? "sticky left-0 z-10 bg-[#0e0e0e]" : ""}`}
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>

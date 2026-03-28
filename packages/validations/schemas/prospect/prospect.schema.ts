@@ -69,7 +69,7 @@ export const prospectFilterSchema = z.object({
   hasSocialMedia: z.boolean().optional(),
   hasEmail: z.boolean().optional(),
   page: z.number().int().min(1).default(1),
-  pageSize: z.number().int().min(1).max(50000).default(50000),
+  pageSize: z.number().int().min(1).max(50000).default(25),
   sortBy: z
     .enum(["nombre", "nicho", "ciudad", "score", "webStatus", "createdAt", "email", "pais", "estado"])
     .default("createdAt"),

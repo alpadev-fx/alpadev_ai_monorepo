@@ -12,10 +12,13 @@ import { api } from "@/lib/trpc/react"
 import { columns, DEFAULT_VISIBLE_COLUMNS } from "./columns"
 import { ProspectsTable } from "./ProspectsTable"
 import { ProspectsToolbar } from "./ProspectsToolbar"
+import { ProspectsTablePagination } from "./ProspectsTablePagination"
 import { FilterPanel } from "./FilterPanel"
 import { ImportModal } from "./ImportModal"
 
 export function ProspectsPage() {
+  const [page, setPage] = useState(1)
+  const [pageSize, setPageSize] = useState(25)
   const [search, setSearch] = useState("")
   const [debouncedSearch, setDebouncedSearch] = useState("")
   const [sorting, setSorting] = useState<SortingState>([
@@ -44,7 +47,10 @@ export function ProspectsPage() {
     let timer: ReturnType<typeof setTimeout>
     return (value: string) => {
       clearTimeout(timer)
-      timer = setTimeout(() => setDebouncedSearch(value), 300)
+      timer = setTimeout(() => {
+        setDebouncedSearch(value)
+        setPage(1)
+      }, 300)
     }
   }, [])
 
@@ -56,11 +62,10 @@ export function ProspectsPage() {
     [debounceTimer],
   )
 
-  // Build query — load ALL records (pageSize 50000)
   const queryInput = useMemo(
     () => ({
-      page: 1,
-      pageSize: 50000,
+      page,
+      pageSize,
       search: debouncedSearch || undefined,
       nicho: filters.nicho.length > 0 ? filters.nicho : undefined,
       webStatus:
@@ -88,7 +93,7 @@ export function ProspectsPage() {
         | "estado") || "createdAt",
       sortOrder: (sorting[0]?.desc ? "desc" : "asc") as "asc" | "desc",
     }),
-    [debouncedSearch, sorting, filters],
+    [page, pageSize, debouncedSearch, sorting, filters],
   )
 
   const { data, isLoading } = api.prospect.getAll.useQuery(queryInput, {
@@ -167,7 +172,6 @@ export function ProspectsPage() {
     [importMutation],
   )
 
-  // TanStack Table — all data, no manual pagination
   const table = useReactTable({
     data: data?.items ?? [],
     columns,
@@ -175,11 +179,16 @@ export function ProspectsPage() {
       sorting,
       columnVisibility,
     },
-    onSortingChange: setSorting,
+    onSortingChange: (updater) => {
+      setSorting(updater)
+      setPage(1)
+    },
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
+    manualPagination: true,
     manualSorting: true,
     manualFiltering: true,
+    pageCount: data?.pagination.totalPages ?? 0,
   })
 
   const totalCount = data?.pagination.total ?? 0
@@ -221,13 +230,29 @@ export function ProspectsPage() {
           <FilterPanel
             filters={filters}
             nichoOptions={nichoOptions}
-            onFiltersChange={setFilters}
+            onFiltersChange={(f) => {
+              setFilters(f)
+              setPage(1)
+            }}
           />
         )}
       </AnimatePresence>
 
       {/* Table */}
       <ProspectsTable isLoading={isLoading} table={table} />
+
+      {/* Pagination */}
+      <ProspectsTablePagination
+        page={data?.pagination.page ?? 1}
+        pageSize={data?.pagination.pageSize ?? pageSize}
+        total={data?.pagination.total ?? 0}
+        totalPages={data?.pagination.totalPages ?? 0}
+        onPageChange={setPage}
+        onPageSizeChange={(size) => {
+          setPageSize(size)
+          setPage(1)
+        }}
+      />
 
       {/* Import Modal */}
       <ImportModal
