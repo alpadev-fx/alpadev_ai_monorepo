@@ -74,7 +74,11 @@ export function ProspectsTable({ table, isLoading }: ProspectsTableProps) {
                   {row.getVisibleCells().map((cell, idx) => (
                     <td
                       key={cell.id}
-                      className={`whitespace-nowrap px-4 py-3 text-sm text-zinc-300 ${
+                      className={`px-4 py-3 text-sm text-zinc-300 ${
+                        (cell.column.columnDef.meta as Record<string, unknown>)?.allowWrap
+                          ? ""
+                          : "whitespace-nowrap"
+                      } ${
                         idx === 0
                           ? "sticky left-0 z-10 bg-zinc-900/90 backdrop-blur-sm"
                           : ""

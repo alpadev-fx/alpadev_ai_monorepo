@@ -102,8 +102,22 @@ function TruncatedText({ value, max = 80 }: { value: string | null; max?: number
 export const columns = [
   columnHelper.accessor("nombre", {
     header: "Nombre",
-    cell: (info) => <span className="font-medium text-white">{info.getValue()}</span>,
-    size: 200,
+    cell: (info) => {
+      const name = info.getValue()
+      const words = name.split(" ").length
+      return (
+        <span
+          className={`font-medium text-white ${
+            words > 9 ? "whitespace-normal leading-tight line-clamp-3" : ""
+          }`}
+          style={words > 9 ? { maxWidth: 200 } : undefined}
+        >
+          {name}
+        </span>
+      )
+    },
+    size: 220,
+    meta: { allowWrap: true },
   }),
   columnHelper.accessor("displayName", {
     header: "Display Name",
