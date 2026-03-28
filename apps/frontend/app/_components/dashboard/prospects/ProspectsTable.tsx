@@ -12,18 +12,18 @@ export function ProspectsTable({ table, isLoading }: ProspectsTableProps) {
   return (
     <div className="rounded-3xl border border-white/5 bg-white/5 backdrop-blur-2xl overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="w-full">
+        <table className="w-max min-w-full">
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
               <tr key={headerGroup.id} className="bg-white/5">
                 {headerGroup.headers.map((header, idx) => (
                   <th
                     key={header.id}
-                    className={`px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-400 ${
+                    className={`whitespace-nowrap px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-400 ${
                       idx === 0
-                        ? "sticky left-0 z-10 bg-zinc-900/80 backdrop-blur-sm"
+                        ? "sticky left-0 z-10 bg-zinc-900/90 backdrop-blur-sm"
                         : ""
-                    } ${header.column.getCanSort() ? "cursor-pointer select-none" : ""}`}
+                    } ${header.column.getCanSort() ? "cursor-pointer select-none hover:text-zinc-200" : ""}`}
                     style={{ width: header.getSize() }}
                     onClick={header.column.getToggleSortingHandler()}
                   >
@@ -74,9 +74,9 @@ export function ProspectsTable({ table, isLoading }: ProspectsTableProps) {
                   {row.getVisibleCells().map((cell, idx) => (
                     <td
                       key={cell.id}
-                      className={`px-4 py-3 text-sm text-zinc-300 ${
+                      className={`whitespace-nowrap px-4 py-3 text-sm text-zinc-300 ${
                         idx === 0
-                          ? "sticky left-0 z-10 bg-zinc-900/80 backdrop-blur-sm"
+                          ? "sticky left-0 z-10 bg-zinc-900/90 backdrop-blur-sm"
                           : ""
                       }`}
                     >
@@ -92,6 +92,11 @@ export function ProspectsTable({ table, isLoading }: ProspectsTableProps) {
           </tbody>
         </table>
       </div>
+      {!isLoading && table.getRowModel().rows.length > 0 && (
+        <div className="border-t border-white/5 px-4 py-3 text-sm text-zinc-500">
+          {table.getRowModel().rows.length.toLocaleString()} rows
+        </div>
+      )}
     </div>
   )
 }

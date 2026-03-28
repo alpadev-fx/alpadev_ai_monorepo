@@ -1,7 +1,7 @@
 "use client"
 
 import { createColumnHelper } from "@tanstack/react-table"
-import { GlobeAltIcon } from "@heroicons/react/24/outline"
+import { GlobeAltIcon, CheckCircleIcon, XCircleIcon } from "@heroicons/react/24/outline"
 import type { Prospect } from "@package/db"
 
 const columnHelper = createColumnHelper<Prospect>()
@@ -16,9 +16,7 @@ function ScoreBadge({ value }: { value: number }) {
         ? "bg-amber-500/20 border-amber-500/30 text-amber-400"
         : "bg-rose-500/20 border-rose-500/30 text-rose-400"
   return (
-    <span
-      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${color}`}
-    >
+    <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${color}`}>
       {value}
     </span>
   )
@@ -31,9 +29,7 @@ function WebStatusPill({ value }: { value: string }) {
     poor: "bg-orange-500/20 border-orange-500/30 text-orange-400",
   }
   return (
-    <span
-      className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${styles[value] || styles.none}`}
-    >
+    <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${styles[value] || styles.none}`}>
       {value}
     </span>
   )
@@ -83,14 +79,35 @@ function TagsCell({ value }: { value: string[] }) {
   )
 }
 
+function VerifiedBadge({ value }: { value: boolean }) {
+  return value ? (
+    <CheckCircleIcon className="h-5 w-5 text-emerald-400" />
+  ) : (
+    <XCircleIcon className="h-5 w-5 text-zinc-600" />
+  )
+}
+
+function TruncatedText({ value, max = 80 }: { value: string | null; max?: number }) {
+  if (!value) return <span className="text-zinc-600">-</span>
+  if (value.length <= max) return <span>{value}</span>
+  return (
+    <span title={value}>
+      {value.slice(0, max)}...
+    </span>
+  )
+}
+
 // --- Column Definitions ---
 
 export const columns = [
   columnHelper.accessor("nombre", {
     header: "Nombre",
-    cell: (info) => (
-      <span className="font-medium text-white">{info.getValue()}</span>
-    ),
+    cell: (info) => <span className="font-medium text-white">{info.getValue()}</span>,
+    size: 200,
+  }),
+  columnHelper.accessor("displayName", {
+    header: "Display Name",
+    cell: (info) => info.getValue() || <span className="text-zinc-600">-</span>,
     size: 180,
   }),
   columnHelper.accessor("nicho", {
@@ -100,7 +117,12 @@ export const columns = [
         {info.getValue()}
       </span>
     ),
-    size: 140,
+    size: 160,
+  }),
+  columnHelper.accessor("industry", {
+    header: "Industry",
+    cell: (info) => <TagsCell value={info.getValue()} />,
+    size: 160,
   }),
   columnHelper.accessor("ciudad", {
     header: "Ciudad",
@@ -108,15 +130,25 @@ export const columns = [
   }),
   columnHelper.accessor("estado", {
     header: "Estado",
-    size: 100,
+    size: 80,
   }),
   columnHelper.accessor("pais", {
     header: "Pais",
+    cell: (info) => {
+      const row = info.row.original
+      return (
+        <span>
+          {row.countryFlag ? `${row.countryFlag} ` : ""}
+          {info.getValue()}
+        </span>
+      )
+    },
     size: 80,
   }),
   columnHelper.accessor("direccion", {
     header: "Direccion",
-    size: 200,
+    cell: (info) => <TruncatedText value={info.getValue()} max={40} />,
+    size: 220,
   }),
   columnHelper.accessor("sitioWeb", {
     header: "Sitio Web",
@@ -125,9 +157,7 @@ export const columns = [
   }),
   columnHelper.accessor("email", {
     header: "Email",
-    cell: (info) => (
-      <span className="text-zinc-300">{info.getValue() || "-"}</span>
-    ),
+    cell: (info) => <span className="text-zinc-300">{info.getValue() || "-"}</span>,
     size: 200,
   }),
   columnHelper.accessor("facebook", {
@@ -147,7 +177,12 @@ export const columns = [
   }),
   columnHelper.accessor("telefono", {
     header: "Telefono",
-    size: 130,
+    size: 140,
+  }),
+  columnHelper.accessor("description", {
+    header: "Description",
+    cell: (info) => <TruncatedText value={info.getValue() ?? null} max={60} />,
+    size: 280,
   }),
   columnHelper.accessor("score", {
     header: "Score",
@@ -160,50 +195,79 @@ export const columns = [
     size: 110,
   }),
   columnHelper.accessor("serviciosRecomendados", {
-    header: "Servicios Recomendados",
+    header: "Servicios Fit",
     cell: (info) => <TagsCell value={info.getValue()} />,
-    size: 200,
+    size: 180,
   }),
   columnHelper.accessor("serviciosActivos", {
     header: "Servicios Activos",
     cell: (info) => <TagsCell value={info.getValue()} />,
+    size: 160,
+  }),
+  columnHelper.accessor("opportunity", {
+    header: "Opportunity",
+    cell: (info) => <TagsCell value={info.getValue()} />,
     size: 180,
+  }),
+  columnHelper.accessor("tags", {
+    header: "Tags",
+    cell: (info) => <TagsCell value={info.getValue()} />,
+    size: 160,
   }),
   columnHelper.accessor("recSoftware", {
     header: "Rec. Software",
     cell: (info) => <TagsCell value={info.getValue()} />,
-    size: 160,
+    size: 200,
   }),
   columnHelper.accessor("recMarketing", {
     header: "Rec. Marketing",
     cell: (info) => <TagsCell value={info.getValue()} />,
-    size: 160,
+    size: 200,
   }),
   columnHelper.accessor("recFinanzas", {
     header: "Rec. Finanzas",
     cell: (info) => <TagsCell value={info.getValue()} />,
+    size: 180,
+  }),
+  columnHelper.accessor("verified", {
+    header: "Verified",
+    cell: (info) => <VerifiedBadge value={info.getValue()} />,
+    size: 80,
+  }),
+  columnHelper.accessor("source", {
+    header: "Source",
+    cell: (info) => (
+      <span className="text-xs text-zinc-400">{info.getValue() || "-"}</span>
+    ),
     size: 160,
   }),
 ]
 
 export const DEFAULT_VISIBLE_COLUMNS: Record<string, boolean> = {
   nombre: true,
+  displayName: false,
   nicho: true,
+  industry: false,
   ciudad: true,
-  estado: false,
-  pais: false,
+  estado: true,
+  pais: true,
   direccion: false,
-  sitioWeb: false,
+  sitioWeb: true,
   email: true,
   facebook: false,
   instagram: false,
   tiktok: false,
   telefono: true,
+  description: false,
   score: true,
   webStatus: true,
   serviciosRecomendados: true,
   serviciosActivos: false,
+  opportunity: false,
+  tags: false,
   recSoftware: false,
   recMarketing: false,
   recFinanzas: false,
+  verified: true,
+  source: false,
 }

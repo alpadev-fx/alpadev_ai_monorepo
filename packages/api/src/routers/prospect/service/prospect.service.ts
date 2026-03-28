@@ -11,7 +11,34 @@ import {
 import { ProspectRepository } from "../repository/prospect.repository";
 
 const HEADER_MAP: Record<string, string> = {
-  // Spanish headers (CSV)
+  // English JSON fields → Prisma model fields
+  name: "nombre",
+  display_name: "displayName",
+  niche: "nicho",
+  industry: "industry",
+  city: "ciudad",
+  state: "estado",
+  country: "pais",
+  country_flag: "countryFlag",
+  address: "direccion",
+  website: "sitioWeb",
+  email: "email",
+  facebook: "facebook",
+  instagram: "instagram",
+  tiktok: "tiktok",
+  phone: "telefono",
+  description: "description",
+  scoring: "score",
+  web_status: "webStatus",
+  services_fit: "serviciosRecomendados",
+  active_services: "serviciosActivos",
+  opportunity: "opportunity",
+  tags: "tags",
+  verified: "verified",
+  verified_at: "verifiedAt",
+  verification_notes: "verificationNotes",
+  source: "source",
+  // Spanish CSV headers
   Nombre: "nombre",
   Nicho: "nicho",
   Ciudad: "ciudad",
@@ -26,33 +53,46 @@ const HEADER_MAP: Record<string, string> = {
   Telefono: "telefono",
   Score: "score",
   "Web Status": "webStatus",
-  "Servicios Recomendados": "serviciosRecomendados",
-  "Servicios Activos": "serviciosActivos",
-  "Rec. Software": "recSoftware",
-  "Rec. Marketing": "recMarketing",
-  "Rec. Finanzas": "recFinanzas",
-  // English headers (JSON export format)
-  name: "nombre",
-  niche: "nicho",
-  city: "ciudad",
-  state: "estado",
-  country: "pais",
-  address: "direccion",
-  website: "sitioWeb",
-  email: "email",
-  facebook: "facebook",
-  instagram: "instagram",
-  tiktok: "tiktok",
-  phone: "telefono",
-  scoring: "score",
-  web_status: "webStatus",
-  services_fit: "serviciosRecomendados",
-  active_services: "serviciosActivos",
 };
 
 const REVERSE_HEADER_MAP: Record<string, string> = Object.fromEntries(
   Object.entries(HEADER_MAP).map(([k, v]) => [v, k]),
 );
+
+// Fields to skip during flat mapping (handled separately)
+const NESTED_FIELDS = new Set([
+  "recommendations",
+  "location",
+  "social",
+  "id",
+  "created_at",
+  "updated_at",
+]);
+
+const OPTIONAL_STRING_FIELDS = new Set([
+  "sitioWeb",
+  "email",
+  "facebook",
+  "instagram",
+  "tiktok",
+  "telefono",
+  "displayName",
+  "countryFlag",
+  "description",
+  "verificationNotes",
+  "source",
+]);
+
+const ALL_ARRAY_FIELDS = new Set([
+  "serviciosRecomendados",
+  "serviciosActivos",
+  "opportunity",
+  "tags",
+  "industry",
+  "recSoftware",
+  "recMarketing",
+  "recFinanzas",
+]);
 
 export class ProspectService {
   private repository: ProspectRepository;
@@ -73,8 +113,16 @@ export class ProspectService {
     return prospect;
   }
 
-  async create(data: Parameters<ProspectRepository["create"]>[0] extends infer T ? Omit<T, "userId"> : never, userId: string) {
-    return this.repository.create({ ...data, userId } as Parameters<ProspectRepository["create"]>[0]);
+  async create(
+    data: Parameters<ProspectRepository["create"]>[0] extends infer T
+      ? Omit<T, "userId">
+      : never,
+    userId: string,
+  ) {
+    return this.repository.create({
+      ...data,
+      userId,
+    } as Parameters<ProspectRepository["create"]>[0]);
   }
 
   async update(id: string, data: Parameters<ProspectRepository["update"]>[1]) {
@@ -107,7 +155,7 @@ export class ProspectService {
 
       const mapped: Record<string, unknown> = {};
 
-      // Flatten nested "recommendations" object if present
+      // Flatten nested "recommendations" object
       const recommendations = raw.recommendations as
         | { software?: string[]; marketing?: string[]; finance?: string[] }
         | undefined;
@@ -125,7 +173,7 @@ export class ProspectService {
 
       // Map flat fields via HEADER_MAP
       for (const [key, value] of Object.entries(raw)) {
-        if (key === "recommendations" || key === "location" || key === "social") continue;
+        if (NESTED_FIELDS.has(key)) continue;
         const field = HEADER_MAP[key] ?? key;
         mapped[field] = value;
       }
@@ -134,57 +182,51 @@ export class ProspectService {
       if (typeof mapped.score === "string") {
         mapped.score = parseInt(mapped.score, 10) || 0;
       } else if (typeof mapped.score === "number") {
-        mapped.score = Math.round(mapped.score);
+        mapped.score = Math.min(10, Math.max(0, Math.round(mapped.score)));
       }
 
       // Transform webStatus
       if (typeof mapped.webStatus === "string") {
-        const wsValue = mapped.webStatus as string;
-        mapped.webStatus =
-          Object.values(WebStatus).includes(wsValue as WebStatus)
-            ? wsValue
-            : "none";
+        mapped.webStatus = Object.values(WebStatus).includes(
+          mapped.webStatus as WebStatus,
+        )
+          ? mapped.webStatus
+          : "none";
       }
 
-      // Handle array fields — keep arrays as-is, split strings by ";"
-      for (const arrayField of ["serviciosRecomendados", "serviciosActivos"]) {
+      // Transform verified
+      if (typeof mapped.verified !== "boolean") {
+        mapped.verified = mapped.verified === "true" || mapped.verified === true;
+      }
+
+      // Transform verifiedAt to ISO string or null
+      if (mapped.verifiedAt && typeof mapped.verifiedAt === "string") {
+        // keep as ISO string
+      } else {
+        mapped.verifiedAt = null;
+      }
+
+      // Handle all array fields — keep arrays as-is, split strings
+      for (const arrayField of ALL_ARRAY_FIELDS) {
         if (Array.isArray(mapped[arrayField])) {
-          // already an array, keep it
+          // already an array
         } else if (typeof mapped[arrayField] === "string") {
           const val = (mapped[arrayField] as string).trim();
-          mapped[arrayField] = val ? val.split(";").map((s) => s.trim()) : [];
+          const sep = arrayField.startsWith("rec") ? "|" : ";";
+          mapped[arrayField] = val ? val.split(sep).map((s) => s.trim()) : [];
         } else {
-          mapped[arrayField] = [];
-        }
-      }
-
-      // Handle rec arrays — keep arrays as-is, split strings by "|"
-      for (const recField of ["recSoftware", "recMarketing", "recFinanzas"]) {
-        if (Array.isArray(mapped[recField])) {
-          // already an array, keep it
-        } else if (typeof mapped[recField] === "string") {
-          const val = (mapped[recField] as string).trim();
-          mapped[recField] = val ? val.split("|").map((s) => s.trim()) : [];
-        } else if (!mapped[recField]) {
-          mapped[recField] = [];
+          mapped[arrayField] = mapped[arrayField] ?? [];
         }
       }
 
       // Trim strings and convert empty/null to null for optional fields
-      const optionalFields = [
-        "sitioWeb",
-        "email",
-        "facebook",
-        "instagram",
-        "tiktok",
-        "telefono",
-      ];
       for (const [key, value] of Object.entries(mapped)) {
         if (typeof value === "string") {
           const trimmed = value.trim();
-          mapped[key] = optionalFields.includes(key) && trimmed === "" ? null : trimmed;
-        } else if (value === null && optionalFields.includes(key)) {
-          // keep null for optional fields
+          mapped[key] =
+            OPTIONAL_STRING_FIELDS.has(key) && trimmed === ""
+              ? null
+              : trimmed;
         }
       }
 
@@ -203,8 +245,11 @@ export class ProspectService {
       }
     }
 
-    if (validRows.length > 0) {
-      await this.repository.createMany(validRows);
+    // Insert in batches of 500 to avoid OOM
+    const BATCH_SIZE = 500;
+    for (let i = 0; i < validRows.length; i += BATCH_SIZE) {
+      const batch = validRows.slice(i, i + BATCH_SIZE);
+      await this.repository.createMany(batch);
     }
 
     return {
@@ -225,7 +270,6 @@ export class ProspectService {
         const value = (prospect as Record<string, unknown>)[field];
 
         if (Array.isArray(value)) {
-          // servicios arrays use ";", rec arrays use "|"
           const separator = field.startsWith("rec") ? "|" : ";";
           row[header] = value.join(separator);
         } else if (value === null || value === undefined) {

@@ -12,14 +12,10 @@ import { api } from "@/lib/trpc/react"
 import { columns, DEFAULT_VISIBLE_COLUMNS } from "./columns"
 import { ProspectsTable } from "./ProspectsTable"
 import { ProspectsToolbar } from "./ProspectsToolbar"
-import { ProspectsTablePagination } from "./ProspectsTablePagination"
 import { FilterPanel } from "./FilterPanel"
 import { ImportModal } from "./ImportModal"
 
 export function ProspectsPage() {
-  // State
-  const [page, setPage] = useState(1)
-  const [pageSize, setPageSize] = useState(25)
   const [search, setSearch] = useState("")
   const [debouncedSearch, setDebouncedSearch] = useState("")
   const [sorting, setSorting] = useState<SortingState>([
@@ -37,6 +33,10 @@ export function ProspectsPage() {
     ciudad: "",
     estado: "",
     pais: "",
+    hasEmail: undefined as boolean | undefined,
+    hasSocialMedia: undefined as boolean | undefined,
+    verified: undefined as boolean | undefined,
+    source: "",
   })
 
   // Debounce search
@@ -44,10 +44,7 @@ export function ProspectsPage() {
     let timer: ReturnType<typeof setTimeout>
     return (value: string) => {
       clearTimeout(timer)
-      timer = setTimeout(() => {
-        setDebouncedSearch(value)
-        setPage(1)
-      }, 300)
+      timer = setTimeout(() => setDebouncedSearch(value), 300)
     }
   }, [])
 
@@ -59,11 +56,11 @@ export function ProspectsPage() {
     [debounceTimer],
   )
 
-  // Build query input
+  // Build query — load ALL records (pageSize 50000)
   const queryInput = useMemo(
     () => ({
-      page,
-      pageSize,
+      page: 1,
+      pageSize: 50000,
       search: debouncedSearch || undefined,
       nicho: filters.nicho.length > 0 ? filters.nicho : undefined,
       webStatus:
@@ -75,19 +72,25 @@ export function ProspectsPage() {
       ciudad: filters.ciudad || undefined,
       estado: filters.estado || undefined,
       pais: filters.pais || undefined,
+      hasEmail: filters.hasEmail,
+      hasSocialMedia: filters.hasSocialMedia,
+      verified: filters.verified,
+      source: filters.source || undefined,
       sortBy: (sorting[0]?.id as
         | "nombre"
         | "nicho"
         | "ciudad"
         | "score"
         | "webStatus"
-        | "createdAt") || "createdAt",
+        | "createdAt"
+        | "email"
+        | "pais"
+        | "estado") || "createdAt",
       sortOrder: (sorting[0]?.desc ? "desc" : "asc") as "asc" | "desc",
     }),
-    [page, pageSize, debouncedSearch, sorting, filters],
+    [debouncedSearch, sorting, filters],
   )
 
-  // tRPC queries
   const { data, isLoading } = api.prospect.getAll.useQuery(queryInput)
   const utils = api.useUtils()
 
@@ -110,6 +113,10 @@ export function ProspectsPage() {
     if (filters.webStatus.length > 0) count++
     if (filters.scoreMin !== undefined || filters.scoreMax !== undefined) count++
     if (filters.ciudad || filters.estado || filters.pais) count++
+    if (filters.hasEmail !== undefined) count++
+    if (filters.hasSocialMedia !== undefined) count++
+    if (filters.verified !== undefined) count++
+    if (filters.source) count++
     return count
   }, [filters])
 
@@ -150,7 +157,6 @@ export function ProspectsPage() {
     [utils.prospect.export, debouncedSearch, filters],
   )
 
-  // Import handler
   const handleImport = useCallback(
     async (input: { format: "csv" | "json"; data: string }) => {
       return importMutation.mutateAsync(input)
@@ -158,7 +164,7 @@ export function ProspectsPage() {
     [importMutation],
   )
 
-  // TanStack Table
+  // TanStack Table — all data, no manual pagination
   const table = useReactTable({
     data: data?.items ?? [],
     columns,
@@ -166,17 +172,14 @@ export function ProspectsPage() {
       sorting,
       columnVisibility,
     },
-    onSortingChange: (updater) => {
-      setSorting(updater)
-      setPage(1)
-    },
+    onSortingChange: setSorting,
     onColumnVisibilityChange: setColumnVisibility,
     getCoreRowModel: getCoreRowModel(),
-    manualPagination: true,
     manualSorting: true,
     manualFiltering: true,
-    pageCount: data?.pagination.totalPages ?? 0,
   })
+
+  const totalCount = data?.pagination.total ?? 0
 
   return (
     <motion.div
@@ -186,11 +189,15 @@ export function ProspectsPage() {
       transition={{ duration: 0.4 }}
     >
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold text-white">Prospects</h1>
-        <p className="mt-1 text-sm text-zinc-400">
-          Manage and track your business prospects
-        </p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Prospects</h1>
+          <p className="mt-1 text-sm text-zinc-400">
+            {isLoading
+              ? "Loading..."
+              : `${totalCount.toLocaleString()} prospects`}
+          </p>
+        </div>
       </div>
 
       {/* Toolbar */}
@@ -211,29 +218,13 @@ export function ProspectsPage() {
           <FilterPanel
             filters={filters}
             nichoOptions={nichoOptions}
-            onFiltersChange={(f) => {
-              setFilters(f)
-              setPage(1)
-            }}
+            onFiltersChange={setFilters}
           />
         )}
       </AnimatePresence>
 
       {/* Table */}
       <ProspectsTable isLoading={isLoading} table={table} />
-
-      {/* Pagination */}
-      <ProspectsTablePagination
-        page={data?.pagination.page ?? 1}
-        pageSize={data?.pagination.pageSize ?? pageSize}
-        total={data?.pagination.total ?? 0}
-        totalPages={data?.pagination.totalPages ?? 0}
-        onPageChange={setPage}
-        onPageSizeChange={(size) => {
-          setPageSize(size)
-          setPage(1)
-        }}
-      />
 
       {/* Import Modal */}
       <ImportModal

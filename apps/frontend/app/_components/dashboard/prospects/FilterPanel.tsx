@@ -11,6 +11,10 @@ interface FilterPanelProps {
     ciudad: string
     estado: string
     pais: string
+    hasEmail?: boolean
+    hasSocialMedia?: boolean
+    verified?: boolean
+    source: string
   }
   nichoOptions: string[]
   onFiltersChange: (filters: FilterPanelProps["filters"]) => void
@@ -41,6 +45,25 @@ export function FilterPanel({
     onFiltersChange({ ...filters, webStatus: updated })
   }
 
+  const cycleTriState = (
+    field: "hasEmail" | "hasSocialMedia" | "verified",
+  ) => {
+    const current = filters[field]
+    // undefined → true → false → undefined
+    const next = current === undefined ? true : current === true ? false : undefined
+    onFiltersChange({ ...filters, [field]: next })
+  }
+
+  const triStateLabel = (value?: boolean) =>
+    value === undefined ? "All" : value ? "Yes" : "No"
+
+  const triStateColor = (value?: boolean) =>
+    value === undefined
+      ? "border-white/10 bg-white/5 text-zinc-400"
+      : value
+        ? "border-emerald-500/50 bg-emerald-500/20 text-emerald-400"
+        : "border-rose-500/50 bg-rose-500/20 text-rose-400"
+
   return (
     <motion.div
       animate={{ opacity: 1, height: "auto" }}
@@ -49,13 +72,13 @@ export function FilterPanel({
       initial={{ opacity: 0, height: 0 }}
       transition={{ duration: 0.2 }}
     >
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6">
         {/* Nicho filter */}
         <div>
           <label className="mb-2 block text-xs font-medium uppercase tracking-wider text-zinc-400">
             Nicho
           </label>
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto">
             {nichoOptions.length > 0 ? (
               nichoOptions.map((nicho) => (
                 <button
@@ -141,35 +164,70 @@ export function FilterPanel({
           <label className="mb-2 block text-xs font-medium uppercase tracking-wider text-zinc-400">
             Location
           </label>
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <input
               className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-white placeholder-zinc-600 focus:border-pink-500/50 focus:outline-none"
               placeholder="Pais"
               type="text"
               value={filters.pais}
-              onChange={(e) =>
-                onFiltersChange({ ...filters, pais: e.target.value })
-              }
+              onChange={(e) => onFiltersChange({ ...filters, pais: e.target.value })}
             />
             <input
               className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-white placeholder-zinc-600 focus:border-pink-500/50 focus:outline-none"
               placeholder="Estado"
               type="text"
               value={filters.estado}
-              onChange={(e) =>
-                onFiltersChange({ ...filters, estado: e.target.value })
-              }
+              onChange={(e) => onFiltersChange({ ...filters, estado: e.target.value })}
             />
             <input
               className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-white placeholder-zinc-600 focus:border-pink-500/50 focus:outline-none"
               placeholder="Ciudad"
               type="text"
               value={filters.ciudad}
-              onChange={(e) =>
-                onFiltersChange({ ...filters, ciudad: e.target.value })
-              }
+              onChange={(e) => onFiltersChange({ ...filters, ciudad: e.target.value })}
             />
           </div>
+        </div>
+
+        {/* Toggles: Email, Social, Verified */}
+        <div>
+          <label className="mb-2 block text-xs font-medium uppercase tracking-wider text-zinc-400">
+            Presence
+          </label>
+          <div className="space-y-1.5">
+            <button
+              className={`w-full rounded-lg border px-3 py-1.5 text-xs text-left transition-colors ${triStateColor(filters.hasEmail)}`}
+              onClick={() => cycleTriState("hasEmail")}
+            >
+              Email: {triStateLabel(filters.hasEmail)}
+            </button>
+            <button
+              className={`w-full rounded-lg border px-3 py-1.5 text-xs text-left transition-colors ${triStateColor(filters.hasSocialMedia)}`}
+              onClick={() => cycleTriState("hasSocialMedia")}
+            >
+              Social: {triStateLabel(filters.hasSocialMedia)}
+            </button>
+            <button
+              className={`w-full rounded-lg border px-3 py-1.5 text-xs text-left transition-colors ${triStateColor(filters.verified)}`}
+              onClick={() => cycleTriState("verified")}
+            >
+              Verified: {triStateLabel(filters.verified)}
+            </button>
+          </div>
+        </div>
+
+        {/* Source */}
+        <div>
+          <label className="mb-2 block text-xs font-medium uppercase tracking-wider text-zinc-400">
+            Source
+          </label>
+          <input
+            className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-white placeholder-zinc-600 focus:border-pink-500/50 focus:outline-none"
+            placeholder="e.g. newyork_codex"
+            type="text"
+            value={filters.source}
+            onChange={(e) => onFiltersChange({ ...filters, source: e.target.value })}
+          />
         </div>
       </div>
     </motion.div>

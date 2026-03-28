@@ -348,10 +348,13 @@ model Prospect {
   id                    String    @id @default(auto()) @map("_id") @db.ObjectId
   userId                String    @db.ObjectId
   nombre                String
+  displayName           String?
   nicho                 String
+  industry              String[]
   ciudad                String
   estado                String
   pais                  String    @default("US")
+  countryFlag           String?
   direccion             String
   sitioWeb              String?
   email                 String?
@@ -359,13 +362,20 @@ model Prospect {
   instagram             String?
   tiktok                String?
   telefono              String?
+  description           String?
   score                 Int       @default(0)
   webStatus             WebStatus @default(none)
   serviciosRecomendados String[]
   serviciosActivos      String[]
+  opportunity           String[]
+  tags                  String[]
   recSoftware           String[]
   recMarketing          String[]
   recFinanzas           String[]
+  verified              Boolean   @default(false)
+  verifiedAt            DateTime?
+  verificationNotes     String?
+  source                String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 
@@ -375,4 +385,6 @@ model Prospect {
   @@index([score])
   @@index([webStatus])
   @@index([ciudad, estado, pais])
+  @@index([verified])
+  @@index([source])
 }

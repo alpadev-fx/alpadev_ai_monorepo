@@ -100,6 +100,29 @@ export class ProspectRepository {
       where.pais = { contains: filter.pais, mode: "insensitive" };
     }
 
+    if (filter.verified !== undefined) {
+      where.verified = filter.verified;
+    }
+
+    if (filter.source) {
+      where.source = { contains: filter.source, mode: "insensitive" };
+    }
+
+    if (filter.hasEmail === true) {
+      where.email = { not: null };
+    } else if (filter.hasEmail === false) {
+      where.email = null;
+    }
+
+    if (filter.hasSocialMedia === true) {
+      where.OR = [
+        ...(where.OR || []),
+        { facebook: { not: null } },
+        { instagram: { not: null } },
+        { tiktok: { not: null } },
+      ];
+    }
+
     return where;
   }
 }
