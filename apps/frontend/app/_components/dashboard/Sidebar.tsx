@@ -12,10 +12,12 @@ import {
   BanknotesIcon,
   UserGroupIcon,
   ChatBubbleLeftRightIcon,
+  ClipboardDocumentListIcon,
 } from "@heroicons/react/24/outline";
 
 const NAV_ITEMS = [
   { name: "Overview", href: "/dashboard", icon: HomeIcon },
+  { name: "Prospects", href: "/dashboard/prospects", icon: ClipboardDocumentListIcon },
   { name: "Transactions", href: "/dashboard/transactions", icon: BanknotesIcon },
   { name: "Bills", href: "/dashboard/bills", icon: CreditCardIcon },
   { name: "Invoices", href: "/dashboard/invoices", icon: DocumentTextIcon },

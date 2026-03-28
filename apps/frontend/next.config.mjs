@@ -1,7 +1,13 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // ✅ ACTUALIZADO: Agregamos las librerías 3D críticas aquí
-  // transpilePackages: ["gsap", "three", "@react-three/fiber", "@react-three/drei"],
+  transpilePackages: [
+    "@package/auth",
+    "@package/api",
+    "@package/db",
+    "@package/utils",
+    "@package/validations",
+    "@package/email",
+  ],
   
   // Standalone build for docker/production
   output: "standalone",

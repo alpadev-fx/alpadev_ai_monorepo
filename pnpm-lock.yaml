@@ -95,6 +95,9 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.64.2
         version: 5.90.16(react@18.3.1)
+      '@tanstack/react-table':
+        specifier: ^8.21.3
+        version: 8.21.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@trpc/client':
         specifier: 11.1.2
         version: 11.1.2(@trpc/server@11.1.2(typescript@5.8.3))(typescript@5.8.3)
@@ -156,8 +159,8 @@ importers:
         specifier: 15.0.4
         version: 15.0.4(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next-auth:
-        specifier: 5.0.0-beta.22
-        version: 5.0.0-beta.22(next@15.0.4(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(nodemailer@6.10.1)(react@18.3.1)
+        specifier: 4.24.11
+        version: 4.24.11(next@15.0.4(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(nodemailer@6.10.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -324,6 +327,9 @@ importers:
       mongoose:
         specifier: ^9.1.5
         version: 9.1.5(socks@2.8.7)
+      papaparse:
+        specifier: ^5.5.3
+        version: 5.5.3
       superjson:
         specifier: 2.2.1
         version: 2.2.1
@@ -346,6 +352,9 @@ importers:
       '@types/express':
         specifier: ^5.0.0
         version: 5.0.6
+      '@types/papaparse':
+        specifier: ^5.5.2
+        version: 5.5.2
       tsx:
         specifier: ^4.20.5
         version: 4.21.0
@@ -357,7 +366,7 @@ importers:
     dependencies:
       '@next-auth/prisma-adapter':
         specifier: ^1.0.7
-        version: 1.0.7(@prisma/client@6.19.1(prisma@6.19.1(typescript@5.8.3))(typescript@5.8.3))(next-auth@4.24.13(next@15.5.9(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.0.0(react@19.2.3))(react@19.2.3))(nodemailer@6.10.1)(react-dom@19.0.0(react@19.2.3))(react@19.2.3))
+        version: 1.0.7(@prisma/client@6.19.1(prisma@6.19.1(typescript@5.8.3))(typescript@5.8.3))(next-auth@4.24.11(next@15.5.9(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.0.0(react@19.2.3))(react@19.2.3))(nodemailer@6.10.1)(react-dom@19.0.0(react@19.2.3))(react@19.2.3))
       '@package/db':
         specifier: workspace:*
         version: link:../db
@@ -367,12 +376,15 @@ importers:
       '@package/utils':
         specifier: workspace:*
         version: link:../utils
+      bcryptjs:
+        specifier: ^3.0.3
+        version: 3.0.3
       next:
         specifier: ^15.3.2
         version: 15.5.9(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.0.0(react@19.2.3))(react@19.2.3)
       next-auth:
         specifier: ^4.24.11
-        version: 4.24.13(next@15.5.9(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.0.0(react@19.2.3))(react@19.2.3))(nodemailer@6.10.1)(react-dom@19.0.0(react@19.2.3))(react@19.2.3)
+        version: 4.24.11(next@15.5.9(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.0.0(react@19.2.3))(react@19.2.3))(nodemailer@6.10.1)(react-dom@19.0.0(react@19.2.3))(react@19.2.3)
       nodemailer:
         specifier: ^6.6.5
         version: 6.10.1
@@ -386,6 +398,9 @@ importers:
       '@package/typescript-config':
         specifier: workspace:*
         version: link:../configs/typescript-config
+      '@types/bcryptjs':
+        specifier: ^3.0.0
+        version: 3.0.0
 
   packages/configs/eslint-config:
     dependencies:
@@ -631,20 +646,6 @@ packages:
   '@ampproject/remapping@2.3.0':
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
-
-  '@auth/core@0.35.3':
-    resolution: {integrity: sha512-g6qfiqU4OtyvIEZ8J7UoIwAxEnNnLJV0/f/DW41U+4G5nhBlaCrnKhawJIJpU0D3uavXLeDT3B0BkjtiimvMDA==}
-    peerDependencies:
-      '@simplewebauthn/browser': ^9.0.1
-      '@simplewebauthn/server': ^9.0.2
-      nodemailer: ^6.8.0
-    peerDependenciesMeta:
-      '@simplewebauthn/browser':
-        optional: true
-      '@simplewebauthn/server':
-        optional: true
-      nodemailer:
-        optional: true
 
   '@aws-crypto/crc32@5.2.0':
     resolution: {integrity: sha512-nLbCWqQNgUiwwtFsen1AdzAtvuLRsQS8rYgMuxCrdKf9kOssamGLuPwyTY9wyYblNr9+1XM8v6zoDTPPSIeANg==}
@@ -1664,6 +1665,7 @@ packages:
 
   '@genkit-ai/googleai@1.27.0':
     resolution: {integrity: sha512-oX9QYLGteFZT5Ug3IHZC/TOWlZgJ8LoUuRC4J486iPhs9yPGSrRiIlW4nfrTWhe/nqmzmCyF8JTvHXKhfSkIag==}
+    deprecated: 'Use @genkit-ai/google-genai package instead. See: https://genkit.dev/docs/js/integrations/google-genai/'
     peerDependencies:
       genkit: ^1.27.0
 
@@ -5137,6 +5139,13 @@ packages:
     peerDependencies:
       react: ^18 || ^19
 
+  '@tanstack/react-table@8.21.3':
+    resolution: {integrity: sha512-5nNMTSETP4ykGegmVkhjcS8tTLW6Vl4axfEGQN3v0zdHYbK4UfoqfPChclTrJ4EoK9QynqAu9oUf8VEmrpZ5Ww==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      react: '>=16.8'
+      react-dom: '>=16.8'
+
   '@tanstack/react-virtual@3.11.3':
     resolution: {integrity: sha512-vCU+OTylXN3hdC8RKg68tPlBPjjxtzon7Ys46MgrSLE+JhSjSTPvoQifV6DQJeJmA8Q3KT6CphJbejupx85vFw==}
     peerDependencies:
@@ -5148,6 +5157,10 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
       react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
+  '@tanstack/table-core@8.21.3':
+    resolution: {integrity: sha512-ldZXEhOBb8Is7xLs01fR3YEc3DERiz5silj8tnGkFZytt1abEvl/GhUmCE0PMLaMPTa3Jk4HbKmRlHmu+gCftg==}
+    engines: {node: '>=12'}
 
   '@tanstack/virtual-core@3.11.3':
     resolution: {integrity: sha512-v2mrNSnMwnPJtcVqNvV0c5roGCBqeogN8jDtgtuHCphdwBasOZ17x8UV8qpHUh+u0MLfX43c0uUHKje0s+Zb0w==}
@@ -5212,6 +5225,10 @@ packages:
   '@types/aws-lambda@8.10.122':
     resolution: {integrity: sha512-vBkIh9AY22kVOCEKo5CJlyCgmSWvasC+SWUxL/x/vOwRobMpI/HG1xp/Ae3AqmSiZeLUbOhW0FCD3ZjqqUxmXw==}
 
+  '@types/bcryptjs@3.0.0':
+    resolution: {integrity: sha512-WRZOuCuaz8UcZZE4R5HXTco2goQSI2XxjGY3hbM/xDvwmqFWd4ivooImsMx65OKM6CtNKbnZ5YL+YwAwK7c1dg==}
+    deprecated: This is a stub types definition. bcryptjs provides its own type definitions, so you do not need this installed.
+
   '@types/bn.js@5.2.0':
     resolution: {integrity: sha512-DLbJ1BPqxvQhIGbeu8VbUC1DiAiahHtAYvA0ZEAa4P31F7IaArc8z3C3BRQdWX4mtLQuABG4yzp76ZrS02Ui1Q==}
 
@@ -5241,9 +5258,6 @@ packages:
 
   '@types/connect@3.4.38':
     resolution: {integrity: sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==}
-
-  '@types/cookie@0.6.0':
-    resolution: {integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==}
 
   '@types/cors@2.8.19':
     resolution: {integrity: sha512-mFNylyeyqN93lfe/9CSxOGREz8cpzAhH+E93xJ4xWQf62V8sQ/24reV2nyzUWM6H6Xji+GGHpkbLe7pVoUEskg==}
@@ -5351,6 +5365,9 @@ packages:
 
   '@types/offscreencanvas@2019.7.3':
     resolution: {integrity: sha512-ieXiYmgSRXUDeOntE1InxjWyvEelZGP63M+cGuquuRLuIKKT1osnkXjxev9B7d1nXSug5vpunx+gNlbVxMlC9A==}
+
+  '@types/papaparse@5.5.2':
+    resolution: {integrity: sha512-gFnFp/JMzLHCwRf7tQHrNnfhN4eYBVYYI897CGX4MY1tzY9l2aLkVyx2IlKZ/SAqDbB3I1AOZW5gTMGGsqWliA==}
 
   '@types/pbkdf2@3.1.2':
     resolution: {integrity: sha512-uRwJqmiXmh9++aSu1VNEn3iIxWOhd8AHXNSdlaLfdAAdSTY9jYVeGWnzejM3dvrkbqE3/hyQkQQ29IFATEGlew==}
@@ -6010,6 +6027,10 @@ packages:
     resolution: {integrity: sha512-RkaJzeJKDbaDWTIPiJwubyljaEPwpVWkm9Rt5h9Nd6h7tEXTJ3VB4qxdZBioV7JO5yLUaOKwz7vDOzlncUsegw==}
     engines: {node: '>=10.0.0'}
 
+  bcryptjs@3.0.3:
+    resolution: {integrity: sha512-GlF5wPWnSa/X5LKM1o0wz0suXIINz1iHRLvTS+sLyi7XPbe5ycmYI3DlZqVGZZtDgl4DmasFg7gOB3JYbphV5g==}
+    hasBin: true
+
   bech32@1.1.4:
     resolution: {integrity: sha512-s0IrSOzLlbvX7yp4WBfPITzpAU8sqQcpsmwXDiKwrG4r491vwCO/XpejasRNl0piBMe/DvP4Tz0mIS/X1DPJBQ==}
 
@@ -6427,10 +6448,6 @@ packages:
 
   cookie@0.4.2:
     resolution: {integrity: sha512-aSWTXFzaKWkvHO1Ny/s+ePFpvKsPnjc551iI41v3ny/ow6tBG5Vd+FuqGNhh1LxOmVzOlGUriIlOaokOvhaStA==}
-    engines: {node: '>= 0.6'}
-
-  cookie@0.6.0:
-    resolution: {integrity: sha512-U71cyTamuh1CRNCfpGY6to28lxvNwPG4Guz/EVjgf3Jmzv0vlDp1atT9eS5dDjMYHucpHbWns6Lwf3BKz6svdw==}
     engines: {node: '>= 0.6'}
 
   cookie@0.7.2:
@@ -8106,9 +8123,6 @@ packages:
   jose@4.15.9:
     resolution: {integrity: sha512-1vUQX+IdDMVPj4k8kOxgUqlcK518yluMuGZwqlr44FS1ppZB/5GWh4rZG89erpOBOJjU/OBsnCVFfapsRz6nEA==}
 
-  jose@5.10.0:
-    resolution: {integrity: sha512-s+3Al/p9g32Iq+oqXxkW//7jk2Vig6FF1CFqzVXoTUXt2qz89YWbL+OwS17NFYEvxC35n0FKeGO2LGYSxeM2Gg==}
-
   js-sha3@0.8.0:
     resolution: {integrity: sha512-gF1cRrHhIzNfToc802P800N8PpXS+evLLXfsVpowqmAFR9uwbi89WvXg2QspOmXL8QL86J4T1EpFu+yUkwJY3Q==}
 
@@ -8709,32 +8723,16 @@ packages:
     resolution: {integrity: sha512-dBpDMdxv9Irdq66304OLfEmQ9tbNRFnFTuZiLo+bD+r332bBmMJ8GBLXklIXXgxd3+v9+KUnZaUR5PJMa75Gsg==}
     engines: {node: '>= 0.4.0'}
 
-  next-auth@4.24.13:
-    resolution: {integrity: sha512-sgObCfcfL7BzIK76SS5TnQtc3yo2Oifp/yIpfv6fMfeBOiBJkDWF3A2y9+yqnmJ4JKc2C+nMjSjmgDeTwgN1rQ==}
+  next-auth@4.24.11:
+    resolution: {integrity: sha512-pCFXzIDQX7xmHFs4KVH4luCjaCbuPRtZ9oBUjUhOk84mZ9WVPf94n87TxYI4rSRf9HmfHEF8Yep3JrYDVOo3Cw==}
     peerDependencies:
-      '@auth/core': 0.34.3
-      next: ^12.2.5 || ^13 || ^14 || ^15 || ^16
-      nodemailer: ^7.0.7
+      '@auth/core': 0.34.2
+      next: ^12.2.5 || ^13 || ^14 || ^15
+      nodemailer: ^6.6.5
       react: ^17.0.2 || ^18 || ^19
       react-dom: ^17.0.2 || ^18 || ^19
     peerDependenciesMeta:
       '@auth/core':
-        optional: true
-      nodemailer:
-        optional: true
-
-  next-auth@5.0.0-beta.22:
-    resolution: {integrity: sha512-QGBo9HGOjmnJBHGXvtFztl0tM5tL0porDlk74HVoCCzXd986ApOlIW3EmiCuho7YzEopgkFiwwmcXpoCrHAtYw==}
-    peerDependencies:
-      '@simplewebauthn/browser': ^9.0.1
-      '@simplewebauthn/server': ^9.0.2
-      next: ^14.0.0-0 || ^15.0.0-0
-      nodemailer: ^6.6.5
-      react: ^18.2.0 || ^19.0.0-0
-    peerDependenciesMeta:
-      '@simplewebauthn/browser':
-        optional: true
-      '@simplewebauthn/server':
         optional: true
       nodemailer:
         optional: true
@@ -8912,9 +8910,6 @@ packages:
     engines: {node: ^14.16.0 || >=16.10.0}
     hasBin: true
 
-  oauth4webapi@2.17.0:
-    resolution: {integrity: sha512-lbC0Z7uzAFNFyzEYRIC+pkSVvDHJTbEW+dYlSBAlCYDe6RxUkJ26bClhk8ocBZip1wfI9uKTe0fm4Ib4RHn6uQ==}
-
   oauth@0.9.15:
     resolution: {integrity: sha512-a5ERWK1kh38ExDEfoO6qUHJb32rd7aYmPHuyCu3Fta/cnICvYmgd2uhuKXvPD+PXB+gCEYYEaQdIRAjCOwAKNA==}
 
@@ -9086,6 +9081,9 @@ packages:
   package-json@10.0.1:
     resolution: {integrity: sha512-ua1L4OgXSBdsu1FPb7F3tYH0F48a6kxvod4pLUlGY9COeJAJQNX/sNH2IiEmsxw7lqYiAwrdHMjz1FctOsyDQg==}
     engines: {node: '>=18'}
+
+  papaparse@5.5.3:
+    resolution: {integrity: sha512-5QvjGxYVjxO59MGU2lHVYpRWBBtKHnlIAcSe1uNFCkkptUh63NFRj0FJQm7nR67puEruUci/ZkjmEFrjCAyP4A==}
 
   param-case@2.1.1:
     resolution: {integrity: sha512-eQE845L6ot89sk2N8liD8HAuH4ca6Vvr7VWAWwt7+kvvG5aBcPmmphQ68JsEG2qa9n1TykS2DLeMt363AAH8/w==}
@@ -9298,18 +9296,10 @@ packages:
   potpack@1.0.2:
     resolution: {integrity: sha512-choctRBIV9EMT9WGAZHn3V7t0Z2pMQyl0EZE6pFc/6ml3ssw7Dlf/oAOvFwjm1HVsqfQN8GfeFyJ+d8tRzqueQ==}
 
-  preact-render-to-string@5.2.3:
-    resolution: {integrity: sha512-aPDxUn5o3GhWdtJtW0svRC2SS/l8D9MAgo2+AWml+BhDImb27ALf04Q2d+AHqUUOc6RdSXFIBVa2gxzgMKgtZA==}
-    peerDependencies:
-      preact: '>=10'
-
   preact-render-to-string@5.2.6:
     resolution: {integrity: sha512-JyhErpYOvBV1hEPwIxc/fHWXPfnEGdRKxc8gFdAZ7XV4tlzyzG847XAyEZqoDnynP88akM4eaHcSOzNcLWFguw==}
     peerDependencies:
       preact: '>=10'
-
-  preact@10.11.3:
-    resolution: {integrity: sha512-eY93IVpod/zG3uMF22Unl8h9KkrcKIRs2EGar8hwLZZDU1lkjph303V9HZBwufh2s736U6VXuhD109LYqPoffg==}
 
   preact@10.28.1:
     resolution: {integrity: sha512-u1/ixq/lVQI0CakKNvLDEcW5zfCjUQfZdK9qqWuIJtsezuyG6pk9TWj75GMuI/EzRSZB/VAE43sNWWZfiy8psw==}
@@ -11026,18 +11016,6 @@ snapshots:
     dependencies:
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
-
-  '@auth/core@0.35.3(nodemailer@6.10.1)':
-    dependencies:
-      '@panva/hkdf': 1.2.1
-      '@types/cookie': 0.6.0
-      cookie: 0.6.0
-      jose: 5.10.0
-      oauth4webapi: 2.17.0
-      preact: 10.11.3
-      preact-render-to-string: 5.2.3(preact@10.11.3)
-    optionalDependencies:
-      nodemailer: 6.10.1
 
   '@aws-crypto/crc32@5.2.0':
     dependencies:
@@ -14141,10 +14119,10 @@ snapshots:
       '@tybys/wasm-util': 0.10.1
     optional: true
 
-  '@next-auth/prisma-adapter@1.0.7(@prisma/client@6.19.1(prisma@6.19.1(typescript@5.8.3))(typescript@5.8.3))(next-auth@4.24.13(next@15.5.9(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.0.0(react@19.2.3))(react@19.2.3))(nodemailer@6.10.1)(react-dom@19.0.0(react@19.2.3))(react@19.2.3))':
+  '@next-auth/prisma-adapter@1.0.7(@prisma/client@6.19.1(prisma@6.19.1(typescript@5.8.3))(typescript@5.8.3))(next-auth@4.24.11(next@15.5.9(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.0.0(react@19.2.3))(react@19.2.3))(nodemailer@6.10.1)(react-dom@19.0.0(react@19.2.3))(react@19.2.3))':
     dependencies:
       '@prisma/client': 6.19.1(prisma@6.19.1(typescript@5.8.3))(typescript@5.8.3)
-      next-auth: 4.24.13(next@15.5.9(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.0.0(react@19.2.3))(react@19.2.3))(nodemailer@6.10.1)(react-dom@19.0.0(react@19.2.3))(react@19.2.3)
+      next-auth: 4.24.11(next@15.5.9(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.0.0(react@19.2.3))(react@19.2.3))(nodemailer@6.10.1)(react-dom@19.0.0(react@19.2.3))(react@19.2.3)
 
   '@next/bundle-analyzer@15.0.4':
     dependencies:
@@ -17222,6 +17200,12 @@ snapshots:
       '@tanstack/query-core': 5.90.16
       react: 18.3.1
 
+  '@tanstack/react-table@8.21.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
+    dependencies:
+      '@tanstack/table-core': 8.21.3
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+
   '@tanstack/react-virtual@3.11.3(react-dom@18.3.1(react@18.3.1))(react@18.3.1)':
     dependencies:
       '@tanstack/virtual-core': 3.11.3
@@ -17233,6 +17217,8 @@ snapshots:
       '@tanstack/virtual-core': 3.13.16
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
+
+  '@tanstack/table-core@8.21.3': {}
 
   '@tanstack/virtual-core@3.11.3': {}
 
@@ -17313,6 +17299,10 @@ snapshots:
   '@types/aws-lambda@8.10.122':
     optional: true
 
+  '@types/bcryptjs@3.0.0':
+    dependencies:
+      bcryptjs: 3.0.3
+
   '@types/bn.js@5.2.0':
     dependencies:
       '@types/node': 22.19.3
@@ -17350,8 +17340,6 @@ snapshots:
   '@types/connect@3.4.38':
     dependencies:
       '@types/node': 22.19.3
-
-  '@types/cookie@0.6.0': {}
 
   '@types/cors@2.8.19':
     dependencies:
@@ -17492,6 +17480,10 @@ snapshots:
 
   '@types/offscreencanvas@2019.7.3': {}
 
+  '@types/papaparse@5.5.2':
+    dependencies:
+      '@types/node': 22.19.3
+
   '@types/pbkdf2@3.1.2':
     dependencies:
       '@types/node': 22.19.3
@@ -17614,7 +17606,7 @@ snapshots:
 
   '@types/webpack@5.28.5(esbuild@0.25.10)':
     dependencies:
-      '@types/node': 20.19.27
+      '@types/node': 22.19.3
       tapable: 2.3.0
       webpack: 5.104.1(esbuild@0.25.10)
     transitivePeerDependencies:
@@ -18194,6 +18186,8 @@ snapshots:
 
   basic-ftp@5.1.0: {}
 
+  bcryptjs@3.0.3: {}
+
   bech32@1.1.4: {}
 
   bidi-js@1.0.3:
@@ -18669,8 +18663,6 @@ snapshots:
 
   cookie@0.4.2: {}
 
-  cookie@0.6.0: {}
-
   cookie@0.7.2: {}
 
   copy-anything@3.0.5:
@@ -19005,7 +18997,7 @@ snapshots:
   engine.io@6.6.5:
     dependencies:
       '@types/cors': 2.8.19
-      '@types/node': 20.19.27
+      '@types/node': 22.19.3
       accepts: 1.3.8
       base64id: 2.0.0
       cookie: 0.7.2
@@ -20931,8 +20923,6 @@ snapshots:
 
   jose@4.15.9: {}
 
-  jose@5.10.0: {}
-
   js-sha3@0.8.0: {}
 
   js-tokens@4.0.0: {}
@@ -21485,7 +21475,24 @@ snapshots:
 
   netmask@2.0.2: {}
 
-  next-auth@4.24.13(next@15.5.9(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.0.0(react@19.2.3))(react@19.2.3))(nodemailer@6.10.1)(react-dom@19.0.0(react@19.2.3))(react@19.2.3):
+  next-auth@4.24.11(next@15.0.4(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(nodemailer@6.10.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+    dependencies:
+      '@babel/runtime': 7.28.4
+      '@panva/hkdf': 1.2.1
+      cookie: 0.7.2
+      jose: 4.15.9
+      next: 15.0.4(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      oauth: 0.9.15
+      openid-client: 5.7.1
+      preact: 10.28.1
+      preact-render-to-string: 5.2.6(preact@10.28.1)
+      react: 18.3.1
+      react-dom: 18.3.1(react@18.3.1)
+      uuid: 8.3.2
+    optionalDependencies:
+      nodemailer: 6.10.1
+
+  next-auth@4.24.11(next@15.5.9(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@19.0.0(react@19.2.3))(react@19.2.3))(nodemailer@6.10.1)(react-dom@19.0.0(react@19.2.3))(react@19.2.3):
     dependencies:
       '@babel/runtime': 7.28.4
       '@panva/hkdf': 1.2.1
@@ -21499,14 +21506,6 @@ snapshots:
       react: 19.2.3
       react-dom: 19.0.0(react@19.2.3)
       uuid: 8.3.2
-    optionalDependencies:
-      nodemailer: 6.10.1
-
-  next-auth@5.0.0-beta.22(next@15.0.4(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(nodemailer@6.10.1)(react@18.3.1):
-    dependencies:
-      '@auth/core': 0.35.3(nodemailer@6.10.1)
-      next: 15.0.4(@opentelemetry/api@1.9.0)(@playwright/test@1.57.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      react: 18.3.1
     optionalDependencies:
       nodemailer: 6.10.1
 
@@ -21693,8 +21692,6 @@ snapshots:
       pathe: 2.0.3
       pkg-types: 2.3.0
       tinyexec: 1.0.2
-
-  oauth4webapi@2.17.0: {}
 
   oauth@0.9.15: {}
 
@@ -21924,6 +21921,8 @@ snapshots:
       registry-url: 6.0.1
       semver: 7.7.3
 
+  papaparse@5.5.3: {}
+
   param-case@2.1.1:
     dependencies:
       no-case: 2.3.2
@@ -22131,17 +22130,10 @@ snapshots:
 
   potpack@1.0.2: {}
 
-  preact-render-to-string@5.2.3(preact@10.11.3):
-    dependencies:
-      preact: 10.11.3
-      pretty-format: 3.8.0
-
   preact-render-to-string@5.2.6(preact@10.28.1):
     dependencies:
       preact: 10.28.1
       pretty-format: 3.8.0
-
-  preact@10.11.3: {}
 
   preact@10.28.1: {}
 
@@ -23073,7 +23065,7 @@ snapshots:
       pify: 4.0.1
       recursive-readdir: 2.2.3
       sc-istanbul: 0.4.6
-      semver: 7.7.3
+      semver: 7.7.4
       shelljs: 0.8.5
       web3-utils: 1.10.4
 

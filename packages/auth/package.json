@@ -15,12 +15,14 @@
     "@package/db": "workspace:*",
     "@package/email": "workspace:*",
     "@package/utils": "workspace:*",
+    "bcryptjs": "^3.0.3",
     "next-auth": "^4.24.11"
   },
   "devDependencies": {
     "@package/eslint-config": "workspace:*",
     "@package/prettier-config": "workspace:*",
-    "@package/typescript-config": "workspace:*"
+    "@package/typescript-config": "workspace:*",
+    "@types/bcryptjs": "^3.0.0"
   },
   "peerDependencies": {
     "next": "^15.3.2",

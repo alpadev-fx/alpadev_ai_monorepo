@@ -3,6 +3,7 @@
 import type { ThemeProviderProps } from "next-themes"
 
 import * as React from "react"
+import { SessionProvider } from "next-auth/react"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
 import { HeroUIProvider } from "@heroui/system"
 import { useRouter } from "next/navigation"
@@ -31,18 +32,20 @@ export function Providers({
   const router = useRouter()
 
   return (
-    // @ts-ignore
-    <HeroUIProvider navigate={router.push}>
-      <NextThemesProvider
-        attribute={attribute}
-        defaultTheme={defaultTheme}
-        {...themeProps}
-      >
-        <TRPCReactProvider>
-          <LanguageProvider>{children}</LanguageProvider>
-        </TRPCReactProvider>
-      </NextThemesProvider>
-    </HeroUIProvider>
+    <SessionProvider>
+      {/* @ts-ignore */}
+      <HeroUIProvider navigate={router.push}>
+        <NextThemesProvider
+          attribute={attribute}
+          defaultTheme={defaultTheme}
+          {...themeProps}
+        >
+          <TRPCReactProvider>
+            <LanguageProvider>{children}</LanguageProvider>
+          </TRPCReactProvider>
+        </NextThemesProvider>
+      </HeroUIProvider>
+    </SessionProvider>
     // <>{children}</>
   )
 }

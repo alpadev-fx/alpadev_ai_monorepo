@@ -11,6 +11,7 @@
     "db:deploy": "prisma migrate deploy",
     "db:pull": "prisma db pull",
     "db:seed": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" prisma/seed.ts",
+    "db:seed:admin": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" prisma/seeds/admin.ts",
     "db:reset": "ts-node --compiler-options \"{\\\"module\\\":\\\"CommonJS\\\"}\" reset.ts",
     "postinstall": "prisma generate"
   },

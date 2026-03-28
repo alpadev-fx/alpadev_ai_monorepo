@@ -25,6 +25,7 @@
     "@package/utils": "workspace:*",
     "@package/validations": "workspace:*",
     "@trpc/server": "11.1.2",
+    "bullmq": "^5.66.1",
     "date-fns": "^3.6.0",
     "date-fns-tz": "^3.2.0",
     "dotenv": "^16.4.5",
@@ -33,11 +34,11 @@
     "genkitx-deepseek": "^1.0.1",
     "genkitx-mistral": "^0.23.0",
     "googleapis": "^170.1.0",
+    "ioredis": "^5.8.2",
     "mongoose": "^9.1.5",
+    "papaparse": "^5.5.3",
     "superjson": "2.2.1",
     "twilio": "^5.9.0",
-    "bullmq": "^5.66.1",
-    "ioredis": "^5.8.2",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -45,6 +46,7 @@
     "@package/prettier-config": "workspace:*",
     "@package/typescript-config": "workspace:*",
     "@types/express": "^5.0.0",
+    "@types/papaparse": "^5.5.2",
     "tsx": "^4.20.5",
     "typescript": "^5.8.3"
   }

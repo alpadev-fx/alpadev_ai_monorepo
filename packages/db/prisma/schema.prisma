@@ -54,12 +54,14 @@ model VerificationToken {
 }
 
 model User {
-  id    String  @id @default(auto()) @map("_id") @db.ObjectId
-  email String? @unique
-  name  String
-  phone String? @unique
-  role  Role    @default(GUEST)
-  image String?
+  id       String  @id @default(auto()) @map("_id") @db.ObjectId
+  email    String? @unique
+  name     String
+  phone    String? @unique
+  role     Role    @default(GUEST)
+  image    String?
+  username String? @unique
+  password String?
 
   accounts     Account[]
   sessions     Session[]
@@ -69,6 +71,7 @@ model User {
   invoices     Invoice[]
   bookings             Booking[]
   conversationSessions ConversationSession[]
+  prospects            Prospect[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -329,4 +332,47 @@ enum ChatJobStatus {
   processing
   completed
   failed
+}
+
+// ==========================================
+// PROSPECT MODELS
+// ==========================================
+
+enum WebStatus {
+  none
+  basic
+  poor
+}
+
+model Prospect {
+  id                    String    @id @default(auto()) @map("_id") @db.ObjectId
+  userId                String    @db.ObjectId
+  nombre                String
+  nicho                 String
+  ciudad                String
+  estado                String
+  pais                  String    @default("US")
+  direccion             String
+  sitioWeb              String?
+  email                 String?
+  facebook              String?
+  instagram             String?
+  tiktok                String?
+  telefono              String?
+  score                 Int       @default(0)
+  webStatus             WebStatus @default(none)
+  serviciosRecomendados String[]
+  serviciosActivos      String[]
+  recSoftware           String[]
+  recMarketing          String[]
+  recFinanzas           String[]
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([nicho])
+  @@index([score])
+  @@index([webStatus])
+  @@index([ciudad, estado, pais])
 }

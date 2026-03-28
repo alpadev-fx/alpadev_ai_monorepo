@@ -1,6 +1,8 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { db } from "@package/db"
 import { MagicLinkSignIn, sendEmail } from "@package/email"
+import bcrypt from "bcryptjs"
+import CredentialsProvider from "next-auth/providers/credentials"
 import EmailProvider from "next-auth/providers/email"
 import GitHubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
@@ -113,10 +115,28 @@ const scopes = [
 
 const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db) as Adapter,
+  secret: process.env.NEXTAUTH_SECRET || "fallback-secret-for-dev",
   session: {
     strategy: "jwt",
   },
   providers: [
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        username: { label: "Username", type: "text" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.username || !credentials?.password) return null
+        const user = await db.user.findFirst({
+          where: { username: credentials.username },
+        })
+        if (!user || !user.password) return null
+        const isValid = bcrypt.compareSync(credentials.password, user.password)
+        if (!isValid) return null
+        return { id: user.id, name: user.name, email: user.email }
+      },
+    }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
@@ -156,8 +176,8 @@ const authOptions: NextAuthOptions = {
     }),
   ],
   pages: {
-    signIn: "/access",
-    signOut: "/access",
+    signIn: "/login",
+    signOut: "/login",
   },
   callbacks: {
     async jwt({ token, user, account }) {

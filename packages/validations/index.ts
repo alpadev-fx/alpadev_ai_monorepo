@@ -8,4 +8,5 @@ export * from "./schemas/invoice/invoice.schema"
 export * from "./schemas/booking/booking.schema"
 export * from "./schemas/chatbot/chatbot.schema"
 export * from "./schemas/chat/chat.schema"
+export * from "./schemas/prospect/prospect.schema"
 
