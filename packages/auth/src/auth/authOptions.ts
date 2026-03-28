@@ -206,7 +206,7 @@ const authOptions: NextAuthOptions = {
         email: dbUser.email,
         picture: undefined, // dbUser.image, // TODO: Add image field to User schema
         role: dbUser.role,
-        hasOnboarded: false, // dbUser.hasOnboarded, // TODO: Add hasOnboarded field to User schema
+        hasOnboarded: true, // TODO: Add hasOnboarded field to User schema
         isBanned: false, // dbUser.isBanned, // TODO: Add isBanned field to User schema
       }
     },
