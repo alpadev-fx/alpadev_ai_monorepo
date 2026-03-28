@@ -7,9 +7,7 @@ import { siteConfig } from "../config/site"
 import { fontSans } from "../config/fonts"
 
 import { Providers } from "./providers"
-import Navbar from "./_components/landing/Navbar"
-import Footer from "./_components/landing/Footer"
-import ChatWidget from "@/components/chat/ChatWidget"
+import { LayoutShell } from "./_components/LayoutShell"
 //import { FPSMonitor } from "./_components/diagnostics/FPSMonitor"
 
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
@@ -126,11 +124,7 @@ export default function RootLayout({
 
         <Providers attribute="class" defaultTheme="dark">
           <div className="relative flex flex-col min-h-screen">
-            <Navbar />
-            <main className="w-full flex-grow">{children}</main>
-            <ChatWidget />
-            <Footer />
-            {/* <FPSMonitor /> */}
+            <LayoutShell>{children}</LayoutShell>
           </div>
         </Providers>
       </body>

@@ -1,79 +1,145 @@
-"use client";
+"use client"
 
-import React from "react";
-import { cn } from "@heroui/theme";
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { useSession, signOut } from "next-auth/react"
+import { motion } from "framer-motion"
 import {
-  HomeIcon,
-  CreditCardIcon,
-  DocumentTextIcon,
-  BanknotesIcon,
-  UserGroupIcon,
-  ChatBubbleLeftRightIcon,
+  ChartBarIcon,
   ClipboardDocumentListIcon,
-} from "@heroicons/react/24/outline";
+  ChevronLeftIcon,
+  ArrowRightStartOnRectangleIcon,
+} from "@heroicons/react/24/outline"
 
 const NAV_ITEMS = [
-  { name: "Overview", href: "/dashboard", icon: HomeIcon },
+  { name: "Metrics", href: "/dashboard", icon: ChartBarIcon },
   { name: "Prospects", href: "/dashboard/prospects", icon: ClipboardDocumentListIcon },
-  { name: "Transactions", href: "/dashboard/transactions", icon: BanknotesIcon },
-  { name: "Bills", href: "/dashboard/bills", icon: CreditCardIcon },
-  { name: "Invoices", href: "/dashboard/invoices", icon: DocumentTextIcon },
-  { name: "Team", href: "/dashboard/team", icon: UserGroupIcon },
-  { name: "Live Chat", href: "/dashboard/chat", icon: ChatBubbleLeftRightIcon },
-];
+]
 
-export const Sidebar = () => {
-  const pathname = usePathname();
+interface SidebarProps {
+  collapsed: boolean
+  onToggle: () => void
+}
+
+export const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
+  const pathname = usePathname()
+  const { data: session } = useSession()
+  const user = session?.user
+
+  const isActive = (href: string) => {
+    if (href === "/dashboard") return pathname === "/dashboard"
+    return pathname?.startsWith(href)
+  }
 
   return (
-    <motion.aside 
-        initial={{ x: -20, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="fixed left-6 top-6 bottom-6 w-64 rounded-3xl border border-white/10 bg-black/20 backdrop-blur-xl"
+    <motion.aside
+      animate={{ width: collapsed ? 72 : 280 }}
+      transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+      className="fixed left-0 top-0 bottom-0 z-40 flex flex-col bg-[#1b1b1b] overflow-hidden"
+    >
+      {/* Logo */}
+      <Link
+        href="/"
+        className="flex items-center gap-3 px-5 py-6 group"
       >
-        <div className="flex h-full flex-col p-6">
-          <div className="mb-10 flex items-center gap-3">
-            <div className="h-8 w-8 rounded-full bg-gradient-to-tr from-pink-500 to-violet-500" />
-            <span className="text-xl font-bold tracking-tight">Open Manager</span>
-          </div>
-
-          <nav className="flex-1 space-y-2">
-            {NAV_ITEMS.map((item) => {
-              const isActive = pathname === item.href;
-              const Icon = item.icon;
-              
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={cn(
-                    "group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-all",
-                    isActive 
-                      ? "bg-white/10 text-white" 
-                      : "text-zinc-400 hover:bg-white/5 hover:text-white"
-                  )}
-                >
-                  <Icon className={cn("h-5 w-5", isActive ? "text-pink-500" : "text-zinc-500 group-hover:text-pink-400")} />
-                  {item.name}
-                </Link>
-              );
-            })}
-          </nav>
-
-          <div className="mt-auto">
-             <div className="flex items-center gap-3 rounded-xl border border-white/5 bg-white/5 p-3">
-                <div className="h-8 w-8 rounded-full bg-zinc-800" />
-                <div className="flex flex-col">
-                  <span className="text-sm font-medium">User</span>
-                  <span className="text-xs text-zinc-500">Admin</span>
-                </div>
-             </div>
-          </div>
+        <div className="h-9 w-9 shrink-0 rounded-xl bg-gradient-to-br from-[#f751a1] to-[#d0bcff] flex items-center justify-center">
+          <span className="text-sm font-bold text-white">O</span>
         </div>
-      </motion.aside>
-  );
-};
+        {!collapsed && (
+          <motion.span
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-lg font-bold tracking-tight text-white"
+          >
+            OnShapers
+          </motion.span>
+        )}
+      </Link>
+
+      {/* Navigation */}
+      <nav className="flex-1 px-3 mt-2 space-y-1">
+        {NAV_ITEMS.map((item) => {
+          const active = isActive(item.href)
+          const Icon = item.icon
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-200 ${
+                active
+                  ? "bg-white/[0.06] text-white"
+                  : "text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-300"
+              } ${collapsed ? "justify-center" : ""}`}
+              title={collapsed ? item.name : undefined}
+            >
+              <Icon
+                className={`h-5 w-5 shrink-0 ${
+                  active ? "text-[#ffb0cd]" : "text-zinc-600"
+                }`}
+              />
+              {!collapsed && (
+                <span className="text-sm font-medium">{item.name}</span>
+              )}
+            </Link>
+          )
+        })}
+      </nav>
+
+      {/* User section */}
+      <div className="px-3 pb-3 space-y-2">
+        {/* User info */}
+        <div
+          className={`rounded-xl bg-white/[0.03] p-3 ${
+            collapsed ? "flex justify-center" : ""
+          }`}
+        >
+          <div className={`flex items-center gap-3 ${collapsed ? "" : ""}`}>
+            {/* Avatar */}
+            <div className="h-8 w-8 shrink-0 rounded-lg bg-gradient-to-br from-[#f751a1] to-[#8B5CF6] flex items-center justify-center">
+              <span className="text-xs font-bold text-white">
+                {user?.name?.[0]?.toUpperCase() || "U"}
+              </span>
+            </div>
+            {!collapsed && (
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-medium text-white truncate">
+                  {user?.name || "User"}
+                </p>
+                <p className="text-[11px] text-zinc-600 truncate">
+                  {user?.email || ""}
+                </p>
+              </div>
+            )}
+          </div>
+          {!collapsed && (
+            <div className="mt-2.5 flex items-center justify-between">
+              <span className="text-[10px] uppercase tracking-wider font-medium bg-[#8B5CF6]/20 text-[#d0bcff] rounded-full px-2 py-0.5">
+                {(user as { role?: string })?.role || "USER"}
+              </span>
+              <button
+                className="flex items-center gap-1 text-[11px] text-zinc-600 hover:text-rose-400 transition-colors"
+                onClick={() => signOut({ callbackUrl: "/login" })}
+              >
+                <ArrowRightStartOnRectangleIcon className="h-3.5 w-3.5" />
+                Sign Out
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Collapse toggle */}
+        <button
+          className="w-full flex items-center justify-center rounded-xl py-2 text-zinc-600 hover:text-zinc-400 hover:bg-white/[0.04] transition-all"
+          onClick={onToggle}
+        >
+          <ChevronLeftIcon
+            className={`h-4 w-4 transition-transform duration-300 ${
+              collapsed ? "rotate-180" : ""
+            }`}
+          />
+        </button>
+      </div>
+    </motion.aside>
+  )
+}
