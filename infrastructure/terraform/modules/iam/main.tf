@@ -25,6 +25,20 @@ resource "google_project_iam_member" "cloud_run_metric_writer" {
   member  = "serviceAccount:${google_service_account.cloud_run_app.email}"
 }
 
+# Dashboard: read monitoring metrics
+resource "google_project_iam_member" "cloud_run_monitoring_viewer" {
+  project = var.project_id
+  role    = "roles/monitoring.viewer"
+  member  = "serviceAccount:${google_service_account.cloud_run_app.email}"
+}
+
+# Dashboard: read and update Cloud Run service config
+resource "google_project_iam_member" "cloud_run_self_developer" {
+  project = var.project_id
+  role    = "roles/run.developer"
+  member  = "serviceAccount:${google_service_account.cloud_run_app.email}"
+}
+
 # GitHub Actions deployer service account
 resource "google_service_account" "github_deployer" {
   account_id   = "github-deployer"

@@ -11,6 +11,7 @@ import { calendarRouter } from "./routers/google-calendar/calendar.router"
 import { chatbotRouter } from "./routers/chatbot/chatbot.router"
 import { chatRouter } from "./routers/chat/chat.router"
 import { prospectRouter } from "./routers/prospect/prospect.router"
+import { infrastructureRouter } from "./routers/infrastructure/infrastructure.router"
 import { createTRPCRouter } from "./trpc"
 
 export const appRouter = createTRPCRouter({
@@ -27,6 +28,7 @@ export const appRouter = createTRPCRouter({
   chatbot: chatbotRouter,
   chat: chatRouter,
   prospect: prospectRouter,
+  infrastructure: infrastructureRouter,
 })
 
 // export type definition of API

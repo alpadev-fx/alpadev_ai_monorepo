@@ -8,6 +8,7 @@ import { motion } from "framer-motion"
 import {
   ChartBarIcon,
   ClipboardDocumentListIcon,
+  ServerStackIcon,
   ChevronLeftIcon,
   ArrowRightStartOnRectangleIcon,
 } from "@heroicons/react/24/outline"
@@ -15,6 +16,7 @@ import {
 const NAV_ITEMS = [
   { name: "Metrics", href: "/dashboard", icon: ChartBarIcon },
   { name: "Prospects", href: "/dashboard/prospects", icon: ClipboardDocumentListIcon },
+  { name: "Infrastructure", href: "/dashboard/infrastructure", icon: ServerStackIcon },
 ]
 
 interface SidebarProps {

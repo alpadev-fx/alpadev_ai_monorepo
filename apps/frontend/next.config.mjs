@@ -14,6 +14,9 @@ const nextConfig = {
   // Performance optimizations
   compress: true,
 
+  // Keep heavy server-only packages out of the webpack bundle
+  serverExternalPackages: ["googleapis", "google-auth-library"],
+
   // Image optimization
   images: {
     formats: ["image/avif", "image/webp"],
