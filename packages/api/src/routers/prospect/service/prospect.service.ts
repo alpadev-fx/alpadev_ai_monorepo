@@ -11,6 +11,7 @@ import {
 import { ProspectRepository } from "../repository/prospect.repository";
 
 const HEADER_MAP: Record<string, string> = {
+  // Spanish headers (CSV)
   Nombre: "nombre",
   Nicho: "nicho",
   Ciudad: "ciudad",
@@ -30,6 +31,23 @@ const HEADER_MAP: Record<string, string> = {
   "Rec. Software": "recSoftware",
   "Rec. Marketing": "recMarketing",
   "Rec. Finanzas": "recFinanzas",
+  // English headers (JSON export format)
+  name: "nombre",
+  niche: "nicho",
+  city: "ciudad",
+  state: "estado",
+  country: "pais",
+  address: "direccion",
+  website: "sitioWeb",
+  email: "email",
+  facebook: "facebook",
+  instagram: "instagram",
+  tiktok: "tiktok",
+  phone: "telefono",
+  scoring: "score",
+  web_status: "webStatus",
+  services_fit: "serviciosRecomendados",
+  active_services: "serviciosActivos",
 };
 
 const REVERSE_HEADER_MAP: Record<string, string> = Object.fromEntries(
@@ -68,7 +86,7 @@ export class ProspectService {
   }
 
   async importProspects(input: ImportProspectsInput, userId: string) {
-    let rows: Record<string, string>[];
+    let rows: Record<string, unknown>[];
 
     if (input.format === "csv") {
       const parsed = Papa.parse<Record<string, string>>(input.data, {
@@ -77,7 +95,7 @@ export class ProspectService {
       });
       rows = parsed.data;
     } else {
-      rows = JSON.parse(input.data) as Record<string, string>[];
+      rows = JSON.parse(input.data) as Record<string, unknown>[];
     }
 
     const errors: { row: number; field?: string; message: string }[] = [];
@@ -89,16 +107,37 @@ export class ProspectService {
 
       const mapped: Record<string, unknown> = {};
 
+      // Flatten nested "recommendations" object if present
+      const recommendations = raw.recommendations as
+        | { software?: string[]; marketing?: string[]; finance?: string[] }
+        | undefined;
+      if (recommendations && typeof recommendations === "object") {
+        mapped.recSoftware = Array.isArray(recommendations.software)
+          ? recommendations.software
+          : [];
+        mapped.recMarketing = Array.isArray(recommendations.marketing)
+          ? recommendations.marketing
+          : [];
+        mapped.recFinanzas = Array.isArray(recommendations.finance)
+          ? recommendations.finance
+          : [];
+      }
+
+      // Map flat fields via HEADER_MAP
       for (const [key, value] of Object.entries(raw)) {
+        if (key === "recommendations" || key === "location" || key === "social") continue;
         const field = HEADER_MAP[key] ?? key;
         mapped[field] = value;
       }
 
-      // Transform fields
+      // Transform score
       if (typeof mapped.score === "string") {
         mapped.score = parseInt(mapped.score, 10) || 0;
+      } else if (typeof mapped.score === "number") {
+        mapped.score = Math.round(mapped.score);
       }
 
+      // Transform webStatus
       if (typeof mapped.webStatus === "string") {
         const wsValue = mapped.webStatus as string;
         mapped.webStatus =
@@ -107,23 +146,31 @@ export class ProspectService {
             : "none";
       }
 
-      // Split array fields by ";"
+      // Handle array fields — keep arrays as-is, split strings by ";"
       for (const arrayField of ["serviciosRecomendados", "serviciosActivos"]) {
-        if (typeof mapped[arrayField] === "string") {
+        if (Array.isArray(mapped[arrayField])) {
+          // already an array, keep it
+        } else if (typeof mapped[arrayField] === "string") {
           const val = (mapped[arrayField] as string).trim();
           mapped[arrayField] = val ? val.split(";").map((s) => s.trim()) : [];
+        } else {
+          mapped[arrayField] = [];
         }
       }
 
-      // Split rec arrays by "|"
+      // Handle rec arrays — keep arrays as-is, split strings by "|"
       for (const recField of ["recSoftware", "recMarketing", "recFinanzas"]) {
-        if (typeof mapped[recField] === "string") {
+        if (Array.isArray(mapped[recField])) {
+          // already an array, keep it
+        } else if (typeof mapped[recField] === "string") {
           const val = (mapped[recField] as string).trim();
           mapped[recField] = val ? val.split("|").map((s) => s.trim()) : [];
+        } else if (!mapped[recField]) {
+          mapped[recField] = [];
         }
       }
 
-      // Trim strings and convert empty strings to null for optional fields
+      // Trim strings and convert empty/null to null for optional fields
       const optionalFields = [
         "sitioWeb",
         "email",
@@ -136,6 +183,8 @@ export class ProspectService {
         if (typeof value === "string") {
           const trimmed = value.trim();
           mapped[key] = optionalFields.includes(key) && trimmed === "" ? null : trimmed;
+        } else if (value === null && optionalFields.includes(key)) {
+          // keep null for optional fields
         }
       }
 
