@@ -42,7 +42,6 @@ export function ProspectsPage() {
     source: "",
   })
 
-  // Debounce search
   const debounceTimer = useMemo(() => {
     let timer: ReturnType<typeof setTimeout>
     return (value: string) => {
@@ -97,24 +96,20 @@ export function ProspectsPage() {
   )
 
   const { data, isLoading } = api.prospect.getAll.useQuery(queryInput, {
-    staleTime: 5 * 60 * 1000, // 5 min cache
+    staleTime: 60_000,
     refetchOnWindowFocus: false,
   })
   const utils = api.useUtils()
 
   const importMutation = api.prospect.import.useMutation({
-    onSuccess: () => {
-      utils.prospect.getAll.invalidate()
-    },
+    onSuccess: () => utils.prospect.getAll.invalidate(),
   })
 
-  // Derive nicho options from current data for filter chips
   const nichoOptions = useMemo(() => {
     if (!data?.items) return []
     return [...new Set(data.items.map((p) => p.nicho))].sort()
   }, [data?.items])
 
-  // Active filter count
   const activeFilterCount = useMemo(() => {
     let count = 0
     if (filters.nicho.length > 0) count++
@@ -128,57 +123,47 @@ export function ProspectsPage() {
     return count
   }, [filters])
 
-  // Export handler
   const handleExport = useCallback(
     async (format: "csv" | "json") => {
-      try {
-        const result = await utils.prospect.export.fetch({
-          format,
-          search: debouncedSearch || undefined,
-          nicho: filters.nicho.length > 0 ? filters.nicho : undefined,
-          webStatus:
-            filters.webStatus.length > 0
-              ? (filters.webStatus as ("none" | "basic" | "poor")[])
-              : undefined,
-          scoreMin: filters.scoreMin,
-          scoreMax: filters.scoreMax,
-          ciudad: filters.ciudad || undefined,
-          estado: filters.estado || undefined,
-          pais: filters.pais || undefined,
-        })
-
-        const blob = new Blob([result.data], {
-          type: format === "csv" ? "text/csv" : "application/json",
-        })
-        const url = URL.createObjectURL(blob)
-        const a = document.createElement("a")
-        a.href = url
-        a.download = `prospects_${new Date().toISOString().slice(0, 10)}.${format}`
-        document.body.appendChild(a)
-        a.click()
-        document.body.removeChild(a)
-        URL.revokeObjectURL(url)
-      } catch (err) {
-        console.error("Export failed:", err)
-      }
+      const result = await utils.prospect.export.fetch({
+        format,
+        search: debouncedSearch || undefined,
+        nicho: filters.nicho.length > 0 ? filters.nicho : undefined,
+        webStatus:
+          filters.webStatus.length > 0
+            ? (filters.webStatus as ("none" | "basic" | "poor")[])
+            : undefined,
+        scoreMin: filters.scoreMin,
+        scoreMax: filters.scoreMax,
+        ciudad: filters.ciudad || undefined,
+        estado: filters.estado || undefined,
+        pais: filters.pais || undefined,
+      })
+      const blob = new Blob([result.data], {
+        type: format === "csv" ? "text/csv" : "application/json",
+      })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.href = url
+      a.download = `prospects_${new Date().toISOString().slice(0, 10)}.${format}`
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
+      URL.revokeObjectURL(url)
     },
     [utils.prospect.export, debouncedSearch, filters],
   )
 
   const handleImport = useCallback(
-    async (input: { format: "csv" | "json"; data: string }) => {
-      return importMutation.mutateAsync(input)
-    },
+    (input: { format: "csv" | "json"; data: string }) =>
+      importMutation.mutateAsync(input),
     [importMutation],
   )
 
   const table = useReactTable({
     data: data?.items ?? [],
     columns,
-    state: {
-      sorting,
-      columnVisibility,
-    },
+    state: { sorting, columnVisibility },
     onSortingChange: (updater) => {
       setSorting(updater)
       setPage(1)
@@ -194,65 +179,62 @@ export function ProspectsPage() {
   const totalCount = data?.pagination.total ?? 0
 
   return (
-    <motion.div
-      animate={{ opacity: 1, y: 0 }}
-      className="space-y-5"
-      initial={{ opacity: 0, y: 10 }}
-      transition={{ duration: 0.4 }}
-    >
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-white">Prospects</h1>
-          <p className="mt-1 text-sm text-zinc-500">
-            {isLoading
-              ? "Loading..."
-              : `${totalCount.toLocaleString()} prospects`}
-          </p>
-        </div>
+    <div className="flex flex-col h-[calc(100vh-64px)] gap-4">
+      {/* Header — fixed */}
+      <div className="shrink-0">
+        <h1 className="text-2xl font-bold tracking-tight text-white">Prospects</h1>
+        <p className="mt-0.5 text-xs text-zinc-500">
+          {isLoading ? "Loading..." : `${totalCount.toLocaleString()} total`}
+        </p>
       </div>
 
-      {/* Toolbar */}
-      <ProspectsToolbar
-        activeFilterCount={activeFilterCount}
-        search={search}
-        showFilters={showFilters}
-        table={table}
-        onExport={handleExport}
-        onImport={() => setShowImport(true)}
-        onSearchChange={handleSearchChange}
-        onToggleFilters={() => setShowFilters(!showFilters)}
-      />
+      {/* Toolbar — fixed */}
+      <div className="shrink-0">
+        <ProspectsToolbar
+          activeFilterCount={activeFilterCount}
+          search={search}
+          showFilters={showFilters}
+          table={table}
+          onExport={handleExport}
+          onImport={() => setShowImport(true)}
+          onSearchChange={handleSearchChange}
+          onToggleFilters={() => setShowFilters(!showFilters)}
+        />
+      </div>
 
-      {/* Filter Panel */}
+      {/* Filter Panel — fixed */}
       <AnimatePresence>
         {showFilters && (
-          <FilterPanel
-            filters={filters}
-            nichoOptions={nichoOptions}
-            onFiltersChange={(f) => {
-              setFilters(f)
-              setPage(1)
-            }}
-          />
+          <div className="shrink-0">
+            <FilterPanel
+              filters={filters}
+              nichoOptions={nichoOptions}
+              onFiltersChange={(f) => {
+                setFilters(f)
+                setPage(1)
+              }}
+            />
+          </div>
         )}
       </AnimatePresence>
 
-      {/* Table */}
+      {/* Table — fills remaining space, scrolls internally */}
       <ProspectsTable isLoading={isLoading} table={table} />
 
-      {/* Pagination */}
-      <ProspectsTablePagination
-        page={data?.pagination.page ?? 1}
-        pageSize={data?.pagination.pageSize ?? pageSize}
-        total={data?.pagination.total ?? 0}
-        totalPages={data?.pagination.totalPages ?? 0}
-        onPageChange={setPage}
-        onPageSizeChange={(size) => {
-          setPageSize(size)
-          setPage(1)
-        }}
-      />
+      {/* Pagination — fixed at bottom */}
+      <div className="shrink-0 pb-2">
+        <ProspectsTablePagination
+          page={data?.pagination.page ?? 1}
+          pageSize={data?.pagination.pageSize ?? pageSize}
+          total={data?.pagination.total ?? 0}
+          totalPages={data?.pagination.totalPages ?? 0}
+          onPageChange={setPage}
+          onPageSizeChange={(size) => {
+            setPageSize(size)
+            setPage(1)
+          }}
+        />
+      </div>
 
       {/* Import Modal */}
       <ImportModal
@@ -264,6 +246,6 @@ export function ProspectsPage() {
         }}
         onImport={handleImport}
       />
-    </motion.div>
+    </div>
   )
 }

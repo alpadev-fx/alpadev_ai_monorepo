@@ -11,13 +11,13 @@ interface ProspectsTableProps {
 function LoadingSkeleton({ cols }: { cols: number }) {
   return (
     <>
-      {Array.from({ length: 12 }).map((_, i) => (
+      {Array.from({ length: 8 }).map((_, i) => (
         <tr key={i}>
           {Array.from({ length: cols }).map((_, j) => (
             <td key={j} className="px-4 py-3.5">
               <div
-                className="h-4 rounded-md bg-white/[0.04] animate-pulse"
-                style={{ width: `${50 + Math.random() * 50}%` }}
+                className="h-4 rounded-md bg-white/[0.06] animate-pulse"
+                style={{ width: `${40 + Math.random() * 50}%` }}
               />
             </td>
           ))}
@@ -31,8 +31,8 @@ export function ProspectsTable({ table, isLoading }: ProspectsTableProps) {
   const visibleCols = table.getVisibleFlatColumns().length
 
   return (
-    <div className="rounded-2xl bg-white/[0.03] backdrop-blur-md overflow-hidden">
-      <div className="overflow-x-auto">
+    <div className="rounded-2xl bg-[#161616] overflow-hidden flex-1 min-h-0 flex flex-col">
+      <div className="overflow-auto flex-1">
         <table className="w-max min-w-full border-collapse">
           <thead className="sticky top-0 z-20">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -40,9 +40,9 @@ export function ProspectsTable({ table, isLoading }: ProspectsTableProps) {
                 {headerGroup.headers.map((header, idx) => (
                   <th
                     key={header.id}
-                    className={`whitespace-nowrap px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-600 transition-colors ${
+                    className={`whitespace-nowrap px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.15em] text-zinc-500 transition-colors ${
                       idx === 0 ? "sticky left-0 z-30 bg-[#1b1b1b]" : ""
-                    } ${header.column.getCanSort() ? "cursor-pointer select-none hover:text-zinc-400" : ""}`}
+                    } ${header.column.getCanSort() ? "cursor-pointer select-none hover:text-zinc-300" : ""}`}
                     style={{ width: header.getSize() }}
                     onClick={header.column.getToggleSortingHandler()}
                   >
@@ -81,18 +81,18 @@ export function ProspectsTable({ table, isLoading }: ProspectsTableProps) {
               table.getRowModel().rows.map((row, rowIdx) => (
                 <tr
                   key={row.id}
-                  className={`transition-colors duration-150 hover:bg-white/[0.04] ${
-                    rowIdx % 2 === 1 ? "bg-white/[0.01]" : ""
+                  className={`transition-colors duration-100 hover:bg-white/[0.03] ${
+                    rowIdx % 2 === 1 ? "bg-white/[0.015]" : ""
                   }`}
                 >
                   {row.getVisibleCells().map((cell, idx) => (
                     <td
                       key={cell.id}
-                      className={`px-4 py-3.5 text-[13px] text-zinc-300 ${
+                      className={`px-4 py-3 text-[13px] text-zinc-300 ${
                         (cell.column.columnDef.meta as Record<string, unknown>)?.allowWrap
                           ? ""
                           : "whitespace-nowrap"
-                      } ${idx === 0 ? "sticky left-0 z-10 bg-[#0e0e0e]" : ""}`}
+                      } ${idx === 0 ? "sticky left-0 z-10 bg-[#161616]" : ""}`}
                     >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </td>
@@ -104,12 +104,12 @@ export function ProspectsTable({ table, isLoading }: ProspectsTableProps) {
         </table>
       </div>
       {!isLoading && table.getRowModel().rows.length > 0 && (
-        <div className="flex items-center justify-between bg-[#1b1b1b]/50 px-4 py-2.5">
-          <span className="text-xs text-zinc-600">
-            {table.getRowModel().rows.length.toLocaleString()} prospects
+        <div className="flex items-center justify-between bg-[#1b1b1b]/50 px-4 py-2 shrink-0">
+          <span className="text-[11px] text-zinc-600">
+            {table.getRowModel().rows.length.toLocaleString()} rows
           </span>
-          <span className="text-xs text-zinc-700">
-            {table.getVisibleFlatColumns().length}/{table.getAllColumns().length} columns
+          <span className="text-[11px] text-zinc-700">
+            {table.getVisibleFlatColumns().length}/{table.getAllColumns().length} cols
           </span>
         </div>
       )}

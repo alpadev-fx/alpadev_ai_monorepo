@@ -6,7 +6,6 @@ const PAGE_SIZE_OPTIONS = [
   { label: "25", value: 25 },
   { label: "50", value: 50 },
   { label: "100", value: 100 },
-  { label: "All", value: 50000 },
 ]
 
 interface ProspectsTablePaginationProps {
@@ -28,8 +27,6 @@ export function ProspectsTablePagination({
 }: ProspectsTablePaginationProps) {
   const start = (page - 1) * pageSize + 1
   const end = Math.min(page * pageSize, total)
-  const isAll = pageSize >= 50000
-
   const getPageNumbers = () => {
     const pages: number[] = []
     let startPage = Math.max(1, page - 2)
@@ -62,7 +59,7 @@ export function ProspectsTablePagination({
         </div>
       </div>
 
-      {!isAll && totalPages > 1 && (
+      {totalPages > 1 && (
         <div className="flex items-center gap-1">
           <button
             className="rounded-lg bg-white/[0.04] p-1.5 text-zinc-500 transition-colors hover:bg-white/[0.08] hover:text-white disabled:opacity-30 disabled:cursor-not-allowed"
