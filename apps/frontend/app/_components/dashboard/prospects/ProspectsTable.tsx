@@ -6,6 +6,7 @@ import type { Prospect } from "@package/db"
 interface ProspectsTableProps {
   table: Table<Prospect>
   isLoading: boolean
+  onRowClick?: (prospect: Prospect) => void
 }
 
 function LoadingSkeleton({ cols }: { cols: number }) {
@@ -27,7 +28,7 @@ function LoadingSkeleton({ cols }: { cols: number }) {
   )
 }
 
-export function ProspectsTable({ table, isLoading }: ProspectsTableProps) {
+export function ProspectsTable({ table, isLoading, onRowClick }: ProspectsTableProps) {
   const visibleCols = table.getVisibleFlatColumns().length
 
   return (
@@ -83,7 +84,8 @@ export function ProspectsTable({ table, isLoading }: ProspectsTableProps) {
                   key={row.id}
                   className={`transition-colors duration-100 hover:bg-white/[0.03] ${
                     rowIdx % 2 === 1 ? "bg-white/[0.015]" : ""
-                  }`}
+                  } ${onRowClick ? "cursor-pointer" : ""}`}
+                  onClick={() => onRowClick?.(row.original)}
                 >
                   {row.getVisibleCells().map((cell, idx) => (
                     <td

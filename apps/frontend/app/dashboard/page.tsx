@@ -47,7 +47,7 @@ export default function DashboardPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="space-y-8"
+      className="space-y-8 h-full overflow-y-auto"
     >
       <div>
         <h1 className="text-2xl font-bold tracking-tight text-white">Dashboard</h1>

@@ -15,6 +15,8 @@ import { ProspectsToolbar } from "./ProspectsToolbar"
 import { ProspectsTablePagination } from "./ProspectsTablePagination"
 import { FilterPanel } from "./FilterPanel"
 import { ImportModal } from "./ImportModal"
+import { ProspectDetailModal } from "./ProspectDetailModal"
+import type { Prospect } from "@package/db"
 
 export function ProspectsPage() {
   const [page, setPage] = useState(1)
@@ -28,6 +30,7 @@ export function ProspectsPage() {
     useState<VisibilityState>(DEFAULT_VISIBLE_COLUMNS)
   const [showFilters, setShowFilters] = useState(false)
   const [showImport, setShowImport] = useState(false)
+  const [selectedProspect, setSelectedProspect] = useState<Prospect | null>(null)
   const [filters, setFilters] = useState({
     nicho: [] as string[],
     webStatus: [] as string[],
@@ -179,7 +182,7 @@ export function ProspectsPage() {
   const totalCount = data?.pagination.total ?? 0
 
   return (
-    <div className="flex flex-col h-[calc(100vh-64px)] gap-4">
+    <div className="flex flex-col h-full gap-4">
       {/* Header — fixed */}
       <div className="shrink-0">
         <h1 className="text-2xl font-bold tracking-tight text-white">Prospects</h1>
@@ -219,7 +222,7 @@ export function ProspectsPage() {
       </AnimatePresence>
 
       {/* Table — fills remaining space, scrolls internally */}
-      <ProspectsTable isLoading={isLoading} table={table} />
+      <ProspectsTable isLoading={isLoading} table={table} onRowClick={setSelectedProspect} />
 
       {/* Pagination — fixed at bottom */}
       <div className="shrink-0 pb-2">
@@ -235,6 +238,13 @@ export function ProspectsPage() {
           }}
         />
       </div>
+
+      {/* Prospect Detail Modal */}
+      <ProspectDetailModal
+        prospect={selectedProspect}
+        open={!!selectedProspect}
+        onClose={() => setSelectedProspect(null)}
+      />
 
       {/* Import Modal */}
       <ImportModal

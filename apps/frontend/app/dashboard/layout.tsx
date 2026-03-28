@@ -10,7 +10,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     <div className="flex min-h-screen bg-[#0e0e0e] isolate">
       <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
       <main
-        className={`flex-1 transition-all duration-300 ease-out p-8 ${
+        className={`flex-1 transition-all duration-300 ease-out p-8 overflow-hidden h-screen ${
           collapsed ? "ml-[72px]" : "ml-[280px]"
         }`}
       >

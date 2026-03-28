@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useSession, signOut } from "next-auth/react"
@@ -40,18 +41,22 @@ export const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
       {/* Logo */}
       <Link
         href="/"
-        className="flex items-center gap-3 px-5 py-6 group"
+        className="flex items-center gap-3 px-5 py-5 group"
       >
-        <div className="h-9 w-9 shrink-0 rounded-xl bg-gradient-to-br from-[#f751a1] to-[#d0bcff] flex items-center justify-center">
-          <span className="text-sm font-bold text-white">O</span>
-        </div>
+        <Image
+          src="https://assets.alpadev.xyz/assets/logo.jpg"
+          alt="Alpadev"
+          width={36}
+          height={36}
+          className="shrink-0 rounded-xl"
+        />
         {!collapsed && (
           <motion.span
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             className="text-lg font-bold tracking-tight text-white"
           >
-            OnShapers
+            Alpadev
           </motion.span>
         )}
       </Link>

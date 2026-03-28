@@ -51,9 +51,9 @@ export function ProspectsToolbar({
   }, [])
 
   return (
-    <div className="flex flex-wrap items-center gap-3">
+    <div className="flex items-center gap-2">
       {/* Search */}
-      <div className="relative flex-1 min-w-[200px]">
+      <div className="relative flex-1 min-w-[150px]">
         <MagnifyingGlassIcon className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500" />
         <input
           className="w-full rounded-xl border bg-white/[0.04] py-2.5 pl-9 pr-8 text-sm text-white placeholder-zinc-600 transition-colors focus:border-pink-500/50 focus:outline-none focus:ring-1 focus:ring-pink-500/30"
