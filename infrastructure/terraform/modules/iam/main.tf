@@ -32,6 +32,34 @@ resource "google_project_iam_member" "cloud_run_monitoring_viewer" {
   member  = "serviceAccount:${google_service_account.cloud_run_app.email}"
 }
 
+# Dashboard: create/edit alert policies
+resource "google_project_iam_member" "cloud_run_alert_editor" {
+  project = var.project_id
+  role    = "roles/monitoring.alertPolicyEditor"
+  member  = "serviceAccount:${google_service_account.cloud_run_app.email}"
+}
+
+# Dashboard: manage notification channels
+resource "google_project_iam_member" "cloud_run_notification_editor" {
+  project = var.project_id
+  role    = "roles/monitoring.notificationChannelEditor"
+  member  = "serviceAccount:${google_service_account.cloud_run_app.email}"
+}
+
+# Dashboard: read error logs
+resource "google_project_iam_member" "cloud_run_log_viewer" {
+  project = var.project_id
+  role    = "roles/logging.viewer"
+  member  = "serviceAccount:${google_service_account.cloud_run_app.email}"
+}
+
+# Dashboard: manage billing budgets
+resource "google_billing_account_iam_member" "cloud_run_budget_editor" {
+  billing_account_id = var.billing_account_id
+  role               = "roles/billing.costsManager"
+  member             = "serviceAccount:${google_service_account.cloud_run_app.email}"
+}
+
 # Dashboard: read and update Cloud Run service config
 resource "google_project_iam_member" "cloud_run_self_developer" {
   project = var.project_id

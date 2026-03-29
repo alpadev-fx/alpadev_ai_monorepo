@@ -15,8 +15,16 @@ import {
 
 const NAV_ITEMS = [
   { name: "Metrics", href: "/dashboard", icon: ChartBarIcon },
-  { name: "Prospects", href: "/dashboard/prospects", icon: ClipboardDocumentListIcon },
-  { name: "Infrastructure", href: "/dashboard/infrastructure", icon: ServerStackIcon },
+  {
+    name: "Prospects",
+    href: "/dashboard/prospects",
+    icon: ClipboardDocumentListIcon,
+  },
+  {
+    name: "Infrastructure",
+    href: "/dashboard/infrastructure",
+    icon: ServerStackIcon,
+  },
 ]
 
 interface SidebarProps {

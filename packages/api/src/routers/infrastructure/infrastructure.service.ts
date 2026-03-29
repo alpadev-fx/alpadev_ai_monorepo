@@ -1,8 +1,11 @@
 import { google } from "googleapis"
+import { ai } from "../../config/ai.config"
 
-const PROJECT_ID = "alpadev-ai-prod"
-const REGION = "us-central1"
-const SERVICE_NAME = "alpadev-frontend"
+const PROJECT_ID = process.env.GCP_PROJECT_ID ?? "alpadev-ai-prod"
+const PROJECT_NUMBER = process.env.GCP_PROJECT_NUMBER ?? "570037043182"
+const REGION = process.env.GCP_REGION ?? "us-central1"
+const SERVICE_NAME = process.env.GCP_SERVICE_NAME ?? "alpadev-frontend"
+const BILLING_ACCOUNT = process.env.GCP_BILLING_ACCOUNT ?? "01E568-05D922-FFE202"
 
 export const FREE_TIER = {
   requests: 2_000_000,
@@ -144,6 +147,272 @@ export class InfrastructureService {
         },
       },
     })
+  }
+
+  // ── Budget management ───────────────────────────────────────
+
+  async listBudgets() {
+    const auth = createAuth()
+    const budgets = google.billingbudgets({ version: "v1", auth })
+    const res = await budgets.billingAccounts.budgets.list({
+      parent: `billingAccounts/${BILLING_ACCOUNT}`,
+    })
+    return (res.data.budgets ?? []).map((b) => ({
+      name: b.name ?? "",
+      displayName: b.displayName ?? "",
+      amount: b.amount?.specifiedAmount
+        ? { units: b.amount.specifiedAmount.units ?? "0", currency: b.amount.specifiedAmount.currencyCode ?? "USD" }
+        : null,
+      thresholds: (b.thresholdRules ?? []).map((t) => ({
+        percent: (t.thresholdPercent ?? 0) * 100,
+        basis: t.spendBasis ?? "CURRENT_SPEND",
+      })),
+    }))
+  }
+
+  async createBudget(input: {
+    displayName: string
+    amount: number
+    currency: string
+    thresholds: number[]
+    notificationEmail?: string
+  }) {
+    const auth = createAuth()
+    const budgets = google.billingbudgets({ version: "v1", auth })
+
+    // Ensure notification channel exists
+    let channelName: string | undefined
+    if (input.notificationEmail) {
+      channelName = await this.ensureEmailChannel(input.notificationEmail)
+    }
+
+    await budgets.billingAccounts.budgets.create({
+      parent: `billingAccounts/${BILLING_ACCOUNT}`,
+      requestBody: {
+        displayName: input.displayName,
+        budgetFilter: { projects: [`projects/${PROJECT_NUMBER}`] },
+        amount: {
+          specifiedAmount: {
+            currencyCode: input.currency,
+            units: String(input.amount),
+          },
+        },
+        thresholdRules: input.thresholds.map((pct) => ({
+          thresholdPercent: pct / 100,
+          spendBasis: "CURRENT_SPEND",
+        })),
+        notificationsRule: {
+          ...(channelName && { monitoringNotificationChannels: [channelName] }),
+          disableDefaultIamRecipients: false,
+        },
+      },
+    })
+  }
+
+  async deleteBudget(budgetName: string) {
+    const auth = createAuth()
+    const budgets = google.billingbudgets({ version: "v1", auth })
+    await budgets.billingAccounts.budgets.delete({ name: budgetName })
+  }
+
+  // ── Alert policies ─────────────────────────────────────────
+
+  async listAlertPolicies() {
+    const auth = createAuth()
+    const mon = google.monitoring({ version: "v3", auth })
+    const res = await mon.projects.alertPolicies.list({ name: `projects/${PROJECT_ID}` })
+    return (res.data.alertPolicies ?? []).map((p) => ({
+      name: p.name ?? "",
+      displayName: p.displayName ?? "",
+      enabled: p.enabled ?? true,
+      conditions: (p.conditions ?? []).map((c) => ({
+        displayName: c.displayName ?? "",
+        threshold: c.conditionThreshold?.thresholdValue ?? null,
+      })),
+    }))
+  }
+
+  async createAlertPolicy(input: {
+    type: "error_rate" | "latency" | "instance_crash" | "custom"
+    displayName: string
+    threshold: number
+    notificationEmail: string
+  }) {
+    const auth = createAuth()
+    const mon = google.monitoring({ version: "v3", auth })
+    const channelName = await this.ensureEmailChannel(input.notificationEmail)
+
+    const policyTemplates: Record<string, object> = {
+      error_rate: {
+        displayName: input.displayName,
+        combiner: "OR",
+        conditions: [{
+          displayName: `Error rate > ${input.threshold}%`,
+          conditionThreshold: {
+            filter: `metric.type = "run.googleapis.com/request_count" AND resource.type = "cloud_run_revision" AND resource.labels.service_name = "${SERVICE_NAME}" AND metric.labels.response_code_class != "2xx"`,
+            comparison: "COMPARISON_GT",
+            thresholdValue: input.threshold / 100,
+            duration: "300s",
+            aggregations: [{ alignmentPeriod: "300s", perSeriesAligner: "ALIGN_RATE", crossSeriesReducer: "REDUCE_SUM" }],
+          },
+        }],
+        notificationChannels: [channelName],
+        alertStrategy: { autoClose: "1800s" },
+      },
+      latency: {
+        displayName: input.displayName,
+        combiner: "OR",
+        conditions: [{
+          displayName: `P99 latency > ${input.threshold}ms`,
+          conditionThreshold: {
+            filter: `metric.type = "run.googleapis.com/request_latencies" AND resource.type = "cloud_run_revision" AND resource.labels.service_name = "${SERVICE_NAME}"`,
+            comparison: "COMPARISON_GT",
+            thresholdValue: input.threshold,
+            duration: "300s",
+            aggregations: [{ alignmentPeriod: "300s", perSeriesAligner: "ALIGN_PERCENTILE_99", crossSeriesReducer: "REDUCE_MAX" }],
+          },
+        }],
+        notificationChannels: [channelName],
+        alertStrategy: { autoClose: "1800s" },
+      },
+      instance_crash: {
+        displayName: input.displayName,
+        combiner: "OR",
+        conditions: [{
+          displayName: "Container restart detected",
+          conditionThreshold: {
+            filter: `metric.type = "run.googleapis.com/container/startup_latencies" AND resource.type = "cloud_run_revision" AND resource.labels.service_name = "${SERVICE_NAME}"`,
+            comparison: "COMPARISON_GT",
+            thresholdValue: input.threshold,
+            duration: "60s",
+            aggregations: [{ alignmentPeriod: "60s", perSeriesAligner: "ALIGN_COUNT", crossSeriesReducer: "REDUCE_SUM" }],
+          },
+        }],
+        notificationChannels: [channelName],
+        alertStrategy: { autoClose: "1800s" },
+      },
+      custom: {
+        displayName: input.displayName,
+        combiner: "OR",
+        conditions: [{
+          displayName: input.displayName,
+          conditionThreshold: {
+            filter: `metric.type = "run.googleapis.com/request_count" AND resource.type = "cloud_run_revision" AND resource.labels.service_name = "${SERVICE_NAME}"`,
+            comparison: "COMPARISON_GT",
+            thresholdValue: input.threshold,
+            duration: "300s",
+            aggregations: [{ alignmentPeriod: "300s", perSeriesAligner: "ALIGN_RATE", crossSeriesReducer: "REDUCE_SUM" }],
+          },
+        }],
+        notificationChannels: [channelName],
+        alertStrategy: { autoClose: "1800s" },
+      },
+    }
+
+    await mon.projects.alertPolicies.create({
+      name: `projects/${PROJECT_ID}`,
+      requestBody: policyTemplates[input.type] as any,
+    })
+  }
+
+  async deleteAlertPolicy(policyName: string) {
+    const auth = createAuth()
+    const mon = google.monitoring({ version: "v3", auth })
+    await mon.projects.alertPolicies.delete({ name: policyName })
+  }
+
+  // ── Error logs + AI analysis ───────────────────────────────
+
+  async getRecentErrors(hours = 24) {
+    const auth = createAuth()
+    const logging = google.logging({ version: "v2", auth })
+    const cutoff = new Date(Date.now() - hours * 3_600_000).toISOString()
+
+    const res = await logging.entries.list({
+      requestBody: {
+        resourceNames: [`projects/${PROJECT_ID}`],
+        filter: `resource.type = "cloud_run_revision" AND resource.labels.service_name = "${SERVICE_NAME}" AND severity >= ERROR AND timestamp >= "${cutoff}"`,
+        orderBy: "timestamp desc",
+        pageSize: 50,
+      },
+    })
+
+    return (res.data.entries ?? []).map((e) => ({
+      timestamp: e.timestamp ?? "",
+      severity: e.severity ?? "ERROR",
+      message:
+        typeof e.textPayload === "string"
+          ? e.textPayload
+          : typeof e.jsonPayload === "object"
+            ? JSON.stringify(e.jsonPayload, null, 2)
+            : String(e.protoPayload ?? ""),
+      insertId: e.insertId ?? "",
+      resource: e.resource?.labels ?? {},
+    }))
+  }
+
+  async analyzeFailure(errorMessages: string[]) {
+    const logsText = errorMessages.slice(0, 10).join("\n---\n")
+
+    const { text } = await ai.generate({
+      prompt: `You are a Cloud Run SRE expert. Analyze these error logs from a Next.js 15 app running on Google Cloud Run (1 vCPU, 512Mi, scale-to-zero, us-central1).
+
+Error logs:
+${logsText}
+
+Respond in this exact JSON format (no markdown, just raw JSON):
+{
+  "rootCause": "1-2 sentence root cause",
+  "severity": "critical" | "warning" | "info",
+  "impact": "How this affects the service",
+  "fix": "Recommended action to resolve",
+  "prevention": "How to prevent this in the future"
+}`,
+    })
+
+    try {
+      const cleaned = text.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim()
+      return JSON.parse(cleaned) as {
+        rootCause: string
+        severity: string
+        impact: string
+        fix: string
+        prevention: string
+      }
+    } catch {
+      return {
+        rootCause: text,
+        severity: "info",
+        impact: "Unable to parse structured analysis",
+        fix: "Review the error logs manually",
+        prevention: "N/A",
+      }
+    }
+  }
+
+  // ── Notification channel helper ────────────────────────────
+
+  private async ensureEmailChannel(email: string): Promise<string> {
+    const auth = createAuth()
+    const mon = google.monitoring({ version: "v3", auth })
+
+    // Check existing channels
+    const existing = await mon.projects.notificationChannels.list({ name: `projects/${PROJECT_ID}` })
+    const found = (existing.data.notificationChannels ?? []).find(
+      (ch) => ch.type === "email" && ch.labels?.email_address === email,
+    )
+    if (found?.name) return found.name
+
+    // Create new
+    const created = await mon.projects.notificationChannels.create({
+      name: `projects/${PROJECT_ID}`,
+      requestBody: {
+        type: "email",
+        displayName: `Alert: ${email}`,
+        labels: { email_address: email },
+      },
+    })
+    return created.data.name ?? ""
   }
 
   // ── Monitoring helpers ─────────────────────────────────────
