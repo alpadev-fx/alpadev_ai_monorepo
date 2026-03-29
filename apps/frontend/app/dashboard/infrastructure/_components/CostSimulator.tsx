@@ -11,61 +11,70 @@ import {
   Tooltip,
   ResponsiveContainer,
   Legend,
-  ReferenceArea,
 } from "recharts"
 
-// ── Constants ─────────────────────────────────────────────────
+// ── GCP Free Tier & Pricing (same units as billing) ──────────
+
 const FREE_TIER = {
-  requests: 2_000_000,
-  vcpuSeconds: 360_000,
-  gibSeconds: 180_000,
-  egressGb: 1,
+  requests: 2_000_000, // requests/month
+  vcpuSeconds: 360_000, // vCPU-seconds/month
+  gibSeconds: 180_000, // GiB-seconds/month
 }
 
-const PRICING = {
-  requestsPerMillion: 0.4,
-  vcpuSecond: 0.000024,
-  gibSecond: 0.0000025,
-  egressPerGb: 0.12,
+const PRICE = {
+  perRequest: 0.40 / 1_000_000, // $0.40 per 1M requests
+  perVcpuSec: 0.000024, // per vCPU-second
+  perGibSec: 0.0000025, // per GiB-second
 }
 
-const PRESETS = [
-  { label: "Current (~1.7K/day)", daily: 1667, duration: 200, cpu: 0.3, memory: 128 },
-  { label: "10x Growth", daily: 16670, duration: 200, cpu: 0.3, memory: 128 },
-  { label: "100x Growth", daily: 166700, duration: 200, cpu: 0.3, memory: 128 },
-] as const
+// ── Your Cloud Run config (from Scaling tab) ─────────────────
+// These determine how requests translate to vCPU-sec and GiB-sec
+const CLOUD_RUN = {
+  cpu: 1, // 1 vCPU allocated per instance
+  memoryGib: 0.5, // 512Mi = 0.5 GiB
+}
 
-// ── Cost math ─────────────────────────────────────────────────
-function simulate(daily: number, durationMs: number, cpuFrac: number, memoryMi: number) {
-  const monthly = daily * 30
-  const durationSec = durationMs / 1000
-  const memoryGib = memoryMi / 1024
+// ── How GCP calculates billing ───────────────────────────────
+//
+// When a request hits Cloud Run (with cpu_idle=true):
+//   vCPU-seconds = request_duration × cpu_allocation
+//   GiB-seconds  = request_duration × memory_allocation
+//
+// So: monthly_vcpu_sec = monthly_requests × avg_duration_sec × 1 vCPU
+//     monthly_gib_sec  = monthly_requests × avg_duration_sec × 0.5 GiB
 
-  const vcpuSec = monthly * durationSec * cpuFrac
-  const gibSec = monthly * durationSec * memoryGib
+function simulate(dailyRequests: number, avgDurationMs: number) {
+  const monthlyRequests = dailyRequests * 30
+  const durationSec = avgDurationMs / 1000
 
-  const reqOverage = Math.max(0, monthly - FREE_TIER.requests)
-  const vcpuOverage = Math.max(0, vcpuSec - FREE_TIER.vcpuSeconds)
-  const gibOverage = Math.max(0, gibSec - FREE_TIER.gibSeconds)
+  // These are the exact units GCP bills
+  const vcpuSeconds = monthlyRequests * durationSec * CLOUD_RUN.cpu
+  const gibSeconds = monthlyRequests * durationSec * CLOUD_RUN.memoryGib
 
-  const reqCost = (reqOverage / 1_000_000) * PRICING.requestsPerMillion
-  const vcpuCost = vcpuOverage * PRICING.vcpuSecond
-  const gibCost = gibOverage * PRICING.gibSecond
+  // Overage beyond free tier
+  const reqOver = Math.max(0, monthlyRequests - FREE_TIER.requests)
+  const vcpuOver = Math.max(0, vcpuSeconds - FREE_TIER.vcpuSeconds)
+  const gibOver = Math.max(0, gibSeconds - FREE_TIER.gibSeconds)
+
+  // Cost = overage × price per unit
+  const reqCost = reqOver * PRICE.perRequest
+  const vcpuCost = vcpuOver * PRICE.perVcpuSec
+  const gibCost = gibOver * PRICE.perGibSec
   const total = reqCost + vcpuCost + gibCost
 
   return {
-    monthly,
-    vcpuSec: Math.round(vcpuSec),
-    gibSec: Math.round(gibSec),
-    reqCost: round2(reqCost),
-    vcpuCost: round2(vcpuCost),
-    gibCost: round2(gibCost),
-    total: round2(total),
-    withinFree: total === 0,
+    monthlyRequests,
+    vcpuSeconds: Math.round(vcpuSeconds),
+    gibSeconds: Math.round(gibSeconds),
+    reqCost: r2(reqCost),
+    vcpuCost: r2(vcpuCost),
+    gibCost: r2(gibCost),
+    total: r2(total),
+    free: total === 0,
   }
 }
 
-function round2(n: number) {
+function r2(n: number) {
   return Math.round(n * 100) / 100
 }
 
@@ -76,38 +85,36 @@ function fmt(n: number) {
 }
 
 // ── Component ─────────────────────────────────────────────────
+
+const PRESETS = [
+  { label: "Low (1K/day)", daily: 1000, ms: 200 },
+  { label: "Medium (10K/day)", daily: 10_000, ms: 200 },
+  { label: "High (100K/day)", daily: 100_000, ms: 200 },
+  { label: "Viral (500K/day)", daily: 500_000, ms: 200 },
+] as const
+
 export function CostSimulator() {
-  const [daily, setDaily] = useState(1667)
-  const [duration, setDuration] = useState(200)
-  const [cpuFrac, setCpuFrac] = useState(0.3)
-  const [memoryMi, setMemoryMi] = useState(128)
+  const [daily, setDaily] = useState(1000)
+  const [durationMs, setDurationMs] = useState(200)
 
-  const result = useMemo(
-    () => simulate(daily, duration, cpuFrac, memoryMi),
-    [daily, duration, cpuFrac, memoryMi],
-  )
+  const result = useMemo(() => simulate(daily, durationMs), [daily, durationMs])
 
-  // 12-month projection for 3 scenarios
-  const projectionData = useMemo(() => {
+  // 12-month projection
+  const projection = useMemo(() => {
     const now = new Date()
     return Array.from({ length: 12 }, (_, i) => {
       const d = new Date(now.getFullYear(), now.getMonth() + i, 1)
-      const label = d.toLocaleDateString("en", { month: "short", year: "2-digit" })
-      const growth10x = daily * Math.pow(1.21, i) // ~10x over 12 months
-      const growth100x = daily * Math.pow(1.47, i) // ~100x over 12 months
+      const month = d.toLocaleDateString("en", { month: "short", year: "2-digit" })
+      const x10 = daily * Math.pow(1.21, i) // ~10x in 12 months
+      const x100 = daily * Math.pow(1.47, i) // ~100x in 12 months
       return {
-        month: label,
-        current: simulate(daily, duration, cpuFrac, memoryMi).total,
-        "10x": simulate(growth10x, duration, cpuFrac, memoryMi).total,
-        "100x": simulate(growth100x, duration, cpuFrac, memoryMi).total,
+        month,
+        current: simulate(daily, durationMs).total,
+        "10x growth": simulate(x10, durationMs).total,
+        "100x growth": simulate(x100, durationMs).total,
       }
     })
-  }, [daily, duration, cpuFrac, memoryMi])
-
-  // Thresholds
-  const breakEvenDaily = Math.ceil(FREE_TIER.requests / 30)
-  const at100k = simulate(100_000, duration, cpuFrac, memoryMi).total
-  const at500k = simulate(500_000, duration, cpuFrac, memoryMi).total
+  }, [daily, durationMs])
 
   return (
     <motion.div
@@ -115,11 +122,40 @@ export function CostSimulator() {
       animate={{ opacity: 1 }}
       className="space-y-6"
     >
-      {/* Traffic Scenario Controls */}
+      {/* How it works */}
+      <div className="rounded-2xl bg-[#161616] p-5 space-y-4">
+        <h3 className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
+          How GCP Bills Cloud Run
+        </h3>
+        <div className="grid grid-cols-3 gap-3 text-center">
+          <div className="rounded-xl bg-white/[0.02] p-3">
+            <p className="text-[10px] text-zinc-600">Per request</p>
+            <p className="text-sm font-bold text-white mt-1">$0.40 / 1M</p>
+            <p className="text-[10px] text-zinc-500">Free: 2M/mo</p>
+          </div>
+          <div className="rounded-xl bg-white/[0.02] p-3">
+            <p className="text-[10px] text-zinc-600">CPU time</p>
+            <p className="text-sm font-bold text-white mt-1">$0.024 / 1K sec</p>
+            <p className="text-[10px] text-zinc-500">Free: 360K sec/mo</p>
+          </div>
+          <div className="rounded-xl bg-white/[0.02] p-3">
+            <p className="text-[10px] text-zinc-600">Memory time</p>
+            <p className="text-sm font-bold text-white mt-1">$0.0025 / 1K sec</p>
+            <p className="text-[10px] text-zinc-500">Free: 180K sec/mo</p>
+          </div>
+        </div>
+        <p className="text-[10px] text-zinc-600 leading-relaxed">
+          Your config: <span className="text-zinc-400">{CLOUD_RUN.cpu} vCPU, {CLOUD_RUN.memoryGib * 1024}Mi, scale-to-zero, CPU idle=on</span>.
+          GCP charges CPU only while processing requests.
+          Each request uses {CLOUD_RUN.cpu} vCPU-sec and {CLOUD_RUN.memoryGib} GiB-sec per second of duration.
+        </p>
+      </div>
+
+      {/* Controls — only 2 inputs, simple */}
       <div className="rounded-2xl bg-[#161616] p-5 space-y-5">
         <div className="flex items-center justify-between">
           <h3 className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
-            Traffic Scenario
+            Simulate Traffic
           </h3>
           <div className="flex gap-2">
             {PRESETS.map((p) => (
@@ -127,9 +163,7 @@ export function CostSimulator() {
                 key={p.label}
                 onClick={() => {
                   setDaily(p.daily)
-                  setDuration(p.duration)
-                  setCpuFrac(p.cpu)
-                  setMemoryMi(p.memory)
+                  setDurationMs(p.ms)
                 }}
                 className={`rounded-lg px-3 py-1.5 text-[11px] font-medium transition-all ${
                   daily === p.daily
@@ -143,80 +177,74 @@ export function CostSimulator() {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-          <SliderInput
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Slider
             label="Daily Requests"
             value={daily}
-            min={0}
+            min={100}
             max={500_000}
-            step={1000}
-            format={(v) => fmt(v)}
+            step={100}
+            display={fmt(daily) + " req/day"}
+            sub={fmt(daily * 30) + " req/month"}
             onChange={setDaily}
           />
-          <SliderInput
-            label="Avg Duration"
-            value={duration}
+          <Slider
+            label="Avg Request Duration"
+            value={durationMs}
             min={50}
             max={5000}
             step={50}
-            format={(v) => v + "ms"}
-            onChange={setDuration}
-          />
-          <SliderInput
-            label="CPU Fraction"
-            value={cpuFrac}
-            min={0.1}
-            max={1}
-            step={0.1}
-            format={(v) => v.toFixed(1)}
-            onChange={setCpuFrac}
-          />
-          <SliderInput
-            label="Memory (Mi)"
-            value={memoryMi}
-            min={64}
-            max={512}
-            step={64}
-            format={(v) => v + "Mi"}
-            onChange={setMemoryMi}
+            display={durationMs + " ms"}
+            sub="Time your server takes to respond"
+            onChange={setDurationMs}
           />
         </div>
       </div>
 
-      {/* Results */}
+      {/* Results — same units as free tier */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Free Tier Usage */}
+        {/* Usage vs Free Tier */}
         <div className="rounded-2xl bg-[#161616] p-5 space-y-4">
           <h3 className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
-            Monthly Free Tier Usage
+            Monthly Usage vs Free Tier
           </h3>
-          <Gauge label="Requests" used={result.monthly} limit={FREE_TIER.requests} />
-          <Gauge label="vCPU-sec" used={result.vcpuSec} limit={FREE_TIER.vcpuSeconds} />
-          <Gauge label="GiB-sec" used={result.gibSec} limit={FREE_TIER.gibSeconds} />
+
+          <Bar
+            label="Requests"
+            used={result.monthlyRequests}
+            limit={FREE_TIER.requests}
+            unit="requests"
+          />
+          <Bar
+            label="vCPU-seconds"
+            used={result.vcpuSeconds}
+            limit={FREE_TIER.vcpuSeconds}
+            unit="vCPU-sec"
+            explanation={`${fmt(result.monthlyRequests)} req × ${durationMs}ms × ${CLOUD_RUN.cpu} vCPU`}
+          />
+          <Bar
+            label="GiB-seconds"
+            used={result.gibSeconds}
+            limit={FREE_TIER.gibSeconds}
+            unit="GiB-sec"
+            explanation={`${fmt(result.monthlyRequests)} req × ${durationMs}ms × ${CLOUD_RUN.memoryGib} GiB`}
+          />
 
           <div className="pt-3 border-t border-white/[0.04] text-center">
-            {result.withinFree ? (
-              <p className="text-sm font-bold text-emerald-400">
-                WITHIN FREE TIER
-              </p>
+            {result.free ? (
+              <p className="text-sm font-bold text-emerald-400">WITHIN FREE TIER — $0/mo</p>
             ) : (
-              <p className="text-sm font-bold text-amber-400">
-                EXCEEDS FREE TIER
-              </p>
+              <p className="text-sm font-bold text-amber-400">EXCEEDS FREE TIER</p>
             )}
           </div>
         </div>
 
-        {/* Cost Breakdown */}
+        {/* Cost Breakdown Table */}
         <div className="rounded-2xl bg-[#161616] p-5">
           <h3 className="text-xs font-medium text-zinc-400 mb-4 uppercase tracking-wider">
-            Estimated Monthly Cost
+            Monthly Cost Breakdown
           </h3>
-          <p
-            className={`text-4xl font-bold mb-5 ${
-              result.total === 0 ? "text-emerald-400" : "text-[#ccf381]"
-            }`}
-          >
+          <p className={`text-4xl font-bold mb-5 ${result.free ? "text-emerald-400" : "text-[#ccf381]"}`}>
             ${result.total.toFixed(2)}
             <span className="text-sm text-zinc-600 ml-1">/mo</span>
           </p>
@@ -225,44 +253,33 @@ export function CostSimulator() {
             <thead>
               <tr className="text-zinc-600 border-b border-white/[0.04]">
                 <th className="text-left pb-2">Resource</th>
-                <th className="text-right pb-2">Usage</th>
-                <th className="text-right pb-2">Free Tier</th>
+                <th className="text-right pb-2">Your Usage</th>
+                <th className="text-right pb-2">Free Limit</th>
                 <th className="text-right pb-2">Overage</th>
                 <th className="text-right pb-2">Cost</th>
               </tr>
             </thead>
             <tbody className="text-zinc-400">
-              <tr>
-                <td className="py-1.5">Requests</td>
-                <td className="text-right">{fmt(result.monthly)}</td>
-                <td className="text-right text-zinc-600">{fmt(FREE_TIER.requests)}</td>
-                <td className="text-right">
-                  {fmt(Math.max(0, result.monthly - FREE_TIER.requests))}
-                </td>
-                <td className="text-right font-medium">${result.reqCost.toFixed(2)}</td>
-              </tr>
-              <tr>
-                <td className="py-1.5">vCPU-sec</td>
-                <td className="text-right">{fmt(result.vcpuSec)}</td>
-                <td className="text-right text-zinc-600">{fmt(FREE_TIER.vcpuSeconds)}</td>
-                <td className="text-right">
-                  {fmt(Math.max(0, result.vcpuSec - FREE_TIER.vcpuSeconds))}
-                </td>
-                <td className="text-right font-medium">${result.vcpuCost.toFixed(2)}</td>
-              </tr>
-              <tr>
-                <td className="py-1.5">GiB-sec</td>
-                <td className="text-right">{fmt(result.gibSec)}</td>
-                <td className="text-right text-zinc-600">{fmt(FREE_TIER.gibSeconds)}</td>
-                <td className="text-right">
-                  {fmt(Math.max(0, result.gibSec - FREE_TIER.gibSeconds))}
-                </td>
-                <td className="text-right font-medium">${result.gibCost.toFixed(2)}</td>
-              </tr>
+              <CostRow
+                label="Requests"
+                used={result.monthlyRequests}
+                limit={FREE_TIER.requests}
+                cost={result.reqCost}
+              />
+              <CostRow
+                label="vCPU-seconds"
+                used={result.vcpuSeconds}
+                limit={FREE_TIER.vcpuSeconds}
+                cost={result.vcpuCost}
+              />
+              <CostRow
+                label="GiB-seconds"
+                used={result.gibSeconds}
+                limit={FREE_TIER.gibSeconds}
+                cost={result.gibCost}
+              />
               <tr className="border-t border-white/[0.04] text-white font-medium">
-                <td className="pt-2" colSpan={4}>
-                  Total
-                </td>
+                <td className="pt-2" colSpan={4}>Total</td>
                 <td className="text-right pt-2">${result.total.toFixed(2)}</td>
               </tr>
             </tbody>
@@ -270,102 +287,42 @@ export function CostSimulator() {
         </div>
       </div>
 
-      {/* Growth Projection Chart */}
+      {/* 12-Month Projection */}
       <div className="rounded-2xl bg-[#161616] p-5">
-        <h3 className="text-xs font-medium text-zinc-400 mb-4 uppercase tracking-wider">
-          12-Month Growth Projection
+        <h3 className="text-xs font-medium text-zinc-400 mb-1 uppercase tracking-wider">
+          12-Month Cost Projection
         </h3>
+        <p className="text-[10px] text-zinc-600 mb-4">
+          If your traffic grows from {fmt(daily)}/day, when would you start paying?
+        </p>
         <ResponsiveContainer width="100%" height={280}>
-          <LineChart data={projectionData}>
+          <LineChart data={projection}>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
-            <XAxis
-              dataKey="month"
-              tick={{ fontSize: 10, fill: "#71717a" }}
-              tickLine={false}
-              axisLine={false}
-            />
-            <YAxis
-              tick={{ fontSize: 10, fill: "#71717a" }}
-              tickLine={false}
-              axisLine={false}
-              width={50}
-              tickFormatter={(v) => `$${v}`}
-            />
+            <XAxis dataKey="month" tick={{ fontSize: 10, fill: "#71717a" }} tickLine={false} axisLine={false} />
+            <YAxis tick={{ fontSize: 10, fill: "#71717a" }} tickLine={false} axisLine={false} width={50} tickFormatter={(v) => `$${v}`} />
             <Tooltip
-              contentStyle={{
-                background: "#1f1f1f",
-                border: "1px solid #333",
-                borderRadius: 8,
-                fontSize: 12,
-              }}
-              formatter={(v) => `$${Number(v).toFixed(2)}`}
+              contentStyle={{ background: "#1f1f1f", border: "1px solid #333", borderRadius: 8, fontSize: 12 }}
+              formatter={(v) => `$${Number(v).toFixed(2)}/mo`}
               labelStyle={{ color: "#a1a1aa" }}
             />
-            <Legend
-              wrapperStyle={{ fontSize: 11, color: "#71717a" }}
-            />
-            <ReferenceArea y1={0} y2={0.01} fill="#4ade80" fillOpacity={0.05} />
-            <Line
-              type="monotone"
-              dataKey="current"
-              stroke="#ccf381"
-              strokeWidth={2}
-              dot={false}
-              name="Current"
-            />
-            <Line
-              type="monotone"
-              dataKey="10x"
-              stroke="#a78bfa"
-              strokeWidth={2}
-              dot={false}
-              name="10x Growth"
-              strokeDasharray="4 4"
-            />
-            <Line
-              type="monotone"
-              dataKey="100x"
-              stroke="#f472b6"
-              strokeWidth={2}
-              dot={false}
-              name="100x Growth"
-              strokeDasharray="4 4"
-            />
+            <Legend wrapperStyle={{ fontSize: 11, color: "#71717a" }} />
+            <Line type="monotone" dataKey="current" stroke="#ccf381" strokeWidth={2} dot={false} name="Steady" />
+            <Line type="monotone" dataKey="10x growth" stroke="#a78bfa" strokeWidth={2} dot={false} strokeDasharray="4 4" />
+            <Line type="monotone" dataKey="100x growth" stroke="#f472b6" strokeWidth={2} dot={false} strokeDasharray="4 4" />
           </LineChart>
         </ResponsiveContainer>
       </div>
 
-      {/* Key Thresholds */}
+      {/* Quick Reference */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          {
-            label: "Break-even",
-            value: `~${fmt(breakEvenDaily)} req/day`,
-            desc: "Daily rate to start paying",
-          },
-          {
-            label: "At 100K/day",
-            value: `~$${at100k.toFixed(2)}/mo`,
-            desc: "Moderate traffic",
-          },
-          {
-            label: "At 500K/day",
-            value: `~$${at500k.toFixed(2)}/mo`,
-            desc: "High traffic",
-          },
-          {
-            label: "Budget Alert",
-            value: "5,000 COP",
-            desc: "~$1.25 USD current cap",
-          },
+          { label: "Start paying at", value: `~${fmt(Math.ceil(FREE_TIER.requests / 30))} req/day`, desc: "When requests exceed 2M/month" },
+          { label: "At 10K/day", value: `$${simulate(10_000, durationMs).total.toFixed(2)}/mo`, desc: "Small SaaS traffic" },
+          { label: "At 100K/day", value: `$${simulate(100_000, durationMs).total.toFixed(2)}/mo`, desc: "Growing product" },
+          { label: "At 500K/day", value: `$${simulate(500_000, durationMs).total.toFixed(2)}/mo`, desc: "High traffic app" },
         ].map((t) => (
-          <div
-            key={t.label}
-            className="rounded-2xl bg-[#161616] p-4"
-          >
-            <p className="text-[10px] text-zinc-600 uppercase tracking-wider">
-              {t.label}
-            </p>
+          <div key={t.label} className="rounded-2xl bg-[#161616] p-4">
+            <p className="text-[10px] text-zinc-600 uppercase tracking-wider">{t.label}</p>
             <p className="text-lg font-bold text-white mt-1">{t.value}</p>
             <p className="text-[10px] text-zinc-500 mt-0.5">{t.desc}</p>
           </div>
@@ -377,13 +334,14 @@ export function CostSimulator() {
 
 // ── Sub-components ────────────────────────────────────────────
 
-function SliderInput({
+function Slider({
   label,
   value,
   min,
   max,
   step,
-  format,
+  display,
+  sub,
   onChange,
 }: {
   label: string
@@ -391,14 +349,15 @@ function SliderInput({
   min: number
   max: number
   step: number
-  format: (v: number) => string
+  display: string
+  sub: string
   onChange: (v: number) => void
 }) {
   return (
     <div>
       <div className="flex justify-between mb-1.5">
         <label className="text-xs text-zinc-400">{label}</label>
-        <span className="text-xs font-bold text-white">{format(value)}</span>
+        <span className="text-sm font-bold text-white">{display}</span>
       </div>
       <input
         type="range"
@@ -409,36 +368,64 @@ function SliderInput({
         onChange={(e) => onChange(+e.target.value)}
         className="w-full accent-[#ccf381]"
       />
+      <p className="mt-1 text-[10px] text-zinc-600">{sub}</p>
     </div>
   )
 }
 
-function Gauge({
+function Bar({
   label,
   used,
   limit,
+  unit,
+  explanation,
 }: {
   label: string
   used: number
   limit: number
+  unit: string
+  explanation?: string
 }) {
-  const pct = Math.min((used / limit) * 100, 100)
+  const pct = Math.min((used / limit) * 100, 150) // allow overflow visual
+  const displayPct = Math.min(pct, 100)
   const color = pct < 50 ? "#4ade80" : pct < 80 ? "#fbbf24" : "#f87171"
+  const overflows = used > limit
 
   return (
     <div>
       <div className="flex justify-between mb-1">
-        <span className="text-xs text-zinc-400">{label}</span>
-        <span className="text-[11px] text-zinc-500">
-          {fmt(used)} / {fmt(limit)} ({pct.toFixed(0)}%)
+        <span className="text-xs text-zinc-300">{label}</span>
+        <span className={`text-[11px] font-medium ${overflows ? "text-rose-400" : "text-zinc-500"}`}>
+          {fmt(used)} / {fmt(limit)} {unit}
         </span>
       </div>
-      <div className="h-2 rounded-full bg-white/[0.04] overflow-hidden">
+      <div className="h-2.5 rounded-full bg-white/[0.04] overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-500"
-          style={{ width: `${pct}%`, backgroundColor: color }}
+          style={{ width: `${displayPct}%`, backgroundColor: color }}
         />
       </div>
+      {explanation && (
+        <p className="mt-0.5 text-[9px] text-zinc-600 font-mono">{explanation}</p>
+      )}
+      {overflows && (
+        <p className="mt-0.5 text-[9px] text-rose-400">
+          Exceeds by {fmt(used - limit)} {unit} → ${r2((used - limit) * (label.includes("Request") ? PRICE.perRequest : label.includes("vCPU") ? PRICE.perVcpuSec : PRICE.perGibSec)).toFixed(2)}/mo
+        </p>
+      )}
     </div>
+  )
+}
+
+function CostRow({ label, used, limit, cost }: { label: string; used: number; limit: number; cost: number }) {
+  const overage = Math.max(0, used - limit)
+  return (
+    <tr>
+      <td className="py-1.5">{label}</td>
+      <td className="text-right">{fmt(used)}</td>
+      <td className="text-right text-zinc-600">{fmt(limit)}</td>
+      <td className={`text-right ${overage > 0 ? "text-rose-400" : ""}`}>{fmt(overage)}</td>
+      <td className={`text-right font-medium ${cost > 0 ? "text-rose-400" : ""}`}>${cost.toFixed(2)}</td>
+    </tr>
   )
 }
