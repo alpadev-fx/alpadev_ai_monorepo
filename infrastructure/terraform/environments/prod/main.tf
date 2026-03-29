@@ -1,8 +1,9 @@
 module "iam" {
   source = "../../modules/iam"
 
-  project_id  = var.project_id
-  github_repo = var.github_repo
+  project_id         = var.project_id
+  github_repo        = var.github_repo
+  billing_account_id = var.billing_account_id
 }
 
 module "artifact_registry" {
