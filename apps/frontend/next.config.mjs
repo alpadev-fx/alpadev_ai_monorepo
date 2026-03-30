@@ -125,6 +125,15 @@ const nextConfig = {
         ],
       },
       {
+        source: "/_next/image/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=2592000, stale-while-revalidate=86400",
+          },
+        ],
+      },
+      {
         source: "/api/:path*",
         headers: [
           {

@@ -85,6 +85,7 @@ export default function Footer() {
               height={300}
               src={getAssetUrl("logo.jpg")}
               width={200}
+              sizes="200px"
             />
           </div>
           <div className="mt-16 flex justify-end gap-16 xl:col-span-2 xl:mt-0">

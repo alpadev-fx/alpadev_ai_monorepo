@@ -85,6 +85,8 @@ export default function RootLayout({
             fbq('track', 'PageView');
           `}
         </Script>
+        <link rel="preconnect" href="https://assets.alpadev.xyz" />
+        <link rel="dns-prefetch" href="https://assets.alpadev.xyz" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link

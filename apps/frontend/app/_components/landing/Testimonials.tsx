@@ -31,7 +31,7 @@ const TestimonialCard = ({ testimonial }: { testimonial: Testimonial }) => {
       <div className="relative z-10 flex flex-col gap-6">
           <div className="flex items-center gap-4">
               <div className="relative h-12 w-12 overflow-hidden rounded-full ring-2 ring-white/10 shrink-0">
-                  <Image src={testimonial.photoSrc} alt={testimonial.author} width={48} height={48} className="h-full w-full object-cover" />
+                  <Image src={testimonial.photoSrc} alt={testimonial.author} width={48} height={48} className="h-full w-full object-cover" sizes="48px" />
               </div>
               <div className="flex-1 min-w-0">
                   <h3 className="text-base font-semibold text-white tracking-tight">{testimonial.author}</h3>

@@ -73,6 +73,7 @@ export default function Component(props: NavbarProps) {
           height={80}
           src={getAssetUrl("logo.jpg")}
           width={80}
+          priority
         />
       </NavbarBrand>
       <NavbarContent

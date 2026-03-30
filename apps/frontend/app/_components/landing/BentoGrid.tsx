@@ -50,6 +50,7 @@ export default function BentoGrid() {
                     alt="iPhone mockup"
                     className="object-contain w-full h-full"
                     src={getAssetUrl("iphone.jpg")}
+                    sizes="(max-width: 768px) 80vw, 400px"
                   />
                 </div>
               </div>
