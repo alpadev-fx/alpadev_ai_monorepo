@@ -15,6 +15,9 @@ export const infrastructureRouter = createTRPCRouter({
   overview: adminProcedure.query(() => svc.getOverview()),
   pricingInfo: adminProcedure.query(() => ({ freeTier: FREE_TIER, pricing: PRICING })),
 
+  // ── Billing ───────────────────────────────────────────────
+  billingOverview: adminProcedure.query(() => svc.getBillingOverview()),
+
   // ── Scaling ────────────────────────────────────────────────
   serviceConfig: adminProcedure.query(() => svc.getServiceConfig()),
   updateServiceConfig: adminProcedure

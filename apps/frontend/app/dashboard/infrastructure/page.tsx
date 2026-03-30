@@ -2,15 +2,17 @@
 
 import { useState } from "react"
 import { motion } from "framer-motion"
-import { ServerIcon, AdjustmentsHorizontalIcon, CalculatorIcon, BellAlertIcon } from "@heroicons/react/24/outline"
+import { ServerIcon, AdjustmentsHorizontalIcon, CalculatorIcon, BellAlertIcon, BanknotesIcon } from "@heroicons/react/24/outline"
 import { MetricsOverview } from "./_components/MetricsOverview"
 import { ScalingControls } from "./_components/ScalingControls"
 import { CostSimulator } from "./_components/CostSimulator"
 import { AlertsBudget } from "./_components/AlertsBudget"
+import { BillingOverview } from "./_components/BillingOverview"
 
 const TABS = [
   { id: "overview" as const, label: "Metrics", icon: ServerIcon },
   { id: "scaling" as const, label: "Scaling", icon: AdjustmentsHorizontalIcon },
+  { id: "billing" as const, label: "Billing", icon: BanknotesIcon },
   { id: "simulator" as const, label: "Cost Simulator", icon: CalculatorIcon },
   { id: "alerts" as const, label: "Alerts", icon: BellAlertIcon },
 ]
@@ -60,6 +62,7 @@ export default function InfrastructurePage() {
       {/* Content */}
       {tab === "overview" && <MetricsOverview />}
       {tab === "scaling" && <ScalingControls />}
+      {tab === "billing" && <BillingOverview />}
       {tab === "simulator" && <CostSimulator />}
       {tab === "alerts" && <AlertsBudget />}
     </motion.div>

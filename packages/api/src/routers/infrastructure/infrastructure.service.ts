@@ -76,6 +76,114 @@ export class InfrastructureService {
     }
   }
 
+  // ── Billing overview (real costs from metrics) ─────────────
+
+  async getBillingOverview() {
+    const auth = createAuth()
+    const mon = google.monitoring({ version: "v3", auth })
+
+    const now = new Date()
+    const dayOfMonth = now.getDate()
+    const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate()
+
+    // Current month metrics
+    const som = new Date(now.getFullYear(), now.getMonth(), 1)
+    const [reqR, cpuR, memR, storR] = await Promise.allSettled([
+      this.monthlySum(mon, "run.googleapis.com/request_count", som, now),
+      this.monthlySum(mon, "run.googleapis.com/container/cpu/allocation_time", som, now),
+      this.monthlySum(mon, "run.googleapis.com/container/memory/allocation_time", som, now),
+      this.latestValue(mon, "artifactregistry.googleapis.com/repository/size", "artifactregistry.googleapis.com/Repository"),
+    ])
+
+    const reqVal = val(reqR, 0)
+    // Fallback: estimate CPU/memory from requests if allocation metrics unavailable
+    const cpuRaw = val(cpuR, 0)
+    const memRaw = val(memR, 0)
+    const cpuVal = cpuRaw > 0 ? cpuRaw : reqVal * 0.2 // 200ms avg
+    const memVal = memRaw > 0 ? memRaw : reqVal * 0.2 * 0.5
+    const storVal = val(storR, 0)
+
+    const calcCosts = (req: number, cpu: number, mem: number, stor: number) => {
+      const requests = Math.max(0, req - FREE_TIER.requests) * PRICING.requestsPerMillion / 1e6
+      const cpuCost = Math.max(0, cpu - FREE_TIER.vcpuSeconds) * PRICING.vcpuSecond
+      const memory = Math.max(0, mem - FREE_TIER.gibSeconds) * PRICING.gibSecond
+      const storage = Math.max(0, stor - FREE_TIER.storageBytes) / (1024 ** 3) * PRICING.storagePerGbMonth
+      return { requests, cpu: cpuCost, memory, storage, total: requests + cpuCost + memory + storage }
+    }
+
+    const calcGross = (req: number, cpu: number, mem: number, stor: number) => {
+      const requests = req * PRICING.requestsPerMillion / 1e6
+      const cpuCost = cpu * PRICING.vcpuSecond
+      const memory = mem * PRICING.gibSecond
+      const storage = (stor / (1024 ** 3)) * PRICING.storagePerGbMonth
+      return { requests, cpu: cpuCost, memory, storage, total: requests + cpuCost + memory + storage }
+    }
+
+    const costs = calcCosts(reqVal, cpuVal, memVal, storVal)
+    const gross = calcGross(reqVal, cpuVal, memVal, storVal)
+
+    const dailyAvg = dayOfMonth > 0 ? costs.total / dayOfMonth : 0
+    const projectedMonth = dailyAvg * daysInMonth
+    const dailyAvgGross = dayOfMonth > 0 ? gross.total / dayOfMonth : 0
+    const projectedGross = dailyAvgGross * daysInMonth
+
+    // Historical: last 6 months in parallel (4 metrics × 6 months = 24 queries)
+    const months: { start: Date; end: Date; label: string }[] = []
+    for (let i = 5; i >= 0; i--) {
+      const mStart = new Date(now.getFullYear(), now.getMonth() - i, 1)
+      const mEnd = i === 0 ? now : new Date(now.getFullYear(), now.getMonth() - i + 1, 0, 23, 59, 59)
+      months.push({
+        start: mStart,
+        end: mEnd,
+        label: mStart.toLocaleDateString("en", { month: "short", year: "2-digit" }),
+      })
+    }
+
+    const historyPromises = months.map(async (m) => {
+      const [hReq, hCpu, hMem] = await Promise.allSettled([
+        this.monthlySum(mon, "run.googleapis.com/request_count", m.start, m.end),
+        this.monthlySum(mon, "run.googleapis.com/container/cpu/allocation_time", m.start, m.end),
+        this.monthlySum(mon, "run.googleapis.com/container/memory/allocation_time", m.start, m.end),
+      ])
+      const r = val(hReq, 0)
+      const c = val(hCpu, 0) || r * 0.2
+      const me = val(hMem, 0) || r * 0.2 * 0.5
+      const net = calcCosts(r, c, me, 0)
+      const gr = calcGross(r, c, me, 0)
+      return {
+        month: m.label,
+        requests: round2(net.requests),
+        cpu: round2(net.cpu),
+        memory: round2(net.memory),
+        total: round2(net.total),
+        grossTotal: round2(gr.total),
+      }
+    })
+
+    const history = await Promise.all(historyPromises)
+
+    // Budget data
+    let budgets: Awaited<ReturnType<typeof this.listBudgets>> = []
+    try { budgets = await this.listBudgets() } catch { /* no budgets configured */ }
+
+    return {
+      currentMonth: {
+        costs: { requests: round2(costs.requests), cpu: round2(costs.cpu), memory: round2(costs.memory), storage: round2(costs.storage) },
+        total: round2(costs.total),
+        gross: { requests: round2(gross.requests), cpu: round2(gross.cpu), memory: round2(gross.memory), storage: round2(gross.storage) },
+        grossTotal: round2(gross.total),
+        dailyAvg: round2(dailyAvg),
+        projectedMonth: round2(projectedMonth),
+        dailyAvgGross: round2(dailyAvgGross),
+        projectedGross: round2(projectedGross),
+        dayOfMonth,
+        daysInMonth,
+      },
+      history,
+      budgets,
+    }
+  }
+
   // ── Cloud Run service config ───────────────────────────────
 
   async getServiceConfig() {
@@ -493,6 +601,10 @@ Respond in this exact JSON format (no markdown, just raw JSON):
 }
 
 // ── Pure helpers ──────────────────────────────────────────────
+
+function round2(n: number) {
+  return Math.round(n * 100) / 100
+}
 
 function val<T>(r: PromiseSettledResult<T>, fallback: T): T {
   return r.status === "fulfilled" ? r.value : fallback
