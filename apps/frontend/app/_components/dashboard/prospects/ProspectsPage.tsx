@@ -1,13 +1,13 @@
 "use client"
 
-import { useState, useMemo, useCallback } from "react"
+import { useState, useMemo, useCallback, useRef, useEffect } from "react"
 import {
   useReactTable,
   getCoreRowModel,
   type SortingState,
   type VisibilityState,
 } from "@tanstack/react-table"
-import { motion, AnimatePresence } from "framer-motion"
+import { AnimatePresence } from "framer-motion"
 import { api } from "@/lib/trpc/react"
 import { columns, DEFAULT_VISIBLE_COLUMNS } from "./columns"
 import { ProspectsTable } from "./ProspectsTable"
@@ -45,23 +45,28 @@ export function ProspectsPage() {
     source: "",
   })
 
-  const debounceTimer = useMemo(() => {
-    let timer: ReturnType<typeof setTimeout>
-    return (value: string) => {
-      clearTimeout(timer)
-      timer = setTimeout(() => {
-        setDebouncedSearch(value)
-        setPage(1)
-      }, 300)
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout>>()
+
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current)
     }
+  }, [])
+
+  const debouncedSearchFn = useCallback((value: string) => {
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current)
+    debounceTimerRef.current = setTimeout(() => {
+      setDebouncedSearch(value)
+      setPage(1)
+    }, 300)
   }, [])
 
   const handleSearchChange = useCallback(
     (value: string) => {
       setSearch(value)
-      debounceTimer(value)
+      debouncedSearchFn(value)
     },
-    [debounceTimer],
+    [debouncedSearchFn],
   )
 
   const queryInput = useMemo(
@@ -224,7 +229,7 @@ export function ProspectsPage() {
       {/* Table — fills remaining space, scrolls internally */}
       <ProspectsTable isLoading={isLoading} table={table} onRowClick={setSelectedProspect} />
 
-      {/* Pagination — fixed at bottom */}
+      {/* Pagination — page navigation hidden when "All" is selected */}
       <div className="shrink-0 pb-2">
         <ProspectsTablePagination
           page={data?.pagination.page ?? 1}

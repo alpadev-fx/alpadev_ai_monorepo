@@ -1,6 +1,8 @@
 "use client"
 
-import { flexRender, type Table } from "@tanstack/react-table"
+import { useRef, memo } from "react"
+import { flexRender, type Table, type Row } from "@tanstack/react-table"
+import { useVirtualizer } from "@tanstack/react-virtual"
 import type { Prospect } from "@package/db"
 
 interface ProspectsTableProps {
@@ -8,6 +10,11 @@ interface ProspectsTableProps {
   isLoading: boolean
   onRowClick?: (prospect: Prospect) => void
 }
+
+const ROW_HEIGHT = 44
+const OVERSCAN = 20
+const VIRTUALIZE_THRESHOLD = 100 // virtualize only when rows exceed this count
+const SKELETON_WIDTHS = [65, 80, 45, 72, 58, 90, 52, 68]
 
 function LoadingSkeleton({ cols }: { cols: number }) {
   return (
@@ -18,7 +25,7 @@ function LoadingSkeleton({ cols }: { cols: number }) {
             <td key={j} className="px-4 py-3.5">
               <div
                 className="h-4 rounded-md bg-white/[0.06] animate-pulse"
-                style={{ width: `${40 + Math.random() * 50}%` }}
+                style={{ width: `${SKELETON_WIDTHS[(i * cols + j) % SKELETON_WIDTHS.length]}%` }}
               />
             </td>
           ))}
@@ -28,12 +35,51 @@ function LoadingSkeleton({ cols }: { cols: number }) {
   )
 }
 
+const TableRow = memo(
+  function TableRow({ row }: { row: Row<Prospect> }) {
+    return (
+      <>
+        {row.getVisibleCells().map((cell, idx) => (
+          <td
+            key={cell.id}
+            className={`px-4 py-3 text-[13px] text-zinc-300 ${
+              (cell.column.columnDef.meta as Record<string, unknown>)?.allowWrap
+                ? ""
+                : "whitespace-nowrap"
+            } ${idx === 0 ? "sticky left-0 z-10 bg-[#161616]" : ""}`}
+          >
+            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          </td>
+        ))}
+      </>
+    )
+  },
+  (prev, next) => prev.row.original.id === next.row.original.id,
+)
+
 export function ProspectsTable({ table, isLoading, onRowClick }: ProspectsTableProps) {
   const visibleCols = table.getVisibleFlatColumns().length
+  const scrollRef = useRef<HTMLDivElement>(null)
+  const { rows } = table.getRowModel()
+  const useVirtual = rows.length > VIRTUALIZE_THRESHOLD
+
+  const virtualizer = useVirtualizer({
+    count: rows.length,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: () => ROW_HEIGHT,
+    overscan: OVERSCAN,
+    enabled: useVirtual,
+  })
+
+  const virtualRows = virtualizer.getVirtualItems()
+  const totalHeight = virtualizer.getTotalSize()
+  const paddingTop = virtualRows[0]?.start ?? 0
+  const paddingBottom =
+    virtualRows.length > 0 ? totalHeight - (virtualRows.at(-1)?.end ?? 0) : 0
 
   return (
     <div className="rounded-2xl bg-[#161616] overflow-hidden flex-1 min-h-0 flex flex-col">
-      <div className="overflow-auto flex-1">
+      <div ref={scrollRef} className="overflow-auto flex-1">
         <table className="w-max min-w-full border-collapse">
           <thead className="sticky top-0 z-20">
             {table.getHeaderGroups().map((headerGroup) => (
@@ -66,7 +112,7 @@ export function ProspectsTable({ table, isLoading, onRowClick }: ProspectsTableP
           <tbody>
             {isLoading ? (
               <LoadingSkeleton cols={visibleCols} />
-            ) : table.getRowModel().rows.length === 0 ? (
+            ) : rows.length === 0 ? (
               <tr>
                 <td className="px-4 py-20 text-center" colSpan={visibleCols}>
                   <div className="flex flex-col items-center gap-3">
@@ -78,8 +124,36 @@ export function ProspectsTable({ table, isLoading, onRowClick }: ProspectsTableP
                   </div>
                 </td>
               </tr>
+            ) : useVirtual ? (
+              <>
+                {paddingTop > 0 && (
+                  <tr>
+                    <td style={{ height: paddingTop }} colSpan={visibleCols} />
+                  </tr>
+                )}
+                {virtualRows.map((vRow) => {
+                  const row = rows[vRow.index]
+                  return (
+                    <tr
+                      key={row.id}
+                      className={`transition-colors duration-100 hover:bg-white/[0.03] ${
+                        vRow.index % 2 === 1 ? "bg-white/[0.015]" : ""
+                      } ${onRowClick ? "cursor-pointer" : ""}`}
+                      style={{ height: ROW_HEIGHT }}
+                      onClick={() => onRowClick?.(row.original)}
+                    >
+                      <TableRow row={row} />
+                    </tr>
+                  )
+                })}
+                {paddingBottom > 0 && (
+                  <tr>
+                    <td style={{ height: paddingBottom }} colSpan={visibleCols} />
+                  </tr>
+                )}
+              </>
             ) : (
-              table.getRowModel().rows.map((row, rowIdx) => (
+              rows.map((row, rowIdx) => (
                 <tr
                   key={row.id}
                   className={`transition-colors duration-100 hover:bg-white/[0.03] ${
@@ -105,10 +179,10 @@ export function ProspectsTable({ table, isLoading, onRowClick }: ProspectsTableP
           </tbody>
         </table>
       </div>
-      {!isLoading && table.getRowModel().rows.length > 0 && (
+      {!isLoading && rows.length > 0 && (
         <div className="flex items-center justify-between bg-[#1b1b1b]/50 px-4 py-2 shrink-0">
           <span className="text-[11px] text-zinc-600">
-            {table.getRowModel().rows.length.toLocaleString()} rows
+            {rows.length.toLocaleString()} rows
           </span>
           <span className="text-[11px] text-zinc-700">
             {table.getVisibleFlatColumns().length}/{table.getAllColumns().length} cols
