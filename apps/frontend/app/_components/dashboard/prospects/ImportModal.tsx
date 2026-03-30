@@ -15,7 +15,7 @@ interface ImportModalProps {
   onImport: (data: {
     format: "csv" | "json"
     data: string
-  }) => Promise<{ imported: number; total: number; errors: { row: number; field?: string; message: string }[] }>
+  }) => Promise<{ imported: number; total: number; skipped: number; errors: { row: number; field?: string; message: string }[] }>
   isImporting: boolean
 }
 
@@ -34,6 +34,7 @@ export function ImportModal({
   const [result, setResult] = useState<{
     imported: number
     total: number
+    skipped: number
     errors: { row: number; field?: string; message: string }[]
   } | null>(null)
   const [dragActive, setDragActive] = useState(false)
@@ -117,7 +118,7 @@ export function ImportModal({
       setResult(res)
       setState("complete")
     } catch {
-      setResult({ imported: 0, total: 0, errors: [{ row: 0, message: "Import failed" }] })
+      setResult({ imported: 0, total: 0, skipped: 0, errors: [{ row: 0, message: "Import failed" }] })
       setState("complete")
     }
   }
@@ -241,6 +242,11 @@ export function ImportModal({
                 <p className="text-sm font-medium text-emerald-400">
                   {result.imported} of {result.total} prospects imported
                 </p>
+                {result.skipped > 0 && (
+                  <p className="text-xs text-zinc-400 mt-0.5">
+                    {result.skipped} duplicate(s) skipped
+                  </p>
+                )}
               </div>
             </div>
 

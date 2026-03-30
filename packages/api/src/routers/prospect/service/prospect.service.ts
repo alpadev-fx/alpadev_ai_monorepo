@@ -96,8 +96,10 @@ const ALL_ARRAY_FIELDS = new Set([
 
 export class ProspectService {
   private repository: ProspectRepository;
+  private db: PrismaClient;
 
   constructor(db: PrismaClient) {
+    this.db = db;
     this.repository = new ProspectRepository(db);
   }
 
@@ -105,10 +107,13 @@ export class ProspectService {
     return this.repository.findMany({ ...filter, userId });
   }
 
-  async getById(id: string) {
+  async getById(id: string, userId: string) {
     const prospect = await this.repository.findById(id);
     if (!prospect) {
       throw new TRPCError({ code: "NOT_FOUND", message: "Prospect not found" });
+    }
+    if (prospect.userId !== userId) {
+      throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
     }
     return prospect;
   }
@@ -125,11 +130,25 @@ export class ProspectService {
     } as Parameters<ProspectRepository["create"]>[0]);
   }
 
-  async update(id: string, data: Parameters<ProspectRepository["update"]>[1]) {
+  async update(id: string, data: Parameters<ProspectRepository["update"]>[1], userId: string) {
+    const prospect = await this.repository.findById(id);
+    if (!prospect) {
+      throw new TRPCError({ code: "NOT_FOUND", message: "Prospect not found" });
+    }
+    if (prospect.userId !== userId) {
+      throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
+    }
     return this.repository.update(id, data);
   }
 
-  async delete(id: string) {
+  async delete(id: string, userId: string) {
+    const prospect = await this.repository.findById(id);
+    if (!prospect) {
+      throw new TRPCError({ code: "NOT_FOUND", message: "Prospect not found" });
+    }
+    if (prospect.userId !== userId) {
+      throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
+    }
     return this.repository.delete(id);
   }
 
@@ -148,6 +167,7 @@ export class ProspectService {
 
     const errors: { row: number; field?: string; message: string }[] = [];
     const validRows: Parameters<ProspectRepository["create"]>[0][] = [];
+    const VALID_WEB_STATUSES = new Set(Object.values(WebStatus));
 
     for (let i = 0; i < rows.length; i++) {
       const raw = rows[i];
@@ -187,9 +207,7 @@ export class ProspectService {
 
       // Transform webStatus
       if (typeof mapped.webStatus === "string") {
-        mapped.webStatus = Object.values(WebStatus).includes(
-          mapped.webStatus as WebStatus,
-        )
+        mapped.webStatus = VALID_WEB_STATUSES.has(mapped.webStatus as WebStatus)
           ? mapped.webStatus
           : "none";
       }
@@ -245,16 +263,33 @@ export class ProspectService {
       }
     }
 
-    // Insert in batches of 500 to avoid OOM
+    // Deduplicate: fetch existing prospect names for this user
+    const existing = await this.db.prospect.findMany({
+      where: { userId },
+      select: { nombre: true },
+    });
+    const existingNames = new Set(
+      existing.map((p) => p.nombre.toLowerCase().trim()),
+    );
+
+    const newRows = validRows.filter(
+      (row) => !existingNames.has(row.nombre.toLowerCase().trim()),
+    );
+    const skipped = validRows.length - newRows.length;
+
+    // Insert in batches of 500 to avoid OOM, wrapped in a transaction
     const BATCH_SIZE = 500;
-    for (let i = 0; i < validRows.length; i += BATCH_SIZE) {
-      const batch = validRows.slice(i, i + BATCH_SIZE);
-      await this.repository.createMany(batch);
-    }
+    await this.db.$transaction(async (tx) => {
+      for (let i = 0; i < newRows.length; i += BATCH_SIZE) {
+        const batch = newRows.slice(i, i + BATCH_SIZE);
+        await tx.prospect.createMany({ data: batch });
+      }
+    });
 
     return {
-      imported: validRows.length,
+      imported: newRows.length,
       total: rows.length,
+      skipped,
       errors,
     };
   }

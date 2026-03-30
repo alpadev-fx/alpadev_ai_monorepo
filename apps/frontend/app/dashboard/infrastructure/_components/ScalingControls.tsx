@@ -7,22 +7,29 @@ import { motion } from "framer-motion"
 const CPU_OPTIONS = ["0.5", "1", "2", "4"] as const
 const MEMORY_OPTIONS = ["256Mi", "512Mi", "1Gi", "2Gi", "4Gi"] as const
 
-// Monthly cost estimate for min=1 instance (always-on)
+// Monthly cost estimate for always-on instances
 function estimateMonthlyCost(
   cpu: string,
   memory: string,
   minInstances: number,
-): number {
-  if (minInstances === 0) return 0
+): { withCredits: number; withoutCredits: number } {
+  if (minInstances === 0) return { withCredits: 0, withoutCredits: 0 }
   const cpuVal = parseFloat(cpu)
   const memGib = memory.endsWith("Gi")
     ? parseFloat(memory)
     : parseFloat(memory) / 1024
   const secsPerMonth = 30 * 24 * 3600
-  // Free tier already covers most; estimate overage
-  const cpuCost = Math.max(0, cpuVal * secsPerMonth * minInstances - 360_000) * 0.000024
-  const memCost = Math.max(0, memGib * secsPerMonth * minInstances - 180_000) * 0.0000025
-  return Math.round((cpuCost + memCost) * 100) / 100
+  const totalCpuSec = cpuVal * secsPerMonth * minInstances
+  const totalMemSec = memGib * secsPerMonth * minInstances
+  // Without free tier credits (gross cost)
+  const grossCpu = totalCpuSec * 0.000024
+  const grossMem = totalMemSec * 0.0000025
+  const withoutCredits = Math.round((grossCpu + grossMem) * 100) / 100
+  // With free tier credits (net cost)
+  const netCpu = Math.max(0, totalCpuSec - 360_000) * 0.000024
+  const netMem = Math.max(0, totalMemSec - 180_000) * 0.0000025
+  const withCredits = Math.round((netCpu + netMem) * 100) / 100
+  return { withCredits, withoutCredits }
 }
 
 export function ScalingControls() {
@@ -84,8 +91,8 @@ export function ScalingControls() {
     cpuIdle !== data.cpuIdle ||
     startupBoost !== data.startupCpuBoost
 
-  const newCost = estimateMonthlyCost(cpu, memory, min)
-  const curCost = estimateMonthlyCost(data.cpu, data.memory, data.minInstances)
+  const newEst = estimateMonthlyCost(cpu, memory, min)
+  const curEst = estimateMonthlyCost(data.cpu, data.memory, data.minInstances)
 
   return (
     <motion.div
@@ -137,7 +144,7 @@ export function ScalingControls() {
             <p className="mt-1 text-[10px] text-zinc-600">
               {min === 0
                 ? "$0/mo — scale-to-zero"
-                : `~$${estimateMonthlyCost(cpu, memory, min).toFixed(2)}/mo — always warm`}
+                : `~$${estimateMonthlyCost(cpu, memory, min).withCredits.toFixed(2)}/mo with credits — always warm`}
             </p>
           </div>
 
@@ -259,22 +266,34 @@ export function ScalingControls() {
                 />
               </tbody>
             </table>
-            <div className="mt-3 pt-3 border-t border-white/[0.04] flex items-center justify-between">
-              <span className="text-xs text-zinc-500">
-                Est. monthly cost
-              </span>
-              <span
-                className={`text-lg font-bold ${
-                  newCost === 0 ? "text-emerald-400" : "text-[#ccf381]"
-                }`}
-              >
-                ${newCost.toFixed(2)}/mo
-                {newCost !== curCost && (
-                  <span className="text-xs text-zinc-600 ml-2">
-                    (was ${curCost.toFixed(2)})
+            <div className="mt-3 pt-3 border-t border-white/[0.04] space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-xs text-zinc-500">
+                  Est. monthly cost
+                </span>
+                <span
+                  className={`text-lg font-bold ${
+                    newEst.withCredits === 0 ? "text-emerald-400" : "text-[#ccf381]"
+                  }`}
+                >
+                  ${newEst.withCredits.toFixed(2)}/mo
+                  {newEst.withCredits !== curEst.withCredits && (
+                    <span className="text-xs text-zinc-600 ml-2">
+                      (was ${curEst.withCredits.toFixed(2)})
+                    </span>
+                  )}
+                </span>
+              </div>
+              {newEst.withoutCredits > 0 && (
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-zinc-600">
+                    Without free tier credits
                   </span>
-                )}
-              </span>
+                  <span className="text-sm font-medium text-amber-400/80">
+                    ${newEst.withoutCredits.toFixed(2)}/mo
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>
