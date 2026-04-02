@@ -162,7 +162,7 @@ export default function ClientBlogPost({ post }: { post: BlogPost }) {
                 </ul>
               </section>
 
-              <blockquote className="my-16 rounded-3xl border border-white/10 bg-white/[0.03] px-6 py-8 text-2xl font-medium leading-9 tracking-tight text-white sm:px-8">
+              <blockquote className="my-16 rounded-3xl border border-white/10 bg-white/[0.03] px-6 py-8 text-2xl font-medium leading-[1.52] tracking-tight text-white sm:px-8">
                 “{content.pullQuote}”
               </blockquote>
 
