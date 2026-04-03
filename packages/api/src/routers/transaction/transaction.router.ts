@@ -13,32 +13,32 @@ const transactionService = new TransactionService(transactionRepository);
 export const transactionRouter = createTRPCRouter({
   create: protectedProcedure
     .input(CreateTransactionSchema)
-    .mutation(async ({ ctx, input }: { ctx: any, input: any }) => {
+    .mutation(async ({ ctx, input }) => {
       return transactionService.createTransaction({
         ...input,
         userId: ctx.session.user.id,
       });
     }),
 
-  getAll: protectedProcedure.query(async ({ ctx }: { ctx: any }) => {
+  getAll: protectedProcedure.query(async ({ ctx }) => {
     return transactionService.getTransactions(ctx.session.user.id);
   }),
 
   getById: protectedProcedure
     .input(z.string())
-    .query(async ({ ctx, input }: { ctx: any, input: any }) => {
-      return transactionService.getTransaction(input);
+    .query(async ({ ctx, input }) => {
+      return transactionService.getTransaction(input, ctx.session.user.id);
     }),
 
   update: protectedProcedure
     .input(UpdateTransactionSchema)
-    .mutation(async ({ ctx, input }: { ctx: any, input: any }) => {
-      return transactionService.updateTransaction(input);
+    .mutation(async ({ ctx, input }) => {
+      return transactionService.updateTransaction(input, ctx.session.user.id);
     }),
 
   delete: protectedProcedure
     .input(z.string())
-    .mutation(async ({ ctx, input }: { ctx: any, input: any }) => {
-      return transactionService.deleteTransaction(input);
+    .mutation(async ({ ctx, input }) => {
+      return transactionService.deleteTransaction(input, ctx.session.user.id);
     }),
 });

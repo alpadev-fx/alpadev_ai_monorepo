@@ -71,10 +71,9 @@ const resolveDatabaseUrl = () => {
 
     // En lugar de hacer throw, vamos a usar una URL por defecto y loggear el error
     if (process.env.NODE_ENV === 'production') {
-      console.error("[db] Using fallback URL - THIS WILL LIKELY FAIL!")
-      const fallbackMongoUrl = "mongodb://mongo:hvrnIjFrwgEDQhUxYPYulIEPtWZmgxok@centerbeam.proxy.rlwy.net:16709/alpadev?authSource=admin"
-      process.env.MONGO_URL = fallbackMongoUrl
-      return fallbackMongoUrl
+      throw new Error(
+        "CRITICAL: No database URL found in production. Set MONGO_URL environment variable."
+      )
     }
 
     throw new Error(

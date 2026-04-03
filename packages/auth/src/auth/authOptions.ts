@@ -115,7 +115,13 @@ const scopes = [
 
 const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db) as Adapter,
-  secret: process.env.NEXTAUTH_SECRET || "fallback-secret-for-dev",
+  secret: (() => {
+      const secret = process.env.NEXTAUTH_SECRET;
+      if (!secret && process.env.NODE_ENV === "production") {
+        throw new Error("NEXTAUTH_SECRET environment variable is required in production");
+      }
+      return secret || "fallback-secret-for-dev";
+    })(),
   session: {
     strategy: "jwt",
   },

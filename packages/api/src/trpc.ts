@@ -80,7 +80,7 @@ export const createTRPCContext = async (opts: CreateContextOptions) => {
  */
 const t = initTRPC.context<typeof createTRPCContext>().create({
   transformer: superjson,
-  errorFormatter: ({ shape, error }: { shape: any; error: any }) => ({
+  errorFormatter: ({ shape, error }) => ({
     ...shape,
     data: {
       ...shape.data,
@@ -126,7 +126,7 @@ export const publicProcedure = t.procedure
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure.use(
-  ({ ctx, next, path }: { ctx: any; next: any; path: any }) => {
+  ({ ctx, next, path }) => {
     const user = ctx.session?.user
 
     if (!user) {
@@ -162,7 +162,7 @@ export const protectedProcedure = t.procedure.use(
  * @see https://trpc.io/docs/procedures
  */
 export const adminProcedure = t.procedure.use(
-  ({ ctx, next }: { ctx: any; next: any }) => {
+  ({ ctx, next }) => {
     if (!ctx.session?.user) {
       throw new TRPCError({ code: "UNAUTHORIZED" })
     }

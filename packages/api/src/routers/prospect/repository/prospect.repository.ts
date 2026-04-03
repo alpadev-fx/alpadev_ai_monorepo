@@ -115,11 +115,22 @@ export class ProspectRepository {
     }
 
     if (filter.hasSocialMedia === true) {
-      where.OR = [
-        ...(where.OR || []),
-        { facebook: { not: null } },
-        { instagram: { not: null } },
-        { tiktok: { not: null } },
+      where.AND = [
+        ...(Array.isArray(where.AND) ? where.AND : where.AND ? [where.AND] : []),
+        {
+          OR: [
+            { facebook: { not: null } },
+            { instagram: { not: null } },
+            { tiktok: { not: null } },
+          ],
+        },
+      ];
+    } else if (filter.hasSocialMedia === false) {
+      where.AND = [
+        ...(Array.isArray(where.AND) ? where.AND : where.AND ? [where.AND] : []),
+        { facebook: null },
+        { instagram: null },
+        { tiktok: null },
       ];
     }
 

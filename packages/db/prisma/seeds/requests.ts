@@ -2,8 +2,7 @@ import type { PrismaClient } from "@prisma/client"
 
 export async function seedRequests(
   prisma: PrismaClient,
-  users: { id: string }[],
-  properties: { id: string }[]
+  users: { id: string }[]
 ) {
   const TITLES = [
     "Fuga en tubería del baño",
@@ -13,35 +12,25 @@ export async function seedRequests(
     "Corto circuito en el sótano",
   ]
 
-  const n = Math.min(users.length, properties.length, TITLES.length)
+  const TYPES = ["ticket", "quote", "other"] as const
+  const STATUSES = ["pending", "accepted", "rejected", "resolved", "cancelled"] as const
+  const PRIORITIES = ["low", "medium", "high", "critical"] as const
+
+  const n = Math.min(users.length, TITLES.length)
 
   for (let i = 0; i < n; i++) {
-    const data = {
-      userId: users[i].id,
-      propertyId: properties[i].id,
-      title: TITLES[i],
-      description:
-        i % 2 === 0
-          ? "Se detectó fuga de agua en el baño principal. Requiere revisión urgente."
-          : "Varios vecinos reportan ruido constante después de las 11 pm.",
-      reservedStart:
-        i % 3 === 0 ? new Date(Date.now() + 2 * 3600000) : undefined,
-      reservedEnd: i % 3 === 0 ? new Date(Date.now() + 4 * 3600000) : undefined,
-      type: [
-        "maintenance",
-        "complaint",
-        "suggestion",
-        "information",
-        "emergency",
-      ][i % 5],
-      status: ["pending", "in_progress", "resolved", "cancelled"][i % 4],
-      priority: ["low", "medium", "high", "critical"][i % 4],
-    }
-
     await prisma.request.create({
-      data: data as unknown as Parameters<
-        typeof prisma.request.create
-      >[0]["data"],
+      data: {
+        userId: users[i]!.id,
+        title: TITLES[i]!,
+        description:
+          i % 2 === 0
+            ? "Se detectó fuga de agua en el baño principal. Requiere revisión urgente."
+            : "Varios vecinos reportan ruido constante después de las 11 pm.",
+        type: TYPES[i % TYPES.length]!,
+        status: STATUSES[i % STATUSES.length]!,
+        priority: PRIORITIES[i % PRIORITIES.length]!,
+      },
     })
   }
 }

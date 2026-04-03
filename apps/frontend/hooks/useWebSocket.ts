@@ -15,6 +15,8 @@ export function useWebSocket(onMessage?: (msg: WSMessage) => void) {
   const reconnectTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const retriesRef = useRef(0);
   const [status, setStatus] = useState<WSStatus>("disconnected");
+  const onMessageRef = useRef(onMessage);
+  useEffect(() => { onMessageRef.current = onMessage; }, [onMessage]);
 
   const getWsUrl = useCallback(() => {
     const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
@@ -35,7 +37,7 @@ export function useWebSocket(onMessage?: (msg: WSMessage) => void) {
     ws.onmessage = (event) => {
       try {
         const msg = JSON.parse(event.data) as WSMessage;
-        onMessage?.(msg);
+        onMessageRef.current?.(msg);
       } catch {
         // Ignore malformed messages
       }
@@ -56,7 +58,7 @@ export function useWebSocket(onMessage?: (msg: WSMessage) => void) {
     };
 
     wsRef.current = ws;
-  }, [getWsUrl, onMessage]);
+  }, [getWsUrl]);
 
   const send = useCallback((data: Record<string, unknown>) => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
@@ -74,13 +76,14 @@ export function useWebSocket(onMessage?: (msg: WSMessage) => void) {
   }, []);
 
   useEffect(() => {
+    connect();
     return () => {
       if (reconnectTimeoutRef.current) {
         clearTimeout(reconnectTimeoutRef.current);
       }
       wsRef.current?.close();
     };
-  }, []);
+  }, [connect]);
 
   return { connect, disconnect, send, status };
 }

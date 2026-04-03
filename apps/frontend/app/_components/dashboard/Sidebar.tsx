@@ -9,16 +9,41 @@ import {
   ChartBarIcon,
   ClipboardDocumentListIcon,
   ServerStackIcon,
+  ChatBubbleLeftRightIcon,
+  CalendarDaysIcon,
+  DocumentTextIcon,
+  ShieldCheckIcon,
   ChevronLeftIcon,
   ArrowRightStartOnRectangleIcon,
 } from "@heroicons/react/24/outline"
 
 const NAV_ITEMS = [
-  { name: "Metrics", href: "/dashboard", icon: ChartBarIcon },
+  { name: "Dashboard", href: "/dashboard", icon: ChartBarIcon },
   {
     name: "Prospects",
     href: "/dashboard/prospects",
     icon: ClipboardDocumentListIcon,
+  },
+  {
+    name: "Invoices",
+    href: "/dashboard/invoices",
+    icon: DocumentTextIcon,
+  },
+  {
+    name: "Chat",
+    href: "/dashboard/chat",
+    icon: ChatBubbleLeftRightIcon,
+  },
+  {
+    name: "Calendar",
+    href: "/dashboard/calendar",
+    icon: CalendarDaysIcon,
+  },
+  {
+    name: "Permissions",
+    href: "/dashboard/permissions",
+    icon: ShieldCheckIcon,
+    adminOnly: true,
   },
   {
     name: "Infrastructure",
@@ -75,7 +100,7 @@ export const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
 
       {/* Navigation */}
       <nav className="flex-1 px-3 mt-2 space-y-1">
-        {NAV_ITEMS.map((item) => {
+        {NAV_ITEMS.filter((item) => !("adminOnly" in item && item.adminOnly) || (user as { role?: string })?.role === "ADMIN").map((item) => {
           const active = isActive(item.href)
           const Icon = item.icon
 

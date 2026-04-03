@@ -7,16 +7,11 @@ export const idRequestSchema = z.object({
 
 export const createRequestSchema = z.object({
   userId: z.string(),
-  propertyId: z.string(),
   type: z.nativeEnum(RequestType),
-  status: z.nativeEnum(RequestStatus),
-  priority: z.nativeEnum(RequestPriority),
+  status: z.nativeEnum(RequestStatus).default(RequestStatus.pending),
+  priority: z.nativeEnum(RequestPriority).default(RequestPriority.medium),
   title: z.string(),
   description: z.string(),
-  reservedStart: z.date(),
-  reservedEnd: z.date(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
 })
 
 // Schema simplificado para formulario de contacto

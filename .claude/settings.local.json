@@ -18,7 +18,10 @@
       "Bash(pnpm dev:*)",
       "Bash(head:*)",
       "Bash(grep:*)",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(pnpm exec:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(git add:*)"
     ],
     "deny": []
   },

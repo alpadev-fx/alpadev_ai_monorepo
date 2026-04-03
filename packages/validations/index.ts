@@ -10,4 +10,5 @@ export * from "./schemas/chatbot/chatbot.schema"
 export * from "./schemas/chat/chat.schema"
 export * from "./schemas/prospect/prospect.schema"
 export * from "./schemas/infrastructure/infrastructure.schema"
+export * from "./schemas/permission/permission.schema"
 

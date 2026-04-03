@@ -2,6 +2,7 @@ import {
   SendMessageSchema,
   GetConversationHistorySchema,
 } from "@package/validations";
+import { TRPCError } from "@trpc/server";
 import {
   createTRPCRouter,
   protectedProcedure,
@@ -120,10 +121,18 @@ export const chatbotRouter = createTRPCRouter({
   getConversationHistory: protectedProcedure
     .input(GetConversationHistorySchema)
     .query(async ({ ctx, input }) => {
-      const targetUserId = input.userId || ctx.session?.user.id;
+      const currentUserId = ctx.session?.user.id;
+
+      if (input.userId && input.userId !== currentUserId) {
+        if (ctx.session?.user.role !== "ADMIN") {
+          throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
+        }
+      }
+
+      const targetUserId = input.userId || currentUserId;
 
       if (!targetUserId) {
-        throw new Error("User ID required");
+        throw new TRPCError({ code: "UNAUTHORIZED", message: "User ID required" });
       }
 
       return await orchestrator.getConversationHistory(

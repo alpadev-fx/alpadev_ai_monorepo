@@ -12,7 +12,7 @@ export class BookingService {
   async scheduleMeeting(data: {
     name: string;
     email: string;
-    notes: string;
+    notes?: string;
     startDate: string; // ISO
     endDate: string;   // ISO
     timeZone: string;
@@ -25,20 +25,31 @@ export class BookingService {
       startTime: data.startDate,
       endTime: data.endDate,
       summary: `Meeting with ${data.name}`,
-      description: `Notes: ${data.notes}\nScheduled via Alpadev Booking System.`,
+      description: `Notes: ${data.notes ?? "None"}\nScheduled via Alpadev Booking System.`,
     });
 
     // 2. Save to Database using Repository
-    const booking = await this.repository.create({
-      name: data.name,
-      email: data.email,
-      startTime: new Date(data.startDate),
-      endTime: new Date(data.endDate),
-      meetLink: calendarResult.meetLink,
-      googleEventId: calendarResult.eventId,
-      notes: data.notes,
-      userId: data.userId,
-    });
+    let booking;
+    try {
+      booking = await this.repository.create({
+        name: data.name,
+        email: data.email,
+        startTime: new Date(data.startDate),
+        endTime: new Date(data.endDate),
+        meetLink: calendarResult.meetLink,
+        googleEventId: calendarResult.eventId,
+        notes: data.notes,
+        userId: data.userId,
+      });
+    } catch (dbError) {
+      // Compensate: delete the calendar event we just created
+      try {
+        await CalendarService.deleteEvent(calendarResult.eventId);
+      } catch (calendarError) {
+        console.error("[Booking] Failed to rollback calendar event:", calendarError);
+      }
+      throw dbError;
+    }
 
     // 3. Send Confirmation Email
     try {

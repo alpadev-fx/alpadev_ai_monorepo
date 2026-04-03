@@ -42,44 +42,6 @@ export class RequestService {
     })
 
     try {
-      // Verificar conexión a la base de datos
-      console.log("[RequestService] Testing database connection...")
-      try {
-        await db.$connect()
-        console.log("[RequestService] Database connection successful")
-      } catch (connectionError) {
-        console.error("[RequestService] Database connection failed:", {
-          error:
-            connectionError instanceof Error
-              ? connectionError.message
-              : String(connectionError),
-          stack:
-            connectionError instanceof Error
-              ? connectionError.stack
-              : undefined,
-        })
-
-        // Verificar si es un error de autenticación específico
-        if (connectionError instanceof Error) {
-          if (
-            connectionError.message.includes("authentication") ||
-            connectionError.message.includes("Unauthorized") ||
-            connectionError.message.includes("Error code 13")
-          ) {
-            throw new TRPCError({
-              code: "INTERNAL_SERVER_ERROR",
-              message:
-                "Database authentication failed. Please check MongoDB credentials.",
-            })
-          }
-        }
-
-        throw new TRPCError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Database connection failed. Please try again later.",
-        })
-      }
-
       // Buscar o crear usuario
       console.log("[RequestService] Searching for existing user...")
       let user = await this.findExistingUser(input)
@@ -261,9 +223,6 @@ export class RequestService {
           priority: input.priority,
         },
       })
-
-      // Desconectar de la base de datos para limpiar conexiones
-      await db.$disconnect().catch(() => {})
 
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",

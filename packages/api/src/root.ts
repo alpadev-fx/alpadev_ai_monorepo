@@ -12,6 +12,7 @@ import { chatbotRouter } from "./routers/chatbot/chatbot.router"
 import { chatRouter } from "./routers/chat/chat.router"
 import { prospectRouter } from "./routers/prospect/prospect.router"
 import { infrastructureRouter } from "./routers/infrastructure/infrastructure.router"
+import { permissionRouter } from "./routers/permission/permission.router"
 import { createTRPCRouter } from "./trpc"
 
 export const appRouter = createTRPCRouter({
@@ -29,6 +30,7 @@ export const appRouter = createTRPCRouter({
   chat: chatRouter,
   prospect: prospectRouter,
   infrastructure: infrastructureRouter,
+  permission: permissionRouter,
 })
 
 // export type definition of API

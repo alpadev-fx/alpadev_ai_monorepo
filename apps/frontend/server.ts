@@ -12,11 +12,11 @@ import { createServer } from "http";
 import { parse } from "url";
 import next from "next";
 import { WebSocketServer, WebSocket } from "ws";
-import type { ChatEvent } from "../../packages/api/src/routers/chat/chat.service";
+import type { ChatEvent } from "@package/api";
 
 // Dynamic import to handle ESM/CJS interop with tsx loader
 const loadChatService = async () => {
-  const mod = await import("../../packages/api/src/routers/chat/chat.service");
+  const mod = await import("@package/api");
   return (mod.getChatService || (mod as any).default?.getChatService)();
 };
 

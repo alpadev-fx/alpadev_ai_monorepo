@@ -28,6 +28,10 @@ export interface ChatEvent {
 type EventCallback = (event: ChatEvent) => void;
 
 export class ChatService {
+  // Single compiled regex combining all 16 escalation patterns (English + Spanish)
+  private static readonly ESCALATION_REGEX =
+    /\btalk to a (?:real|human|actual)\b|\bhuman agent\b|\breal person\b|\bspeak (?:to|with) (?:a |an )?(?:human|person|agent|someone real)\b|\bconnect me (?:to|with) (?:a |an )?(?:human|person|agent)\b|\bi (?:want|need) (?:a |an )?(?:human|person|agent)\b|\btransfer (?:me )?(?:to )?(?:a |an )?(?:human|person|agent)\b|\bnot? a bot\b|\bstop being a bot\b|\bhablar con (?:una? )?(?:persona|humano|agente)\b|\bquiero (?:una? )?(?:persona|humano|agente)\b|\bnecesito (?:una? )?(?:persona|humano|agente)\b|\bconectame con (?:una? )?(?:persona|humano|agente)\b|\bpasame con (?:una? )?(?:persona|humano|agente)\b|\bagente real\b|\bpersona real\b/i;
+
   private repository: ChatRepository;
   private chatJobRepo: ChatJobRepository;
   private listeners: Map<string, Set<EventCallback>> = new Map();
@@ -350,32 +354,11 @@ export class ChatService {
   /**
    * Check if the visitor's message contains explicit escalation keywords.
    * Returns true for phrases like "talk to a real person", "human agent", etc.
+   * Uses a single pre-compiled static regex for performance.
    */
   private shouldEscalateImmediately(message: string): boolean {
     const normalized = message.toLowerCase().trim();
-
-    const escalationPatterns = [
-      // English
-      /\btalk to a (real|human|actual)\b/,
-      /\bhuman agent\b/,
-      /\breal person\b/,
-      /\bspeak (to|with) (a |an )?(human|person|agent|someone real)\b/,
-      /\bconnect me (to|with) (a |an )?(human|person|agent)\b/,
-      /\bi (want|need) (a |an )?(human|person|agent)\b/,
-      /\btransfer (me )?(to )?(a |an )?(human|person|agent)\b/,
-      /\bno(t)? a bot\b/,
-      /\bstop being a bot\b/,
-      // Spanish
-      /\bhablar con (una? )?(persona|humano|agente)\b/,
-      /\bquiero (una? )?(persona|humano|agente)\b/,
-      /\bnecesito (una? )?(persona|humano|agente)\b/,
-      /\bconectame con (una? )?(persona|humano|agente)\b/,
-      /\bpasame con (una? )?(persona|humano|agente)\b/,
-      /\bagente real\b/,
-      /\bpersona real\b/,
-    ];
-
-    return escalationPatterns.some((pattern) => pattern.test(normalized));
+    return ChatService.ESCALATION_REGEX.test(normalized);
   }
 
   /**
@@ -434,6 +417,10 @@ export class ChatService {
   // ==========================================
   // Queries
   // ==========================================
+
+  async getRoomById(roomId: string) {
+    return this.repository.findRoomById(roomId);
+  }
 
   async getMessages(roomId: string, limit?: number, cursor?: string) {
     return this.repository.getMessages(roomId, limit, cursor);
