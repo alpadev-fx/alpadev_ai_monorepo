@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useSession } from "next-auth/react"
 import { api } from "@/lib/trpc/react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
@@ -47,6 +48,9 @@ export default function ActivityPage() {
   const [resourceFilter, setResourceFilter] = useState<string>("")
   const [page, setPage] = useState(1)
   const [expandedVendor, setExpandedVendor] = useState<string | null>(null)
+
+  const { data: session } = useSession()
+  const isAdmin = (session?.user as { role?: string })?.role === "ADMIN"
 
   const { data: vendors } = api.activity.listVendors.useQuery(undefined, { retry: false })
   const users = vendors ?? []
@@ -240,27 +244,47 @@ export default function ActivityPage() {
                             })}
                           </div>
 
-                          {/* Full metadata activity */}
+                          {/* Recent activity — metadata visible to ADMIN only */}
                           <div>
-                            <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-2">Recent Activity (full metadata)</p>
-                            <div className="space-y-1.5">
-                              {v.recentActivity.map((act, j) => (
-                                <div key={j} className="rounded-lg bg-white/[0.02] px-3 py-2 space-y-1">
-                                  <div className="flex items-center gap-2 text-[11px]">
-                                    <span className="text-zinc-600 w-14 shrink-0">{timeAgo(act.createdAt)}</span>
-                                    <span className="text-[#ffb0cd] font-medium">{act.action}</span>
-                                    {act.duration != null && <span className="text-zinc-700">{act.duration}ms</span>}
-                                    {!act.success && <span className="text-rose-400 font-medium">FAILED</span>}
-                                  </div>
-                                  <div className="flex flex-wrap gap-x-4 gap-y-0.5 text-[10px] text-zinc-700 ml-[60px]">
-                                    {act.ipAddress && <span>IP: {act.ipAddress}</span>}
-                                    {act.userAgent && <span className="truncate max-w-[300px]" title={act.userAgent}>UA: {act.userAgent}</span>}
-                                    {act.details && typeof act.details === "object" && Object.keys(act.details as object).length > 0 && (
-                                      <span className="text-zinc-600 break-all">Input: {JSON.stringify(act.details)}</span>
+                            <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-2">Recent Activity{isAdmin ? " (full metadata)" : ""}</p>
+                            <div className="space-y-2">
+                              {v.recentActivity.map((act, j) => {
+                                const actDetails = act.details && typeof act.details === "object" ? act.details as Record<string, unknown> : null
+                                return (
+                                  <div key={j} className="rounded-xl bg-white/[0.02] p-3 space-y-2">
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-[10px] text-zinc-600">{timeAgo(act.createdAt)}</span>
+                                      <span className="text-[11px] text-[#ffb0cd] font-medium">{act.action}</span>
+                                      {act.duration != null && <span className="text-[10px] text-zinc-700">{act.duration}ms</span>}
+                                      {act.success ? (
+                                        <span className="text-[10px] bg-emerald-500/15 text-emerald-400 rounded px-1.5 py-0.5">OK</span>
+                                      ) : (
+                                        <span className="text-[10px] bg-rose-500/15 text-rose-400 rounded px-1.5 py-0.5">FAILED</span>
+                                      )}
+                                    </div>
+                                    {isAdmin ? (
+                                      <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px]">
+                                        <div><span className="text-zinc-600">IP:</span> <span className="text-zinc-400 font-mono">{act.ipAddress || "—"}</span></div>
+                                        <div><span className="text-zinc-600">Time:</span> <span className="text-zinc-400">{new Date(act.createdAt).toLocaleString()}</span></div>
+                                        <div className="col-span-2"><span className="text-zinc-600">User Agent:</span> <span className="text-zinc-400 break-all">{act.userAgent || "—"}</span></div>
+                                        {actDetails && Object.keys(actDetails).length > 0 && (
+                                          <div className="col-span-2 border-t border-white/[0.04] pt-1 mt-1">
+                                            <p className="text-zinc-600 mb-1">Request Input:</p>
+                                            {Object.entries(actDetails).map(([key, value]) => (
+                                              <div key={key} className="flex gap-2 ml-2">
+                                                <span className="text-zinc-600 shrink-0">{key}:</span>
+                                                <span className="text-zinc-300 break-all">{typeof value === "object" ? JSON.stringify(value) : String(value ?? "—")}</span>
+                                              </div>
+                                            ))}
+                                          </div>
+                                        )}
+                                      </div>
+                                    ) : (
+                                      <p className="text-[10px] text-zinc-600">{new Date(act.createdAt).toLocaleString()}</p>
                                     )}
                                   </div>
-                                </div>
-                              ))}
+                                )
+                              })}
                               {!v.recentActivity.length && <p className="text-zinc-600 text-xs">No recent activity</p>}
                             </div>
                           </div>
@@ -305,26 +329,100 @@ export default function ActivityPage() {
             ) : (
               <>
                 <div className="divide-y divide-white/[0.04]">
-                  {feed.items.map((entry, i) => (
-                    <motion.div key={entry.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: i * 0.02 }} className="px-5 py-3 hover:bg-white/[0.02] transition-colors">
-                      <div className="flex items-center gap-3 mb-1">
-                        <span className="text-[10px] text-zinc-600 w-14 shrink-0">{timeAgo(entry.createdAt)}</span>
-                        <span className="text-xs text-white font-medium">{entry.user.name}</span>
-                        <span className={`text-[10px] font-medium rounded-md px-2 py-0.5 ${METHOD_COLORS[entry.method] ?? "bg-zinc-800 text-zinc-400"}`}>{entry.method}</span>
-                        <span className="text-xs text-[#ffb0cd]">{entry.action}</span>
-                        {!entry.success && <span className="text-[10px] bg-rose-500/15 text-rose-400 rounded-md px-2 py-0.5">failed</span>}
-                        {entry.duration != null && <span className="text-[10px] text-zinc-700">{entry.duration}ms</span>}
-                      </div>
-                      <div className="flex flex-wrap gap-x-4 gap-y-0.5 ml-[68px] text-[10px] text-zinc-700">
-                        {entry.resourceId && <span>ID: {entry.resourceId}</span>}
-                        {entry.ipAddress && <span>IP: {entry.ipAddress}</span>}
-                        {entry.userAgent && <span className="truncate max-w-[250px]">UA: {entry.userAgent}</span>}
-                        {entry.details && typeof entry.details === "object" && Object.keys(entry.details as object).length > 0 && (
-                          <span className="text-zinc-600 break-all max-w-[500px]">Input: {JSON.stringify(entry.details)}</span>
+                  {feed.items.map((entry, i) => {
+                    const details = entry.details && typeof entry.details === "object" ? entry.details as Record<string, unknown> : null
+                    return (
+                      <motion.div
+                        key={entry.id}
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: i * 0.02 }}
+                        className="px-5 py-4 hover:bg-white/[0.02] transition-colors"
+                      >
+                        {/* Header row */}
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-[#f751a1] to-[#8B5CF6] flex items-center justify-center shrink-0">
+                            <span className="text-[10px] font-bold text-white">{entry.user.name[0]}</span>
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-xs text-white font-medium">{entry.user.name} <span className="text-zinc-600 font-normal">({entry.user.email})</span></p>
+                            <p className="text-[10px] text-zinc-600">Role: {entry.user.role}</p>
+                          </div>
+                          <div className="ml-auto flex items-center gap-2">
+                            <span className={`text-[10px] font-medium rounded-md px-2 py-0.5 ${METHOD_COLORS[entry.method] ?? "bg-zinc-800 text-zinc-400"}`}>{entry.method}</span>
+                            {!entry.success && <span className="text-[10px] bg-rose-500/15 text-rose-400 rounded-md px-2 py-0.5">FAILED</span>}
+                            {entry.success && <span className="text-[10px] bg-emerald-500/15 text-emerald-400 rounded-md px-2 py-0.5">OK</span>}
+                          </div>
+                        </div>
+
+                        {/* Metadata grid — ADMIN only */}
+                        {isAdmin && <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-2 rounded-xl bg-white/[0.02] p-3">
+                          <div>
+                            <p className="text-[9px] text-zinc-600 uppercase tracking-wider">Action</p>
+                            <p className="text-[11px] text-[#ffb0cd] font-medium">{entry.action}</p>
+                          </div>
+                          <div>
+                            <p className="text-[9px] text-zinc-600 uppercase tracking-wider">Resource</p>
+                            <p className="text-[11px] text-white">{entry.resource}</p>
+                          </div>
+                          <div>
+                            <p className="text-[9px] text-zinc-600 uppercase tracking-wider">Timestamp</p>
+                            <p className="text-[11px] text-white">{new Date(entry.createdAt).toLocaleString()}</p>
+                          </div>
+                          <div>
+                            <p className="text-[9px] text-zinc-600 uppercase tracking-wider">Duration</p>
+                            <p className="text-[11px] text-white">{entry.duration != null ? `${entry.duration}ms` : "—"}</p>
+                          </div>
+                          <div>
+                            <p className="text-[9px] text-zinc-600 uppercase tracking-wider">Resource ID</p>
+                            <p className="text-[11px] text-white font-mono">{entry.resourceId || "—"}</p>
+                          </div>
+                          <div>
+                            <p className="text-[9px] text-zinc-600 uppercase tracking-wider">Status</p>
+                            <p className={`text-[11px] font-medium ${entry.success ? "text-emerald-400" : "text-rose-400"}`}>{entry.success ? "Success" : "Failed"}</p>
+                          </div>
+                          <div>
+                            <p className="text-[9px] text-zinc-600 uppercase tracking-wider">IP Address</p>
+                            <p className="text-[11px] text-white font-mono">{entry.ipAddress || "—"}</p>
+                          </div>
+                          <div className="col-span-2">
+                            <p className="text-[9px] text-zinc-600 uppercase tracking-wider">User Agent</p>
+                            <p className="text-[11px] text-zinc-400 break-all">{entry.userAgent || "—"}</p>
+                          </div>
+
+                          {/* Input params — render each key as its own row */}
+                          {details && Object.keys(details).length > 0 && (
+                            <div className="col-span-2 lg:col-span-3 border-t border-white/[0.04] pt-2 mt-1">
+                              <p className="text-[9px] text-zinc-600 uppercase tracking-wider mb-1.5">Request Input</p>
+                              <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-1.5">
+                                {Object.entries(details).map(([key, value]) => (
+                                  <div key={key}>
+                                    <p className="text-[9px] text-zinc-700">{key}</p>
+                                    <p className="text-[11px] text-white break-all">
+                                      {typeof value === "object" && value !== null
+                                        ? JSON.stringify(value, null, 0)
+                                        : String(value ?? "—")}
+                                    </p>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                        </div>}
+
+                        {/* Chief sees summary only */}
+                        {!isAdmin && (
+                          <div className="flex items-center gap-3 rounded-xl bg-white/[0.02] px-3 py-2 text-[11px]">
+                            <span className="text-[#ffb0cd] font-medium">{entry.action}</span>
+                            <span className="text-zinc-500">{entry.resource}</span>
+                            <span className="text-zinc-600">{new Date(entry.createdAt).toLocaleString()}</span>
+                            {entry.duration != null && <span className="text-zinc-700">{entry.duration}ms</span>}
+                            {!entry.success && <span className="text-rose-400">Failed</span>}
+                          </div>
                         )}
-                      </div>
-                    </motion.div>
-                  ))}
+                      </motion.div>
+                    )
+                  })}
                 </div>
                 {feed.pagination.totalPages > 1 && (
                   <div className="px-5 py-3 border-t border-white/[0.04] flex items-center justify-between">
