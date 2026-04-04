@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { createTRPCRouter, adminProcedure } from "../../trpc"
+import { createTRPCRouter, chiefProcedure } from "../../trpc"
 import { ActivityService } from "./service/activity.service"
 
 const objectIdSchema = z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId")
@@ -25,28 +25,28 @@ const byUserSchema = z.object({
 })
 
 export const activityRouter = createTRPCRouter({
-  getAll: adminProcedure
+  getAll: chiefProcedure
     .input(activityFiltersSchema)
     .query(async ({ ctx, input }) => {
       const service = new ActivityService(ctx.db)
       return service.getAll(input)
     }),
 
-  getByUser: adminProcedure
+  getByUser: chiefProcedure
     .input(byUserSchema)
     .query(async ({ ctx, input }) => {
       const service = new ActivityService(ctx.db)
       return service.getByUser(input.userId, input.page, input.pageSize)
     }),
 
-  vendorStats: adminProcedure
+  vendorStats: chiefProcedure
     .input(vendorStatsSchema)
     .query(async ({ ctx, input }) => {
       const service = new ActivityService(ctx.db)
       return service.vendorStats(input.userId)
     }),
 
-  dashboard: adminProcedure.query(async ({ ctx }) => {
+  dashboard: chiefProcedure.query(async ({ ctx }) => {
     const service = new ActivityService(ctx.db)
     return service.dashboardStats()
   }),

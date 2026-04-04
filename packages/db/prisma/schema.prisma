@@ -196,6 +196,8 @@ model ActivityLog {
 enum Role {
   USER
   ADMIN
+  CHIEF
+  VENDOR
   GUEST
 }
 
