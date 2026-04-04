@@ -117,11 +117,15 @@ const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db) as Adapter,
   secret: (() => {
       const secret = process.env.NEXTAUTH_SECRET;
-      const isBuildPhase = !process.env.MONGO_URL;
+      // Next.js sets NEXT_PHASE during build; also check MONGO_URL absence as fallback
+      const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build" || !process.env.MONGO_URL;
       if (!secret && process.env.NODE_ENV === "production" && !isBuildPhase) {
         throw new Error("NEXTAUTH_SECRET environment variable is required in production");
       }
-      return secret || "build-placeholder-secret";
+      if (!secret && !isBuildPhase) {
+        return "dev-only-fallback-secret";
+      }
+      return secret || "next-build-placeholder";
     })(),
   session: {
     strategy: "jwt",

@@ -3,14 +3,13 @@ import { PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
-// Pre-computed bcrypt hashes (10 rounds)
 const USERS = [
   {
     name: "Alpadev Admin",
     email: "alejandro.padron@inteligente.io",
     username: "alpadev-fx",
     phone: "+10000000001",
-    password: "$2b$10$n.nj1xEP4eHSbZovicFeUORZILwh58oAn/3R08ynNvERaNUUI5dD6", // A1p4d3v*
+    password: "$2b$10$n.nj1xEP4eHSbZovicFeUORZILwh58oAn/3R08ynNvERaNUUI5dD6",
     role: "ADMIN" as const,
   },
   {
@@ -18,7 +17,7 @@ const USERS = [
     email: "admin@onshapers.com",
     username: "admin_onshapers",
     phone: "+10000000002",
-    password: "$2b$10$/TOYr9xyma1ZEZgFP9x/lu1ANlr3jBY0mCvgkedb5snsu29CX2w8.", // 0nS4p3rS@13001
+    password: "$2b$10$/TOYr9xyma1ZEZgFP9x/lu1ANlr3jBY0mCvgkedb5snsu29CX2w8.",
     role: "CHIEF" as const,
   },
   {
@@ -26,15 +25,19 @@ const USERS = [
     email: "vendor1@alpadev.xyz",
     username: "vendor1",
     phone: "+10000000003",
-    password: "$2b$10$M0CaS4E9p6zu.NGkZpxz2eOH7Fdw4NdoCOZTV1DJqNNu/PTJ.jodq", // vendor1**
+    password: "$2b$10$M0CaS4E9p6zu.NGkZpxz2eOH7Fdw4NdoCOZTV1DJqNNu/PTJ.jodq",
     role: "VENDOR" as const,
   },
 ]
 
 async function main() {
+  if (process.env.NODE_ENV === "production") {
+    console.error("ABORT: seed script cannot run in production")
+    process.exit(1)
+  }
+
   console.log("Seeding users (3 only: admin, chief, vendor)...")
 
-  // Clean all related data first
   console.log("Cleaning existing data...")
   await prisma.activityLog.deleteMany({})
   await prisma.userPermission.deleteMany({})
