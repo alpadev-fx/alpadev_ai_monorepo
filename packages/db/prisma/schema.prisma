@@ -73,6 +73,7 @@ model User {
   conversationSessions ConversationSession[]
   prospects            Prospect[]
   permissions          UserPermission[]
+  activityLogs         ActivityLog[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -164,6 +165,32 @@ model UserPermission {
 
   @@unique([userId, resource])
   @@index([userId])
+}
+
+// ==========================================
+// ACTIVITY TRACKING
+// ==========================================
+
+model ActivityLog {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId     String   @db.ObjectId
+  action     String
+  resource   String
+  resourceId String?
+  method     String
+  details    Json?
+  ipAddress  String?
+  userAgent  String?
+  success    Boolean  @default(true)
+  duration   Int?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+  @@index([resource, createdAt])
+  @@index([action, createdAt])
 }
 
 enum Role {

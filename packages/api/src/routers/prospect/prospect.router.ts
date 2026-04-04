@@ -1,4 +1,4 @@
-import { createTRPCRouter, protectedProcedure } from "../../trpc"
+import { createTRPCRouter, loggedProcedure as protectedProcedure } from "../../trpc"
 import { ProspectService } from "./service/prospect.service"
 import { PermissionService } from "../permission/service/permission.service"
 import {

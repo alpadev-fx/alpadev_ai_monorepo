@@ -117,10 +117,11 @@ const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db) as Adapter,
   secret: (() => {
       const secret = process.env.NEXTAUTH_SECRET;
-      if (!secret && process.env.NODE_ENV === "production") {
+      const isBuildPhase = !process.env.MONGO_URL;
+      if (!secret && process.env.NODE_ENV === "production" && !isBuildPhase) {
         throw new Error("NEXTAUTH_SECRET environment variable is required in production");
       }
-      return secret || "fallback-secret-for-dev";
+      return secret || "build-placeholder-secret";
     })(),
   session: {
     strategy: "jwt",
