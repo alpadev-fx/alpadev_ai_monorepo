@@ -32,10 +32,10 @@ type AssignFormData = {
   resources: (typeof RESOURCES)[number][]
   actions: (typeof ACTIONS)[number][]
   scope: {
-    ciudad: string
-    estado: string
-    pais: string
-    nicho: string
+    ciudad: string[]
+    estado: string[]
+    pais: string[]
+    nicho: string[]
   }
 }
 
@@ -43,7 +43,7 @@ const EMPTY_FORM: AssignFormData = {
   userId: "",
   resources: [],
   actions: [],
-  scope: { ciudad: "", estado: "", pais: "", nicho: "" },
+  scope: { ciudad: [], estado: [], pais: [], nicho: [] },
 }
 
 export default function PermissionsPage() {
@@ -54,6 +54,7 @@ export default function PermissionsPage() {
   const { data: permissions, isLoading } = api.permission.getAll.useQuery()
   const { data: usersData } = api.admin.users.list.useQuery({ page: 1, limit: 50 }, { retry: false })
   const users = usersData?.users ?? []
+  const { data: scopeOptions } = api.prospect.scopeOptions.useQuery()
 
   const assignMutation = api.permission.assign.useMutation()
 
@@ -63,10 +64,10 @@ export default function PermissionsPage() {
 
   const handleAssign = async () => {
     const scopeObj: Record<string, string[]> = {}
-    if (form.scope.ciudad.trim()) scopeObj.ciudad = form.scope.ciudad.split(",").map((s) => s.trim())
-    if (form.scope.estado.trim()) scopeObj.estado = form.scope.estado.split(",").map((s) => s.trim())
-    if (form.scope.pais.trim()) scopeObj.pais = form.scope.pais.split(",").map((s) => s.trim())
-    if (form.scope.nicho.trim()) scopeObj.nicho = form.scope.nicho.split(",").map((s) => s.trim())
+    if (form.scope.ciudad.length) scopeObj.ciudad = form.scope.ciudad
+    if (form.scope.estado.length) scopeObj.estado = form.scope.estado
+    if (form.scope.pais.length) scopeObj.pais = form.scope.pais
+    if (form.scope.nicho.length) scopeObj.nicho = form.scope.nicho
 
     for (const resource of form.resources) {
       await assignMutation.mutateAsync({
@@ -79,6 +80,18 @@ export default function PermissionsPage() {
     utils.permission.getAll.invalidate()
     setShowForm(false)
     setForm(EMPTY_FORM)
+  }
+
+  const toggleScope = (field: keyof AssignFormData["scope"], value: string) => {
+    setForm((prev) => ({
+      ...prev,
+      scope: {
+        ...prev.scope,
+        [field]: prev.scope[field].includes(value)
+          ? prev.scope[field].filter((v) => v !== value)
+          : [...prev.scope[field], value],
+      },
+    }))
   }
 
   const toggleResource = (resource: (typeof RESOURCES)[number]) => {
@@ -202,24 +215,38 @@ export default function PermissionsPage() {
               </div>
             </div>
 
-            {/* Scope filters */}
-            <div>
-              <label className="text-[11px] text-zinc-500 uppercase tracking-wider">
-                Scope filters <span className="text-zinc-700">(comma-separated, leave empty for unrestricted)</span>
-              </label>
-              <div className="mt-1 grid grid-cols-2 gap-3">
-                {(["ciudad", "estado", "pais", "nicho"] as const).map((field) => (
-                  <input
-                    key={field}
-                    type="text"
-                    placeholder={field === "ciudad" ? "e.g. Mexico City, Guadalajara" : field}
-                    value={form.scope[field]}
-                    onChange={(e) => setForm((p) => ({ ...p, scope: { ...p.scope, [field]: e.target.value } }))}
-                    className="rounded-xl bg-white/[0.04] border border-white/[0.06] px-3 py-2 text-sm text-white placeholder:text-zinc-700 focus:outline-none focus:ring-1 focus:ring-[#f751a1]"
-                  />
+            {/* Scope filters — select from real data */}
+            {scopeOptions && (
+              <div className="space-y-3">
+                {([
+                  { field: "ciudad" as const, label: "Cities", options: scopeOptions.ciudades },
+                  { field: "estado" as const, label: "States", options: scopeOptions.estados },
+                  { field: "nicho" as const, label: "Niches", options: scopeOptions.nichos },
+                  { field: "pais" as const, label: "Countries", options: scopeOptions.paises },
+                ]).map(({ field, label, options }) => (
+                  <div key={field}>
+                    <label className="text-[11px] text-zinc-500 uppercase tracking-wider">
+                      {label} <span className="text-zinc-700">({form.scope[field].length} selected — empty = unrestricted)</span>
+                    </label>
+                    <div className="mt-1 flex flex-wrap gap-1.5 max-h-28 overflow-y-auto rounded-xl bg-white/[0.02] p-2">
+                      {options.map((opt) => (
+                        <button
+                          key={opt.value}
+                          onClick={() => toggleScope(field, opt.value)}
+                          className={`rounded-md px-2 py-1 text-[11px] transition-all ${
+                            form.scope[field].includes(opt.value)
+                              ? "bg-[#f751a1]/20 text-[#ffb0cd]"
+                              : "bg-white/[0.04] text-zinc-600 hover:text-zinc-400"
+                          }`}
+                        >
+                          {opt.value} <span className="text-zinc-700">({opt.count})</span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 ))}
               </div>
-            </div>
+            )}
 
             {/* Submit */}
             <div className="flex justify-end gap-3">
