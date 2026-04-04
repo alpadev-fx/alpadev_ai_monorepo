@@ -182,6 +182,30 @@ export const adminProcedure = t.procedure.use(
 )
 
 /**
+ * Chief procedure — ADMIN or CHIEF role
+ *
+ * Chiefs can view vendor activity and manage vendor permissions within their assigned scope.
+ * They cannot access full admin features (user CRUD, statistics, infrastructure).
+ */
+export const chiefProcedure = t.procedure.use(
+  ({ ctx, next }) => {
+    if (!ctx.session?.user) {
+      throw new TRPCError({ code: "UNAUTHORIZED" })
+    }
+
+    if (ctx.session.user.role !== "ADMIN" && ctx.session.user.role !== "CHIEF") {
+      throw new TRPCError({ code: "FORBIDDEN" })
+    }
+
+    return next({
+      ctx: {
+        session: { ...ctx.session, user: ctx.session.user },
+      },
+    })
+  }
+)
+
+/**
  * Logged procedure — tracks vendor activity
  *
  * Extends protectedProcedure with fire-and-forget activity logging.
