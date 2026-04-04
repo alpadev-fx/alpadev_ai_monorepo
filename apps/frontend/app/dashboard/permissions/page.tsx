@@ -52,7 +52,7 @@ export default function PermissionsPage() {
 
   const utils = api.useUtils()
   const { data: permissions, isLoading } = api.permission.getAll.useQuery()
-  const { data: usersData } = api.admin.users.list.useQuery({ page: 1, limit: 100 }, { retry: false })
+  const { data: usersData } = api.admin.users.list.useQuery({ page: 1, limit: 50 }, { retry: false })
   const users = usersData?.users ?? []
 
   const assignMutation = api.permission.assign.useMutation({
