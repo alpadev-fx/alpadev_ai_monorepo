@@ -29,7 +29,7 @@ const ACTION_COLORS: Record<string, string> = {
 
 type AssignFormData = {
   userId: string
-  resource: (typeof RESOURCES)[number]
+  resources: (typeof RESOURCES)[number][]
   actions: (typeof ACTIONS)[number][]
   scope: {
     ciudad: string
@@ -41,7 +41,7 @@ type AssignFormData = {
 
 const EMPTY_FORM: AssignFormData = {
   userId: "",
-  resource: "prospect",
+  resources: [],
   actions: [],
   scope: { ciudad: "", estado: "", pais: "", nicho: "" },
 }
@@ -55,31 +55,39 @@ export default function PermissionsPage() {
   const { data: usersData } = api.admin.users.list.useQuery({ page: 1, limit: 50 }, { retry: false })
   const users = usersData?.users ?? []
 
-  const assignMutation = api.permission.assign.useMutation({
-    onSuccess: () => {
-      utils.permission.getAll.invalidate()
-      setShowForm(false)
-      setForm(EMPTY_FORM)
-    },
-  })
+  const assignMutation = api.permission.assign.useMutation()
 
   const revokeMutation = api.permission.revoke.useMutation({
     onSuccess: () => utils.permission.getAll.invalidate(),
   })
 
-  const handleAssign = () => {
+  const handleAssign = async () => {
     const scopeObj: Record<string, string[]> = {}
     if (form.scope.ciudad.trim()) scopeObj.ciudad = form.scope.ciudad.split(",").map((s) => s.trim())
     if (form.scope.estado.trim()) scopeObj.estado = form.scope.estado.split(",").map((s) => s.trim())
     if (form.scope.pais.trim()) scopeObj.pais = form.scope.pais.split(",").map((s) => s.trim())
     if (form.scope.nicho.trim()) scopeObj.nicho = form.scope.nicho.split(",").map((s) => s.trim())
 
-    assignMutation.mutate({
-      userId: form.userId,
-      resource: form.resource,
-      actions: form.actions,
-      scope: Object.keys(scopeObj).length > 0 ? scopeObj : undefined,
-    })
+    for (const resource of form.resources) {
+      await assignMutation.mutateAsync({
+        userId: form.userId,
+        resource,
+        actions: form.actions,
+        scope: Object.keys(scopeObj).length > 0 ? scopeObj : undefined,
+      })
+    }
+    utils.permission.getAll.invalidate()
+    setShowForm(false)
+    setForm(EMPTY_FORM)
+  }
+
+  const toggleResource = (resource: (typeof RESOURCES)[number]) => {
+    setForm((prev) => ({
+      ...prev,
+      resources: prev.resources.includes(resource)
+        ? prev.resources.filter((r) => r !== resource)
+        : [...prev.resources, resource],
+    }))
   }
 
   const toggleAction = (action: (typeof ACTIONS)[number]) => {
@@ -153,18 +161,24 @@ export default function PermissionsPage() {
                 </select>
               </div>
 
-              {/* Resource select */}
+              {/* Resources — multi-select */}
               <div>
-                <label className="text-[11px] text-zinc-500 uppercase tracking-wider">Resource</label>
-                <select
-                  value={form.resource}
-                  onChange={(e) => setForm((p) => ({ ...p, resource: e.target.value as typeof form.resource }))}
-                  className="mt-1 w-full rounded-xl bg-white/[0.04] border border-white/[0.06] px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#f751a1]"
-                >
+                <label className="text-[11px] text-zinc-500 uppercase tracking-wider">Resources</label>
+                <div className="mt-1 flex flex-wrap gap-2">
                   {RESOURCES.map((r) => (
-                    <option key={r} value={r}>{RESOURCE_LABELS[r]}</option>
+                    <button
+                      key={r}
+                      onClick={() => toggleResource(r)}
+                      className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+                        form.resources.includes(r)
+                          ? "bg-[#d0bcff]/20 text-[#d0bcff]"
+                          : "bg-white/[0.04] text-zinc-600 hover:text-zinc-400"
+                      }`}
+                    >
+                      {RESOURCE_LABELS[r]}
+                    </button>
                   ))}
-                </select>
+                </div>
               </div>
             </div>
 
@@ -217,7 +231,7 @@ export default function PermissionsPage() {
               </button>
               <button
                 onClick={handleAssign}
-                disabled={!form.userId || form.actions.length === 0 || assignMutation.isPending}
+                disabled={!form.userId || form.resources.length === 0 || form.actions.length === 0 || assignMutation.isPending}
                 className="rounded-xl bg-[#f751a1] px-4 py-2 text-sm font-medium text-white hover:bg-[#ec4899] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 {assignMutation.isPending ? "Assigning..." : "Assign"}
