@@ -6,6 +6,7 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 RUN npm install turbo --global
 COPY . .
+# "next-app-template" matches the "name" field in apps/frontend/package.json
 RUN turbo prune --scope=next-app-template --docker
 
 # 2. Build the project

@@ -1,7 +1,7 @@
 "use client"
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
-import { useMemo, useRef, useEffect } from "react"
+import { useMemo, useRef, useEffect, useState } from "react"
 import * as THREE from "three"
 import { cn } from "@/lib/utils"
 
@@ -104,21 +104,34 @@ export const SingularityShaders = ({
   visible = true,
   ...props
 }: SingularityShadersProps) => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [inView, setInView] = useState(false)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0.1 }
+    )
+    if (containerRef.current) observer.observe(containerRef.current)
+    return () => observer.disconnect()
+  }, [])
+
+  const shouldAnimate = visible && inView
 
   return (
-    <div className={cn("w-full h-full relative", className)} {...props}>
-      <Canvas 
-        frameloop={visible ? "always" : "never"}
-        camera={{ position: [0, 0, 1], fov: 75 }} 
+    <div ref={containerRef} className={cn("w-full h-full relative", className)} {...props}>
+      <Canvas
+        frameloop={shouldAnimate ? "always" : "never"}
+        camera={{ position: [0, 0, 1], fov: 75 }}
         dpr={1}  // Fixed DPR = 1 for stable FPS
         gl={{ alpha: true, antialias: false, powerPreference: "high-performance" }}
       >
-        <InnerShader 
-            speed={speed} 
-            intensity={intensity} 
-            size={size} 
-            waveStrength={waveStrength} 
-            colorShift={colorShift} 
+        <InnerShader
+            speed={speed}
+            intensity={intensity}
+            size={size}
+            waveStrength={waveStrength}
+            colorShift={colorShift}
             color1={color1}
             color2={color2}
             rotation={rotation}

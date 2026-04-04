@@ -180,7 +180,9 @@ export function Particles({
 
   const animate = () => {
     clearContext();
-    circles.current.forEach((circle: Circle, i: number) => {
+    const updatedCircles: Circle[] = [];
+    for (let i = 0; i < circles.current.length; i++) {
+      const circle = circles.current[i];
       // Handle the alpha value
       const edge = [
         circle.x + circle.translateX - circle.size, // distance from left edge
@@ -215,12 +217,10 @@ export function Particles({
         circle.y < -circle.size ||
         circle.y > canvasSize.current.h + circle.size
       ) {
-        // remove the circle from the array
-        circles.current.splice(i, 1);
-        // create a new circle
+        // create a new circle to replace the out-of-bounds one
         const newCircle = circleParams();
         drawCircle(newCircle);
-        // update the circle position
+        updatedCircles.push(newCircle);
       } else {
         drawCircle(
           {
@@ -233,8 +233,10 @@ export function Particles({
           },
           true
         );
+        updatedCircles.push(circle);
       }
-    });
+    }
+    circles.current = updatedCircles;
     rafId.current = window.requestAnimationFrame(animate);
   };
 

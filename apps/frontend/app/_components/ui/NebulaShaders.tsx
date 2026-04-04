@@ -1,7 +1,7 @@
 "use client"
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber"
-import { useMemo, useRef, useEffect } from "react"
+import { useMemo, useRef, useEffect, useState } from "react"
 import * as THREE from "three"
 import { cn } from "@/lib/utils"
 
@@ -163,18 +163,31 @@ export const NebulaShaders = ({
   turbulence = 0.5,
   ...props
 }: NebulaShadersProps) => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => setVisible(entry.isIntersecting),
+      { threshold: 0.1 }
+    )
+    if (containerRef.current) observer.observe(containerRef.current)
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <div className={cn("w-full h-full relative", className)} {...props}>
-      <Canvas 
-        camera={{ position: [0, 0, 1], fov: 75 }} 
-        dpr={[1, 2]} 
+    <div ref={containerRef} className={cn("w-full h-full relative", className)} {...props}>
+      <Canvas
+        frameloop={visible ? "always" : "never"}
+        camera={{ position: [0, 0, 1], fov: 75 }}
+        dpr={[1, 2]}
         gl={{ alpha: true, antialias: true }}
       >
-        <InnerShader 
-            speed={speed} 
-            density={density} 
-            stars={stars} 
-            temperature={temperature} 
+        <InnerShader
+            speed={speed}
+            density={density}
+            stars={stars}
+            temperature={temperature}
             turbulence={turbulence}
         />
       </Canvas>

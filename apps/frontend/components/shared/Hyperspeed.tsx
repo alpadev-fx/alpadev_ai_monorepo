@@ -982,6 +982,7 @@ class App {
   clock: THREE.Clock;
   assets: Record<string, any>;
   disposed: boolean;
+  boundOnWindowResize: () => void;
   road: Road;
   leftCarLights: CarLights;
   rightCarLights: CarLights;
@@ -1065,7 +1066,8 @@ class App {
     this.onTouchEnd = this.onTouchEnd.bind(this);
     this.onContextMenu = this.onContextMenu.bind(this);
 
-    window.addEventListener('resize', this.onWindowResize.bind(this));
+    this.boundOnWindowResize = this.onWindowResize.bind(this);
+    window.addEventListener('resize', this.boundOnWindowResize);
   }
 
   onWindowResize() {
@@ -1239,10 +1241,20 @@ class App {
       this.composer.dispose();
     }
     if (this.scene) {
+      this.scene.traverse((obj: any) => {
+        if (obj.geometry) obj.geometry.dispose();
+        if (obj.material) {
+          if (Array.isArray(obj.material)) {
+            obj.material.forEach((m: any) => m.dispose());
+          } else {
+            obj.material.dispose();
+          }
+        }
+      });
       this.scene.clear();
     }
 
-    window.removeEventListener('resize', this.onWindowResize.bind(this));
+    window.removeEventListener('resize', this.boundOnWindowResize);
     if (this.container) {
       this.container.removeEventListener('mousedown', this.onMouseDown);
       this.container.removeEventListener('mouseup', this.onMouseUp);

@@ -15,6 +15,7 @@ export class ConversationRepository implements IConversationRepository {
         userId,
         isActive: true,
       },
+      orderBy: { lastInteraction: "desc" },
       include: {
         messages: {
           orderBy: { timestamp: "asc" },

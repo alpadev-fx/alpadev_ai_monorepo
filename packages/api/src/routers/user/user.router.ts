@@ -1,7 +1,7 @@
 import { z } from "zod"
 
 import { userService } from "./service/user.service"
-import { createTRPCRouter, protectedProcedure } from "../../trpc"
+import { createTRPCRouter, protectedProcedure, adminProcedure } from "../../trpc"
 
 export const nameSchema = z.object({
   name: z
@@ -41,9 +41,9 @@ export const userRouter = createTRPCRouter({
   deleteMe: protectedProcedure.mutation(({ ctx }: { ctx: any }) => {
     return userService.deleteUserById(ctx.session.user)
   }),
-  inviteUser: protectedProcedure
+  inviteUser: adminProcedure
     .input(z.object({ email: z.string().email(), name: z.string() }))
-    .mutation(({ input }: { input: any }) => {
+    .mutation(({ input }) => {
       return userService.inviteUser(input)
     }),
 })

@@ -1,0 +1,306 @@
+"use client"
+
+import { useState } from "react"
+import { api } from "@/lib/trpc/react"
+import { motion, AnimatePresence } from "framer-motion"
+import {
+  ShieldCheckIcon,
+  PlusIcon,
+  TrashIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline"
+
+const RESOURCES = ["prospect", "invoice", "booking", "bill", "transaction"] as const
+const ACTIONS = ["read", "write", "delete"] as const
+
+const RESOURCE_LABELS: Record<string, string> = {
+  prospect: "Prospects",
+  invoice: "Invoices",
+  booking: "Bookings",
+  bill: "Bills",
+  transaction: "Transactions",
+}
+
+const ACTION_COLORS: Record<string, string> = {
+  read: "bg-blue-500/15 text-blue-400",
+  write: "bg-amber-500/15 text-amber-400",
+  delete: "bg-rose-500/15 text-rose-400",
+}
+
+type AssignFormData = {
+  userId: string
+  resource: (typeof RESOURCES)[number]
+  actions: (typeof ACTIONS)[number][]
+  scope: {
+    ciudad: string
+    estado: string
+    pais: string
+    nicho: string
+  }
+}
+
+const EMPTY_FORM: AssignFormData = {
+  userId: "",
+  resource: "prospect",
+  actions: [],
+  scope: { ciudad: "", estado: "", pais: "", nicho: "" },
+}
+
+export default function PermissionsPage() {
+  const [showForm, setShowForm] = useState(false)
+  const [form, setForm] = useState<AssignFormData>(EMPTY_FORM)
+
+  const utils = api.useUtils()
+  const { data: permissions, isLoading } = api.permission.getAll.useQuery()
+  const { data: usersData } = api.admin.users.list.useQuery({ page: 1, limit: 100 }, { retry: false })
+  const users = usersData?.users ?? []
+
+  const assignMutation = api.permission.assign.useMutation({
+    onSuccess: () => {
+      utils.permission.getAll.invalidate()
+      setShowForm(false)
+      setForm(EMPTY_FORM)
+    },
+  })
+
+  const revokeMutation = api.permission.revoke.useMutation({
+    onSuccess: () => utils.permission.getAll.invalidate(),
+  })
+
+  const handleAssign = () => {
+    const scopeObj: Record<string, string[]> = {}
+    if (form.scope.ciudad.trim()) scopeObj.ciudad = form.scope.ciudad.split(",").map((s) => s.trim())
+    if (form.scope.estado.trim()) scopeObj.estado = form.scope.estado.split(",").map((s) => s.trim())
+    if (form.scope.pais.trim()) scopeObj.pais = form.scope.pais.split(",").map((s) => s.trim())
+    if (form.scope.nicho.trim()) scopeObj.nicho = form.scope.nicho.split(",").map((s) => s.trim())
+
+    assignMutation.mutate({
+      userId: form.userId,
+      resource: form.resource,
+      actions: form.actions,
+      scope: Object.keys(scopeObj).length > 0 ? scopeObj : undefined,
+    })
+  }
+
+  const toggleAction = (action: (typeof ACTIONS)[number]) => {
+    setForm((prev) => ({
+      ...prev,
+      actions: prev.actions.includes(action)
+        ? prev.actions.filter((a) => a !== action)
+        : [...prev.actions, action],
+    }))
+  }
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="h-8 w-48 rounded-lg bg-white/[0.04] animate-pulse" />
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="h-20 rounded-2xl bg-[#161616] animate-pulse" />
+        ))}
+      </div>
+    )
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      className="space-y-6 h-full overflow-y-auto"
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-white">Permissions</h1>
+          <p className="mt-0.5 text-xs text-zinc-500">Assign granular resource permissions to users</p>
+        </div>
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="flex items-center gap-2 rounded-xl bg-[#f751a1] px-4 py-2 text-sm font-medium text-white hover:bg-[#ec4899] transition-colors"
+        >
+          {showForm ? <XMarkIcon className="h-4 w-4" /> : <PlusIcon className="h-4 w-4" />}
+          {showForm ? "Cancel" : "Assign Permission"}
+        </button>
+      </div>
+
+      {/* Assign Form */}
+      <AnimatePresence>
+        {showForm && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="rounded-2xl bg-[#161616] p-6 space-y-4 overflow-hidden"
+          >
+            <h3 className="text-sm font-medium text-white">Assign Permission</h3>
+
+            <div className="grid grid-cols-2 gap-4">
+              {/* User select */}
+              <div>
+                <label className="text-[11px] text-zinc-500 uppercase tracking-wider">User</label>
+                <select
+                  value={form.userId}
+                  onChange={(e) => setForm((p) => ({ ...p, userId: e.target.value }))}
+                  className="mt-1 w-full rounded-xl bg-white/[0.04] border border-white/[0.06] px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#f751a1]"
+                >
+                  <option value="">Select user...</option>
+                  {(users ?? []).map((u: { id: string; name: string; email: string | null; role: string }) => (
+                    <option key={u.id} value={u.id}>
+                      {u.name} ({u.email}) — {u.role}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Resource select */}
+              <div>
+                <label className="text-[11px] text-zinc-500 uppercase tracking-wider">Resource</label>
+                <select
+                  value={form.resource}
+                  onChange={(e) => setForm((p) => ({ ...p, resource: e.target.value as typeof form.resource }))}
+                  className="mt-1 w-full rounded-xl bg-white/[0.04] border border-white/[0.06] px-3 py-2 text-sm text-white focus:outline-none focus:ring-1 focus:ring-[#f751a1]"
+                >
+                  {RESOURCES.map((r) => (
+                    <option key={r} value={r}>{RESOURCE_LABELS[r]}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div>
+              <label className="text-[11px] text-zinc-500 uppercase tracking-wider">Actions</label>
+              <div className="mt-1 flex gap-2">
+                {ACTIONS.map((action) => (
+                  <button
+                    key={action}
+                    onClick={() => toggleAction(action)}
+                    className={`rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+                      form.actions.includes(action)
+                        ? ACTION_COLORS[action]
+                        : "bg-white/[0.04] text-zinc-600 hover:text-zinc-400"
+                    }`}
+                  >
+                    {action}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Scope filters */}
+            <div>
+              <label className="text-[11px] text-zinc-500 uppercase tracking-wider">
+                Scope filters <span className="text-zinc-700">(comma-separated, leave empty for unrestricted)</span>
+              </label>
+              <div className="mt-1 grid grid-cols-2 gap-3">
+                {(["ciudad", "estado", "pais", "nicho"] as const).map((field) => (
+                  <input
+                    key={field}
+                    type="text"
+                    placeholder={field === "ciudad" ? "e.g. Mexico City, Guadalajara" : field}
+                    value={form.scope[field]}
+                    onChange={(e) => setForm((p) => ({ ...p, scope: { ...p.scope, [field]: e.target.value } }))}
+                    className="rounded-xl bg-white/[0.04] border border-white/[0.06] px-3 py-2 text-sm text-white placeholder:text-zinc-700 focus:outline-none focus:ring-1 focus:ring-[#f751a1]"
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Submit */}
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => { setShowForm(false); setForm(EMPTY_FORM) }}
+                className="rounded-xl px-4 py-2 text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAssign}
+                disabled={!form.userId || form.actions.length === 0 || assignMutation.isPending}
+                className="rounded-xl bg-[#f751a1] px-4 py-2 text-sm font-medium text-white hover:bg-[#ec4899] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {assignMutation.isPending ? "Assigning..." : "Assign"}
+              </button>
+            </div>
+
+            {assignMutation.error && (
+              <p className="text-xs text-rose-400">{assignMutation.error.message}</p>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Permissions table */}
+      <div className="rounded-2xl bg-[#161616] overflow-hidden">
+        <div className="px-5 py-4 border-b border-white/[0.04]">
+          <h3 className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
+            Active Permissions ({permissions?.length ?? 0})
+          </h3>
+        </div>
+
+        {!permissions?.length ? (
+          <div className="px-5 py-12 text-center">
+            <ShieldCheckIcon className="h-8 w-8 text-zinc-700 mx-auto mb-2" />
+            <p className="text-sm text-zinc-500">No permissions assigned yet</p>
+          </div>
+        ) : (
+          <div className="divide-y divide-white/[0.04]">
+            {permissions.map((perm, i) => (
+              <motion.div
+                key={perm.id}
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.03 }}
+                className="px-5 py-3 flex items-center justify-between hover:bg-white/[0.02] transition-colors"
+              >
+                <div className="flex items-center gap-4 min-w-0 flex-1">
+                  {/* User */}
+                  <div className="min-w-0 w-40">
+                    <p className="text-sm text-white truncate">{perm.user.name}</p>
+                    <p className="text-[10px] text-zinc-600 truncate">{perm.user.email}</p>
+                  </div>
+
+                  {/* Resource */}
+                  <span className="text-xs font-medium bg-[#d0bcff]/15 text-[#d0bcff] rounded-lg px-2.5 py-1">
+                    {RESOURCE_LABELS[perm.resource] ?? perm.resource}
+                  </span>
+
+                  {/* Actions */}
+                  <div className="flex gap-1.5">
+                    {perm.actions.map((action) => (
+                      <span key={action} className={`text-[10px] font-medium rounded-md px-2 py-0.5 ${ACTION_COLORS[action] ?? "bg-zinc-800 text-zinc-400"}`}>
+                        {action}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Scope */}
+                  {perm.scope && typeof perm.scope === "object" && Object.keys(perm.scope).length > 0 && (
+                    <div className="flex gap-1.5">
+                      {Object.entries(perm.scope as Record<string, string[]>).map(([key, values]) => (
+                        <span key={key} className="text-[10px] bg-white/[0.04] text-zinc-400 rounded-md px-2 py-0.5">
+                          {key}: {values.join(", ")}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Revoke */}
+                <button
+                  onClick={() => revokeMutation.mutate({ userId: perm.user.id, resource: perm.resource as typeof RESOURCES[number] })}
+                  disabled={revokeMutation.isPending}
+                  className="shrink-0 p-1.5 rounded-lg text-zinc-600 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                  title="Revoke permission"
+                >
+                  <TrashIcon className="h-4 w-4" />
+                </button>
+              </motion.div>
+            ))}
+          </div>
+        )}
+      </div>
+    </motion.div>
+  )
+}

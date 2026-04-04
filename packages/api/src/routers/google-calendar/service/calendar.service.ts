@@ -54,4 +54,14 @@ export class CalendarService {
 
     return { meetLink, eventId };
   }
+
+  static async deleteEvent(eventId: string): Promise<void> {
+    const auth = this.getOAuth2Client();
+    const calendar = google.calendar({ version: 'v3', auth });
+
+    await calendar.events.delete({
+      calendarId: process.env.GOOGLE_CALENDAR_ID || 'primary',
+      eventId,
+    });
+  }
 }

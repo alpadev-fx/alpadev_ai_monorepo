@@ -29,7 +29,7 @@ export const featureFlags: FeatureFlags = {
   chatSupportWidget: true,
   feedbackWidget: true,
   toast: true,
-  onboardingFlow: true,
+  onboardingFlow: false,
   blog: true,
   docs: true,
   themeToggle: true,

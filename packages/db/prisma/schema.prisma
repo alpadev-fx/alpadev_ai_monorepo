@@ -72,6 +72,7 @@ model User {
   bookings             Booking[]
   conversationSessions ConversationSession[]
   prospects            Prospect[]
+  permissions          UserPermission[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -86,7 +87,7 @@ model Request {
   title       String
   description String
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -110,7 +111,10 @@ model Transaction {
   status      TransactionStatus @default(PENDING)
   description String?
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Bill {
@@ -121,7 +125,10 @@ model Bill {
   dueDate DateTime
   status  BillStatus @default(UNPAID)
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Invoice {
@@ -133,7 +140,30 @@ model Invoice {
   status  InvoiceStatus @default(DRAFT)
   items   Json?
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ==========================================
+// PERMISSION MODELS
+// ==========================================
+
+model UserPermission {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  resource  String
+  actions   String[]
+  scope     Json?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, resource])
+  @@index([userId])
 }
 
 enum Role {
@@ -221,15 +251,18 @@ model Booking {
 
   // Relation to User
   userId String? @db.ObjectId
-  user   User?   @relation(fields: [userId], references: [id])
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 enum BookingStatus {
+  PENDING
   CONFIRMED
+  COMPLETED
   CANCELLED
+  NO_SHOW
 }
 
 // ==========================================
@@ -246,11 +279,13 @@ model ConversationSession {
   lastInteraction DateTime  @default(now())
   endedAt         DateTime?
 
-  user     User                  @relation(fields: [userId], references: [id])
+  user     User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   messages ConversationMessage[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([userId, isActive])
 }
 
 model ConversationMessage {
@@ -282,6 +317,8 @@ model ChatRoom {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([visitorId, status])
 }
 
 model ChatMessage {
@@ -294,6 +331,8 @@ model ChatMessage {
   room ChatRoom @relation(fields: [roomId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
+
+  @@index([roomId, createdAt])
 }
 
 enum ChatRoomStatus {
@@ -325,6 +364,8 @@ model ChatJob {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([roomId, status])
 }
 
 enum ChatJobStatus {
@@ -379,8 +420,10 @@ model Prospect {
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId])
+  @@index([userId, createdAt])
   @@index([nicho])
   @@index([score])
   @@index([webStatus])

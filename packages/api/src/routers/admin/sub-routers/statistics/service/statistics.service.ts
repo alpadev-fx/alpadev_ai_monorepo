@@ -77,17 +77,18 @@ class StatisticsService {
   }
 
   private calculateSubscriptionCounts(subscriptions: Subscriptions) {
-    const totalTrials = subscriptions.filter(
-      (subscription) => subscription.status === "trialing"
-    ).length
-    const totalActive = subscriptions.filter(
-      (subscription) => subscription.status === "active"
-    ).length
-    const totalSubscriptions = subscriptions.filter(
-      (subscription) => subscription.subscriptionPlan
-    ).length
+    // Single-pass reduce instead of 3 separate .filter() calls
+    const counts = subscriptions.reduce(
+      (acc, subscription) => {
+        if (subscription.status === "trialing") acc.totalTrials += 1
+        if (subscription.status === "active") acc.totalActive += 1
+        if (subscription.subscriptionPlan) acc.totalSubscriptions += 1
+        return acc
+      },
+      { totalTrials: 0, totalActive: 0, totalSubscriptions: 0 }
+    )
 
-    return { totalTrials, totalActive, totalSubscriptions }
+    return counts
   }
 
   private generateSubscriptionChartData(subscriptions: Subscriptions) {
@@ -113,15 +114,17 @@ class StatisticsService {
       }
     )
 
+    // Use Map for O(1) lookup instead of .find() inside forEach
+    const countsByPlan = new Map(
+      subscriptionStatusCounts.map((item) => [item.name, item])
+    )
+
     subscriptions.forEach((subscription) => {
       if (!subscription.subscriptionPlan || !subscription.status) return
 
-      const subscriptionStatusCount = subscriptionStatusCounts.find(
-        (item) => item.name === subscription.subscriptionPlan
-      )
-
-      if (subscriptionStatusCount) {
-        subscriptionStatusCount[subscription.status] += 1
+      const entry = countsByPlan.get(subscription.subscriptionPlan)
+      if (entry) {
+        entry[subscription.status] += 1
       }
     })
 

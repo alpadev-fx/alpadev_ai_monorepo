@@ -7,6 +7,8 @@ import {
   GetActiveRoomsSchema,
   TypingIndicatorSchema,
 } from "@package/validations";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 import {
   createTRPCRouter,
   publicProcedure,
@@ -37,7 +39,15 @@ export const chatRouter = createTRPCRouter({
    */
   sendMessage: publicProcedure
     .input(SendChatMessageSchema)
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
+      if (input.senderType === "bot") {
+        throw new TRPCError({ code: "FORBIDDEN", message: "Cannot send as bot" });
+      }
+      if (input.senderType === "agent") {
+        if (!ctx.session?.user || ctx.session.user.role !== "ADMIN") {
+          throw new TRPCError({ code: "FORBIDDEN", message: "Only agents can send as agent" });
+        }
+      }
       return chatService.sendMessage({
         roomId: input.roomId,
         content: input.content,
@@ -51,8 +61,20 @@ export const chatRouter = createTRPCRouter({
    * Get messages for a room (public — visitors need their room)
    */
   getMessages: publicProcedure
-    .input(GetChatMessagesSchema)
-    .query(async ({ input }) => {
+    .input(GetChatMessagesSchema.extend({
+      visitorId: z.string().optional(),
+    }))
+    .query(async ({ input, ctx }) => {
+      const isAdmin = ctx.session?.user?.role === "ADMIN";
+      if (!isAdmin && !input.visitorId) {
+        throw new TRPCError({ code: "UNAUTHORIZED", message: "Visitor ID or admin access required" });
+      }
+      if (!isAdmin && input.visitorId) {
+        const room = await chatService.getRoomById(input.roomId);
+        if (!room || room.visitorId !== input.visitorId) {
+          throw new TRPCError({ code: "FORBIDDEN", message: "Access denied" });
+        }
+      }
       return chatService.getMessages(input.roomId, input.limit, input.cursor);
     }),
 

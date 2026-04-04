@@ -123,11 +123,7 @@ export default function AgentDashboard() {
     [activeRooms]
   );
 
-  const { connect, send, status: wsStatus } = useWebSocket(handleWsMessage);
-
-  useEffect(() => {
-    connect();
-  }, [connect]);
+  const { send, status: wsStatus } = useWebSocket(handleWsMessage);
 
   useEffect(() => {
     if (wsStatus === "connected") {
@@ -137,15 +133,6 @@ export default function AgentDashboard() {
       });
     }
   }, [wsStatus, selectedRoomId, send]);
-
-  useEffect(() => {
-    if (wsStatus === "connected" && selectedRoomId) {
-      send({
-        type: "subscribe.agent",
-        roomId: selectedRoomId,
-      });
-    }
-  }, [selectedRoomId, wsStatus, send]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

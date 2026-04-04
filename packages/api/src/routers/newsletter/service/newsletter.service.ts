@@ -9,11 +9,9 @@ export class NewsletterService {
 
     const updateData: {
       language: Language
-      unsubscribedAt: null
       name?: string
     } = {
       language: preferredLanguage,
-      unsubscribedAt: null,
     }
 
     if (input.name) {
