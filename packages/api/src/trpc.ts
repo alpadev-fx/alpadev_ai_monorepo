@@ -10,6 +10,7 @@ import { serverSession } from "@package/auth"
 import { db } from "@package/db"
 import { featureFlags } from "@package/utils"
 import { initTRPC, TRPCError } from "@trpc/server"
+import { ActivityService } from "./routers/activity/service/activity.service"
 import { type FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch"
 import superjson from "superjson"
 import { ZodError } from "zod"
@@ -177,5 +178,37 @@ export const adminProcedure = t.procedure.use(
         session: { ...ctx.session, user: ctx.session.user },
       },
     })
+  }
+)
+
+/**
+ * Logged procedure — tracks vendor activity
+ *
+ * Extends protectedProcedure with fire-and-forget activity logging.
+ * Only logs non-admin users. Use on endpoints where vendor tracking matters.
+ */
+export const loggedProcedure = protectedProcedure.use(
+  async ({ ctx, next, path }) => {
+    const start = Date.now()
+    const result = await next({ ctx })
+    const duration = Date.now() - start
+
+    // Only log non-admin users
+    if (ctx.session.user.role !== "ADMIN") {
+      const [resource, action] = path.split(".")
+      const activityService = new ActivityService(ctx.db)
+      activityService.log({
+        userId: ctx.session.user.id,
+        action: path,
+        resource: resource ?? path,
+        method: action?.startsWith("get") || action === "metrics" || action === "export" ? "query" : "mutation",
+        success: result.ok,
+        duration,
+        ipAddress: ctx.req.headers.get("x-forwarded-for") ?? ctx.req.headers.get("x-real-ip") ?? null,
+        userAgent: ctx.req.headers.get("user-agent") ?? null,
+      })
+    }
+
+    return result
   }
 )

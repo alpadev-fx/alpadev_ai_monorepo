@@ -13,6 +13,7 @@ import {
   CalendarDaysIcon,
   DocumentTextIcon,
   ShieldCheckIcon,
+  ClockIcon,
   ChevronLeftIcon,
   ArrowRightStartOnRectangleIcon,
 } from "@heroicons/react/24/outline"
@@ -43,6 +44,12 @@ const NAV_ITEMS = [
     name: "Permissions",
     href: "/dashboard/permissions",
     icon: ShieldCheckIcon,
+    adminOnly: true,
+  },
+  {
+    name: "Activity",
+    href: "/dashboard/activity",
+    icon: ClockIcon,
     adminOnly: true,
   },
   {
