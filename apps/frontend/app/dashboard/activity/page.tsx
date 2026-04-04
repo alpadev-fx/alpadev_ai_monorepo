@@ -54,8 +54,8 @@ export default function ActivityPage() {
     refetchInterval: 15_000,
   })
 
-  const { data: usersData } = api.admin.users.list.useQuery({ page: 1, limit: 100 }, { retry: false })
-  const users = usersData?.users ?? []
+  const { data: vendors } = api.activity.listVendors.useQuery(undefined, { retry: false })
+  const users = vendors ?? []
 
   const vendorStats = api.activity.vendorStats.useQuery(
     { userId: selectedVendor },

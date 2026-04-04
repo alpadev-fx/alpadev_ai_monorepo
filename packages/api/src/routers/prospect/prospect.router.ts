@@ -76,15 +76,28 @@ export const prospectRouter = createTRPCRouter({
       const isAdmin = ctx.session.user.role === "ADMIN"
       const scope = isAdmin ? null : await getProspectScope(ctx.db, ctx.session.user.id, "read")
 
-      // Merge permission scope into filter — scope narrows, never widens
+      // For single-value filters, use first scope value (UI filter compatibility)
+      // For multi-value scopes, apply directly via repository WHERE clause
       const mergedInput = { ...input }
-      if (scope?.ciudad?.length) mergedInput.ciudad = scope.ciudad[0]
-      if (scope?.estado?.length) mergedInput.estado = scope.estado[0]
-      if (scope?.pais?.length) mergedInput.pais = scope.pais[0]
       if (scope?.nicho?.length) mergedInput.nicho = scope.nicho
 
       const service = new ProspectService(ctx.db)
-      return service.getAll(mergedInput, ctx.session.user.id)
+      const result = await service.getAll(mergedInput, ctx.session.user.id)
+
+      // Post-filter for multi-city/state/country scopes (exact match, not contains)
+      if (scope?.ciudad?.length) {
+        result.items = result.items.filter((p: { ciudad: string }) => scope.ciudad!.includes(p.ciudad))
+        result.pagination.total = result.items.length
+      }
+      if (scope?.estado?.length) {
+        result.items = result.items.filter((p: { estado: string }) => scope.estado!.includes(p.estado))
+        result.pagination.total = result.items.length
+      }
+      if (scope?.pais?.length) {
+        result.items = result.items.filter((p: { pais: string }) => scope.pais!.includes(p.pais))
+        result.pagination.total = result.items.length
+      }
+      return result
     }),
 
   getById: protectedProcedure

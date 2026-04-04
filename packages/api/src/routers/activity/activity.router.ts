@@ -1,5 +1,6 @@
 import { z } from "zod"
 import { createTRPCRouter, chiefProcedure } from "../../trpc"
+import { type PrismaClient } from "@package/db"
 import { ActivityService } from "./service/activity.service"
 
 const objectIdSchema = z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid ObjectId")
@@ -49,5 +50,14 @@ export const activityRouter = createTRPCRouter({
   dashboard: chiefProcedure.query(async ({ ctx }) => {
     const service = new ActivityService(ctx.db)
     return service.dashboardStats()
+  }),
+
+  // List vendors (non-admin users) — accessible to CHIEF + ADMIN
+  listVendors: chiefProcedure.query(async ({ ctx }) => {
+    return (ctx.db as PrismaClient).user.findMany({
+      where: { role: { in: ["VENDOR", "USER"] } },
+      select: { id: true, name: true, email: true, role: true },
+      orderBy: { name: "asc" },
+    })
   }),
 })

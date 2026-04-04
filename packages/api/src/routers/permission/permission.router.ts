@@ -62,18 +62,26 @@ export const permissionRouter = createTRPCRouter({
           throw new TRPCError({ code: "FORBIDDEN", message: "Chiefs can only manage vendor permissions" })
         }
 
-        // Verify chief has permission for the cities being assigned
+        // Verify chief has permission — no permission record = no delegation rights
         const service = new PermissionService(ctx.db)
         const chiefPerm = await service.checkPermission(ctx.session.user.id, "prospect", "read")
-        if (chiefPerm?.scope) {
-          const chiefScope = chiefPerm.scope as { ciudad?: string[] }
-          const requestedCities = (input.scope as { ciudad?: string[] } | undefined)?.ciudad ?? []
-          if (chiefScope.ciudad?.length && requestedCities.length) {
-            const unauthorized = requestedCities.filter((c) => !chiefScope.ciudad!.includes(c))
+        if (!chiefPerm) {
+          throw new TRPCError({ code: "FORBIDDEN", message: "You have no prospect permissions to delegate" })
+        }
+
+        // Validate ALL scope dimensions against chief's own scope
+        const chiefScope = (chiefPerm.scope ?? {}) as { ciudad?: string[]; estado?: string[]; pais?: string[]; nicho?: string[] }
+        const requestedScope = (input.scope ?? {}) as { ciudad?: string[]; estado?: string[]; pais?: string[]; nicho?: string[] }
+
+        for (const dim of ["ciudad", "estado", "pais", "nicho"] as const) {
+          const allowed = chiefScope[dim] ?? []
+          const requested = requestedScope[dim] ?? []
+          if (allowed.length && requested.length) {
+            const unauthorized = requested.filter((v) => !allowed.includes(v))
             if (unauthorized.length > 0) {
               throw new TRPCError({
                 code: "FORBIDDEN",
-                message: `You don't have access to cities: ${unauthorized.join(", ")}`,
+                message: `You don't have access to ${dim}: ${unauthorized.join(", ")}`,
               })
             }
           }
