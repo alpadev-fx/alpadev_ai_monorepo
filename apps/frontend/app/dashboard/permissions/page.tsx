@@ -8,6 +8,7 @@ import {
   PlusIcon,
   TrashIcon,
   XMarkIcon,
+  ChevronRightIcon,
 } from "@heroicons/react/24/outline"
 
 const RESOURCES = ["prospect", "invoice", "booking", "bill", "transaction"] as const
@@ -49,6 +50,7 @@ const EMPTY_FORM: AssignFormData = {
 export default function PermissionsPage() {
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState<AssignFormData>(EMPTY_FORM)
+  const [selectedPermId, setSelectedPermId] = useState<string | null>(null)
 
   const utils = api.useUtils()
   const { data: permissions, isLoading } = api.permission.getAll.useQuery()
@@ -300,112 +302,190 @@ export default function PermissionsPage() {
         )}
       </AnimatePresence>
 
-      {/* Active Permissions — grouped by user */}
+      {/* Active Permissions — table + detail panel */}
       {(() => {
-        // Group permissions by user
-        type PermEntry = NonNullable<typeof permissions>[number]
-        const grouped = new Map<string, { user: PermEntry["user"]; perms: PermEntry[] }>()
-        for (const perm of permissions ?? []) {
-          const key = perm.user.id
-          if (!grouped.has(key)) grouped.set(key, { user: perm.user, perms: [] })
-          grouped.get(key)!.perms.push(perm)
-        }
-        const userGroups = Array.from(grouped.values())
+        const allPerms = permissions ?? []
+        const selectedPerm = allPerms.find((p) => p.id === selectedPermId) ?? null
+        const scopeLabels: Record<string, string> = { ciudad: "Cities", estado: "States", pais: "Countries", nicho: "Niches" }
 
         return (
-          <div>
-            <h3 className="text-xs font-medium text-zinc-400 uppercase tracking-wider mb-4">
-              Active Permissions ({permissions?.length ?? 0} across {userGroups.length} users)
-            </h3>
-
-            {!userGroups.length ? (
-              <div className="rounded-2xl bg-[#161616] px-5 py-12 text-center">
-                <ShieldCheckIcon className="h-8 w-8 text-zinc-700 mx-auto mb-2" />
-                <p className="text-sm text-zinc-500">No permissions assigned yet</p>
+          <div className="flex gap-4 min-h-0">
+            {/* Table */}
+            <div className={`rounded-2xl bg-[#161616] overflow-hidden flex-1 min-h-0 flex flex-col ${selectedPerm ? "max-w-[60%]" : ""}`}>
+              <div className="px-5 py-3 border-b border-white/[0.04] flex items-center justify-between">
+                <h3 className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
+                  Active Permissions ({allPerms.length})
+                </h3>
               </div>
-            ) : (
-              <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
-                {userGroups.map((group, gi) => (
-                  <motion.div
-                    key={group.user.id}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: gi * 0.08 }}
-                    className="min-w-[340px] max-w-[380px] shrink-0 rounded-2xl bg-[#161616] snap-start"
-                  >
-                    {/* User header */}
-                    <div className="px-4 py-3 flex items-center gap-3 border-b border-white/[0.04]">
-                      <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-[#f751a1] to-[#8B5CF6] flex items-center justify-center shrink-0">
-                        <span className="text-xs font-bold text-white">{group.user.name[0]}</span>
+
+              {!allPerms.length ? (
+                <div className="px-5 py-12 text-center">
+                  <ShieldCheckIcon className="h-8 w-8 text-zinc-700 mx-auto mb-2" />
+                  <p className="text-sm text-zinc-500">No permissions assigned yet</p>
+                </div>
+              ) : (
+                <div className="overflow-auto flex-1">
+                  <table className="w-full border-collapse">
+                    <thead className="sticky top-0 z-20">
+                      <tr className="bg-[#1b1b1b]">
+                        <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-500">User</th>
+                        <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-500">Resource</th>
+                        <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-500">Actions</th>
+                        <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-500">Scope</th>
+                        <th className="px-4 py-3 w-10" />
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {allPerms.map((perm, i) => {
+                        const scope = perm.scope && typeof perm.scope === "object" ? perm.scope as Record<string, string[]> : null
+                        const scopeCount = scope ? Object.values(scope).reduce((sum, v) => sum + v.length, 0) : 0
+                        const isSelected = perm.id === selectedPermId
+
+                        return (
+                          <motion.tr
+                            key={perm.id}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: i * 0.02 }}
+                            onClick={() => setSelectedPermId(isSelected ? null : perm.id)}
+                            className={`cursor-pointer transition-colors duration-100 ${
+                              isSelected ? "bg-[#f751a1]/5" : "hover:bg-white/[0.03]"
+                            } ${i > 0 ? "border-t border-white/[0.03]" : ""}`}
+                          >
+                            <td className="px-4 py-3">
+                              <div className="flex items-center gap-2.5">
+                                <div className="h-7 w-7 rounded-lg bg-gradient-to-br from-[#f751a1] to-[#8B5CF6] flex items-center justify-center shrink-0">
+                                  <span className="text-[10px] font-bold text-white">{perm.user.name[0]}</span>
+                                </div>
+                                <div className="min-w-0">
+                                  <p className="text-[13px] text-white truncate">{perm.user.name}</p>
+                                  <p className="text-[10px] text-zinc-600 truncate">{perm.user.role}</p>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="px-4 py-3">
+                              <span className="text-xs font-medium bg-[#d0bcff]/15 text-[#d0bcff] rounded-lg px-2.5 py-1">
+                                {RESOURCE_LABELS[perm.resource] ?? perm.resource}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3">
+                              <div className="flex gap-1">
+                                {perm.actions.map((action) => (
+                                  <span key={action} className={`text-[10px] font-medium rounded-md px-2 py-0.5 ${ACTION_COLORS[action] ?? "bg-zinc-800 text-zinc-400"}`}>
+                                    {action}
+                                  </span>
+                                ))}
+                              </div>
+                            </td>
+                            <td className="px-4 py-3">
+                              {scopeCount > 0 ? (
+                                <span className="text-[11px] text-zinc-400">{scopeCount} filters</span>
+                              ) : (
+                                <span className="text-[11px] text-zinc-700 italic">Unrestricted</span>
+                              )}
+                            </td>
+                            <td className="px-4 py-3">
+                              <ChevronRightIcon className={`h-4 w-4 transition-transform ${isSelected ? "text-[#ffb0cd] rotate-90" : "text-zinc-700"}`} />
+                            </td>
+                          </motion.tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+
+            {/* Detail panel */}
+            <AnimatePresence>
+              {selectedPerm && (
+                <motion.div
+                  initial={{ opacity: 0, width: 0 }}
+                  animate={{ opacity: 1, width: "40%" }}
+                  exit={{ opacity: 0, width: 0 }}
+                  className="rounded-2xl bg-[#161616] overflow-hidden shrink-0"
+                >
+                  <div className="p-5 h-full overflow-y-auto">
+                    {/* User info */}
+                    <div className="flex items-center gap-3 mb-5">
+                      <div className="h-11 w-11 rounded-xl bg-gradient-to-br from-[#f751a1] to-[#8B5CF6] flex items-center justify-center shrink-0">
+                        <span className="text-sm font-bold text-white">{selectedPerm.user.name[0]}</span>
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="text-sm font-medium text-white truncate">{group.user.name}</p>
-                        <p className="text-[10px] text-zinc-600 truncate">{group.user.email}</p>
+                        <p className="text-sm font-medium text-white">{selectedPerm.user.name}</p>
+                        <p className="text-[11px] text-zinc-600">{selectedPerm.user.email}</p>
                       </div>
-                      <span className="text-[9px] uppercase tracking-wider font-medium bg-[#8B5CF6]/20 text-[#d0bcff] rounded-full px-2 py-0.5 shrink-0">
-                        {group.user.role}
+                      <span className="text-[9px] uppercase tracking-wider font-medium bg-[#8B5CF6]/20 text-[#d0bcff] rounded-full px-2.5 py-0.5">
+                        {selectedPerm.user.role}
                       </span>
                     </div>
 
-                    {/* Resources */}
-                    <div className="p-3 space-y-2.5">
-                      {group.perms.map((perm) => {
-                        const scope = perm.scope && typeof perm.scope === "object" ? perm.scope as Record<string, string[]> : null
-                        const hasScope = scope && Object.keys(scope).length > 0
-                        const scopeLabels: Record<string, string> = { ciudad: "Cities", estado: "States", pais: "Countries", nicho: "Niches" }
+                    {/* Resource + actions */}
+                    <div className="space-y-4">
+                      <div>
+                        <p className="text-[10px] text-zinc-600 uppercase tracking-wider mb-1.5">Resource</p>
+                        <span className="text-sm font-medium bg-[#d0bcff]/15 text-[#d0bcff] rounded-lg px-3 py-1">
+                          {RESOURCE_LABELS[selectedPerm.resource] ?? selectedPerm.resource}
+                        </span>
+                      </div>
 
-                        return (
-                          <div key={perm.id} className="rounded-xl bg-white/[0.03] p-3">
-                            {/* Resource row */}
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-xs font-medium bg-[#d0bcff]/15 text-[#d0bcff] rounded-lg px-2.5 py-0.5">
-                                {RESOURCE_LABELS[perm.resource] ?? perm.resource}
-                              </span>
-                              <button
-                                onClick={() => revokeMutation.mutate({ userId: perm.user.id, resource: perm.resource as typeof RESOURCES[number] })}
-                                disabled={revokeMutation.isPending}
-                                className="p-1 rounded-md text-zinc-700 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
-                              >
-                                <TrashIcon className="h-3.5 w-3.5" />
-                              </button>
+                      <div>
+                        <p className="text-[10px] text-zinc-600 uppercase tracking-wider mb-1.5">Actions</p>
+                        <div className="flex gap-1.5">
+                          {selectedPerm.actions.map((action) => (
+                            <span key={action} className={`text-[11px] font-medium rounded-md px-3 py-1 ${ACTION_COLORS[action] ?? "bg-zinc-800 text-zinc-400"}`}>
+                              {action}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Scope sections */}
+                      {(() => {
+                        const scope = selectedPerm.scope && typeof selectedPerm.scope === "object"
+                          ? selectedPerm.scope as Record<string, string[]>
+                          : null
+                        if (!scope || Object.keys(scope).length === 0) {
+                          return (
+                            <div>
+                              <p className="text-[10px] text-zinc-600 uppercase tracking-wider mb-1.5">Scope</p>
+                              <p className="text-xs text-zinc-500 italic">Unrestricted — full access to all data</p>
                             </div>
-
-                            {/* Actions */}
-                            <div className="flex gap-1 mb-2">
-                              {perm.actions.map((action) => (
-                                <span key={action} className={`text-[10px] font-medium rounded px-2 py-0.5 ${ACTION_COLORS[action] ?? "bg-zinc-800 text-zinc-400"}`}>
-                                  {action}
+                          )
+                        }
+                        return Object.entries(scope).map(([key, values]) => (
+                          <div key={key}>
+                            <p className="text-[10px] text-zinc-600 uppercase tracking-wider mb-1.5">
+                              {scopeLabels[key] ?? key} ({values.length})
+                            </p>
+                            <div className="flex flex-wrap gap-1.5">
+                              {values.map((v) => (
+                                <span key={v} className="text-[11px] bg-[#f751a1]/10 text-[#ffb0cd] rounded-md px-2.5 py-1">
+                                  {v}
                                 </span>
                               ))}
                             </div>
-
-                            {/* Scope */}
-                            {hasScope ? (
-                              <div className="space-y-1.5">
-                                {Object.entries(scope).map(([key, values]) => (
-                                  <div key={key}>
-                                    <p className="text-[8px] text-zinc-600 uppercase tracking-wider">{scopeLabels[key] ?? key} ({values.length})</p>
-                                    <div className="flex gap-1 overflow-x-auto pb-0.5 mt-0.5">
-                                      {values.map((v) => (
-                                        <span key={v} className="text-[9px] bg-[#f751a1]/10 text-[#ffb0cd] rounded px-1.5 py-0.5 whitespace-nowrap shrink-0">
-                                          {v}
-                                        </span>
-                                      ))}
-                                    </div>
-                                  </div>
-                                ))}
-                              </div>
-                            ) : (
-                              <p className="text-[10px] text-zinc-700 italic">Unrestricted</p>
-                            )}
                           </div>
-                        )
-                      })}
+                        ))
+                      })()}
+
+                      {/* Revoke button */}
+                      <button
+                        onClick={() => {
+                          revokeMutation.mutate({ userId: selectedPerm.user.id, resource: selectedPerm.resource as typeof RESOURCES[number] })
+                          setSelectedPermId(null)
+                        }}
+                        disabled={revokeMutation.isPending}
+                        className="w-full mt-4 flex items-center justify-center gap-2 rounded-xl bg-rose-500/10 px-4 py-2.5 text-sm font-medium text-rose-400 hover:bg-rose-500/20 transition-colors"
+                      >
+                        <TrashIcon className="h-4 w-4" />
+                        Revoke Permission
+                      </button>
                     </div>
-                  </motion.div>
-                ))}
-              </div>
-            )}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         )
       })()}
