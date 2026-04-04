@@ -190,17 +190,27 @@ export const prospectRouter = createTRPCRouter({
   // Distinct values for scope assignment (admin/chief use)
   scopeOptions: protectedProcedure.query(async ({ ctx }) => {
     const db = ctx.db
-    const [cities, states, countries, niches] = await Promise.all([
+    const [cities, cityByState, states, countries, niches] = await Promise.all([
       db.prospect.groupBy({ by: ["ciudad"], _count: true, orderBy: { _count: { ciudad: "desc" } }, take: 200 }),
+      db.prospect.groupBy({ by: ["ciudad", "estado"], _count: true, orderBy: { _count: { ciudad: "desc" } }, take: 500 }),
       db.prospect.groupBy({ by: ["estado"], _count: true, orderBy: { _count: { estado: "desc" } }, take: 50 }),
       db.prospect.groupBy({ by: ["pais"], _count: true, orderBy: { _count: { pais: "desc" } }, take: 20 }),
       db.prospect.groupBy({ by: ["nicho"], _count: true, orderBy: { _count: { nicho: "desc" } }, take: 100 }),
     ])
+
+    // Map: state → cities in that state
+    const stateCities: Record<string, string[]> = {}
+    for (const row of cityByState) {
+      if (!stateCities[row.estado]) stateCities[row.estado] = []
+      stateCities[row.estado].push(row.ciudad)
+    }
+
     return {
       ciudades: cities.map((c) => ({ value: c.ciudad, count: c._count })),
       estados: states.map((s) => ({ value: s.estado, count: s._count })),
       paises: countries.map((p) => ({ value: p.pais, count: p._count })),
       nichos: niches.map((n) => ({ value: n.nicho, count: n._count })),
+      stateCities,
     }
   }),
 })

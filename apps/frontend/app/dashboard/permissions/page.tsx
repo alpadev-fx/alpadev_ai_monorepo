@@ -83,15 +83,29 @@ export default function PermissionsPage() {
   }
 
   const toggleScope = (field: keyof AssignFormData["scope"], value: string) => {
-    setForm((prev) => ({
-      ...prev,
-      scope: {
-        ...prev.scope,
-        [field]: prev.scope[field].includes(value)
-          ? prev.scope[field].filter((v) => v !== value)
-          : [...prev.scope[field], value],
-      },
-    }))
+    setForm((prev) => {
+      const wasSelected = prev.scope[field].includes(value)
+      const updated = wasSelected
+        ? prev.scope[field].filter((v) => v !== value)
+        : [...prev.scope[field], value]
+
+      const newScope = { ...prev.scope, [field]: updated }
+
+      // State → auto-select/deselect its cities
+      if (field === "estado" && scopeOptions?.stateCities) {
+        const stateCities = scopeOptions.stateCities[value] ?? []
+        if (!wasSelected) {
+          // Selecting state → add all its cities
+          const merged = new Set([...newScope.ciudad, ...stateCities])
+          newScope.ciudad = Array.from(merged)
+        } else {
+          // Deselecting state → remove its cities
+          newScope.ciudad = newScope.ciudad.filter((c) => !stateCities.includes(c))
+        }
+      }
+
+      return { ...prev, scope: newScope }
+    })
   }
 
   const toggleResource = (resource: (typeof RESOURCES)[number]) => {
@@ -225,9 +239,23 @@ export default function PermissionsPage() {
                   { field: "pais" as const, label: "Countries", options: scopeOptions.paises },
                 ]).map(({ field, label, options }) => (
                   <div key={field}>
-                    <label className="text-[11px] text-zinc-500 uppercase tracking-wider">
-                      {label} <span className="text-zinc-700">({form.scope[field].length} selected — empty = unrestricted)</span>
-                    </label>
+                    <div className="flex items-center justify-between">
+                      <label className="text-[11px] text-zinc-500 uppercase tracking-wider">
+                        {label} <span className="text-zinc-700">({form.scope[field].length}/{options.length})</span>
+                      </label>
+                      <button
+                        onClick={() => setForm((prev) => ({
+                          ...prev,
+                          scope: {
+                            ...prev.scope,
+                            [field]: prev.scope[field].length === options.length ? [] : options.map((o) => o.value),
+                          },
+                        }))}
+                        className="text-[10px] text-[#ffb0cd] hover:text-white transition-colors"
+                      >
+                        {form.scope[field].length === options.length ? "Clear all" : "Select all"}
+                      </button>
+                    </div>
                     <div className="mt-1 flex flex-wrap gap-1.5 max-h-28 overflow-y-auto rounded-xl bg-white/[0.02] p-2">
                       {options.map((opt) => (
                         <button
