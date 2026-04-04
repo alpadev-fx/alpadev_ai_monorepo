@@ -446,6 +446,13 @@ model Prospect {
   verifiedAt            DateTime?
   verificationNotes     String?
   source                String?
+  leadStatus            LeadStatus @default(NEW)
+  leadNotes             String?
+  assignedTo            String?    @db.ObjectId
+  contactedAt           DateTime?
+  convertedAt           DateTime?
+  lostAt                DateTime?
+  lostReason            String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 
@@ -459,4 +466,16 @@ model Prospect {
   @@index([ciudad, estado, pais])
   @@index([verified])
   @@index([source])
+  @@index([leadStatus])
+  @@index([assignedTo])
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  PROPOSAL
+  NEGOTIATION
+  WON
+  LOST
 }

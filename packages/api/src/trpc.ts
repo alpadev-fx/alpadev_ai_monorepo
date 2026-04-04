@@ -202,21 +202,42 @@ export const chiefProcedure = protectedProcedure.use(
  * Extends protectedProcedure with fire-and-forget activity logging.
  * Only logs non-admin users. Use on endpoints where vendor tracking matters.
  */
+// Sanitize input for logging — strip passwords, tokens, large payloads
+function sanitizeInput(raw: unknown): Record<string, unknown> | null {
+  if (!raw || typeof raw !== "object") return null
+  const input = raw as Record<string, unknown>
+  const sanitized: Record<string, unknown> = {}
+  const SKIP = new Set(["password", "token", "secret", "accessToken", "refreshToken"])
+  for (const [k, v] of Object.entries(input)) {
+    if (SKIP.has(k)) continue
+    if (typeof v === "string" && v.length > 200) {
+      sanitized[k] = v.slice(0, 200) + "...[truncated]"
+    } else {
+      sanitized[k] = v
+    }
+  }
+  return sanitized
+}
+
 export const loggedProcedure = protectedProcedure.use(
-  async ({ ctx, next, path }) => {
+  async ({ ctx, next, path, getRawInput }) => {
     const start = Date.now()
+    const rawInput = await getRawInput().catch(() => null)
     const result = await next({ ctx })
     const duration = Date.now() - start
 
-    // Only log non-admin users
+    // Log all non-admin users (VENDOR, CHIEF, USER)
     if (ctx.session.user.role !== "ADMIN") {
       const [resource, action] = path.split(".")
+      const inputData = sanitizeInput(rawInput)
       const activityService = new ActivityService(ctx.db)
       activityService.log({
         userId: ctx.session.user.id,
         action: path,
         resource: resource ?? path,
+        resourceId: (inputData?.id as string) ?? (inputData?.userId as string) ?? null,
         method: action?.startsWith("get") || action === "metrics" || action === "export" ? "query" : "mutation",
+        details: inputData ? (inputData as Record<string, unknown>) : null,
         success: result.ok,
         duration,
         ipAddress: ctx.req.headers.get("x-forwarded-for") ?? ctx.req.headers.get("x-real-ip") ?? null,
