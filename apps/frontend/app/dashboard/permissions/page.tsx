@@ -300,76 +300,116 @@ export default function PermissionsPage() {
         )}
       </AnimatePresence>
 
-      {/* Permissions table */}
-      <div className="rounded-2xl bg-[#161616] overflow-hidden">
-        <div className="px-5 py-4 border-b border-white/[0.04]">
-          <h3 className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
-            Active Permissions ({permissions?.length ?? 0})
-          </h3>
-        </div>
+      {/* Active Permissions — grouped by user */}
+      {(() => {
+        // Group permissions by user
+        type PermEntry = NonNullable<typeof permissions>[number]
+        const grouped = new Map<string, { user: PermEntry["user"]; perms: PermEntry[] }>()
+        for (const perm of permissions ?? []) {
+          const key = perm.user.id
+          if (!grouped.has(key)) grouped.set(key, { user: perm.user, perms: [] })
+          grouped.get(key)!.perms.push(perm)
+        }
+        const userGroups = Array.from(grouped.values())
 
-        {!permissions?.length ? (
-          <div className="px-5 py-12 text-center">
-            <ShieldCheckIcon className="h-8 w-8 text-zinc-700 mx-auto mb-2" />
-            <p className="text-sm text-zinc-500">No permissions assigned yet</p>
-          </div>
-        ) : (
-          <div className="divide-y divide-white/[0.04]">
-            {permissions.map((perm, i) => (
-              <motion.div
-                key={perm.id}
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.03 }}
-                className="px-5 py-3 flex items-center justify-between hover:bg-white/[0.02] transition-colors"
-              >
-                <div className="flex items-center gap-4 min-w-0 flex-1">
-                  {/* User */}
-                  <div className="min-w-0 w-40">
-                    <p className="text-sm text-white truncate">{perm.user.name}</p>
-                    <p className="text-[10px] text-zinc-600 truncate">{perm.user.email}</p>
-                  </div>
+        return (
+          <div className="space-y-4">
+            <h3 className="text-xs font-medium text-zinc-400 uppercase tracking-wider">
+              Active Permissions ({permissions?.length ?? 0} across {userGroups.length} users)
+            </h3>
 
-                  {/* Resource */}
-                  <span className="text-xs font-medium bg-[#d0bcff]/15 text-[#d0bcff] rounded-lg px-2.5 py-1">
-                    {RESOURCE_LABELS[perm.resource] ?? perm.resource}
-                  </span>
-
-                  {/* Actions */}
-                  <div className="flex gap-1.5">
-                    {perm.actions.map((action) => (
-                      <span key={action} className={`text-[10px] font-medium rounded-md px-2 py-0.5 ${ACTION_COLORS[action] ?? "bg-zinc-800 text-zinc-400"}`}>
-                        {action}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Scope */}
-                  {perm.scope && typeof perm.scope === "object" && Object.keys(perm.scope).length > 0 && (
-                    <div className="flex gap-1.5">
-                      {Object.entries(perm.scope as Record<string, string[]>).map(([key, values]) => (
-                        <span key={key} className="text-[10px] bg-white/[0.04] text-zinc-400 rounded-md px-2 py-0.5">
-                          {key}: {values.join(", ")}
-                        </span>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Revoke */}
-                <button
-                  onClick={() => revokeMutation.mutate({ userId: perm.user.id, resource: perm.resource as typeof RESOURCES[number] })}
-                  disabled={revokeMutation.isPending}
-                  className="shrink-0 p-1.5 rounded-lg text-zinc-600 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
-                  title="Revoke permission"
+            {!userGroups.length ? (
+              <div className="rounded-2xl bg-[#161616] px-5 py-12 text-center">
+                <ShieldCheckIcon className="h-8 w-8 text-zinc-700 mx-auto mb-2" />
+                <p className="text-sm text-zinc-500">No permissions assigned yet</p>
+              </div>
+            ) : (
+              userGroups.map((group, gi) => (
+                <motion.div
+                  key={group.user.id}
+                  initial={{ opacity: 0, y: 4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: gi * 0.05 }}
+                  className="rounded-2xl bg-[#161616] overflow-hidden"
                 >
-                  <TrashIcon className="h-4 w-4" />
-                </button>
-              </motion.div>
-            ))}
+                  {/* User header */}
+                  <div className="px-5 py-4 flex items-center gap-4 border-b border-white/[0.04]">
+                    <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-[#f751a1] to-[#8B5CF6] flex items-center justify-center shrink-0">
+                      <span className="text-sm font-bold text-white">{group.user.name[0]}</span>
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium text-white">{group.user.name}</p>
+                      <p className="text-[11px] text-zinc-600">{group.user.email}</p>
+                    </div>
+                    <span className="text-[10px] uppercase tracking-wider font-medium bg-[#8B5CF6]/20 text-[#d0bcff] rounded-full px-2.5 py-0.5">
+                      {group.user.role}
+                    </span>
+                  </div>
+
+                  {/* Permission cards */}
+                  <div className="p-4 space-y-3">
+                    {group.perms.map((perm) => {
+                      const scope = perm.scope && typeof perm.scope === "object" ? perm.scope as Record<string, string[]> : null
+                      const hasScope = scope && Object.keys(scope).length > 0
+
+                      return (
+                        <div key={perm.id} className="rounded-xl bg-white/[0.02] p-4">
+                          {/* Resource + Actions + Revoke */}
+                          <div className="flex items-center justify-between mb-3">
+                            <div className="flex items-center gap-3">
+                              <span className="text-sm font-medium bg-[#d0bcff]/15 text-[#d0bcff] rounded-lg px-3 py-1">
+                                {RESOURCE_LABELS[perm.resource] ?? perm.resource}
+                              </span>
+                              <div className="flex gap-1.5">
+                                {perm.actions.map((action) => (
+                                  <span key={action} className={`text-[11px] font-medium rounded-md px-2.5 py-1 ${ACTION_COLORS[action] ?? "bg-zinc-800 text-zinc-400"}`}>
+                                    {action}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => revokeMutation.mutate({ userId: perm.user.id, resource: perm.resource as typeof RESOURCES[number] })}
+                              disabled={revokeMutation.isPending}
+                              className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs text-zinc-600 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
+                            >
+                              <TrashIcon className="h-3.5 w-3.5" />
+                              Revoke
+                            </button>
+                          </div>
+
+                          {/* Scope detail */}
+                          {hasScope ? (
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                              {Object.entries(scope).map(([key, values]) => {
+                                const labels: Record<string, string> = { ciudad: "Cities", estado: "States", pais: "Countries", nicho: "Niches" }
+                                return (
+                                  <div key={key}>
+                                    <p className="text-[9px] text-zinc-600 uppercase tracking-wider mb-1">{labels[key] ?? key}</p>
+                                    <div className="flex flex-wrap gap-1">
+                                      {values.map((v) => (
+                                        <span key={v} className="text-[10px] bg-[#f751a1]/10 text-[#ffb0cd] rounded-md px-2 py-0.5">
+                                          {v}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )
+                              })}
+                            </div>
+                          ) : (
+                            <p className="text-[11px] text-zinc-600 italic">Unrestricted — access to all data</p>
+                          )}
+                        </div>
+                      )
+                    })}
+                  </div>
+                </motion.div>
+              ))
+            )}
           </div>
-        )}
-      </div>
+        )
+      })()}
     </motion.div>
   )
 }
