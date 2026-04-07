@@ -19,45 +19,14 @@ import {
 } from "@heroicons/react/24/outline"
 
 const NAV_ITEMS = [
-  { name: "Dashboard", href: "/dashboard", icon: ChartBarIcon },
-  {
-    name: "Prospects",
-    href: "/dashboard/prospects",
-    icon: ClipboardDocumentListIcon,
-  },
-  {
-    name: "Invoices",
-    href: "/dashboard/invoices",
-    icon: DocumentTextIcon,
-  },
-  {
-    name: "Chat",
-    href: "/dashboard/chat",
-    icon: ChatBubbleLeftRightIcon,
-  },
-  {
-    name: "Calendar",
-    href: "/dashboard/calendar",
-    icon: CalendarDaysIcon,
-  },
-  {
-    name: "Permissions",
-    href: "/dashboard/permissions",
-    icon: ShieldCheckIcon,
-    roles: ["ADMIN", "CHIEF"],
-  },
-  {
-    name: "Activity",
-    href: "/dashboard/activity",
-    icon: ClockIcon,
-    roles: ["ADMIN", "CHIEF"],
-  },
-  {
-    name: "Infrastructure",
-    href: "/dashboard/infrastructure",
-    icon: ServerStackIcon,
-    roles: ["ADMIN"],
-  },
+  { name: "Dashboard", href: "/dashboard", icon: ChartBarIcon, roles: ["ADMIN"] },
+  { name: "Prospects", href: "/dashboard/prospects", icon: ClipboardDocumentListIcon, roles: ["ADMIN", "CHIEF", "VENDOR"] },
+  { name: "Invoices", href: "/dashboard/invoices", icon: DocumentTextIcon, roles: ["ADMIN"] },
+  { name: "Chat", href: "/dashboard/chat", icon: ChatBubbleLeftRightIcon, roles: ["ADMIN"] },
+  { name: "Calendar", href: "/dashboard/calendar", icon: CalendarDaysIcon, roles: ["ADMIN"] },
+  { name: "Permissions", href: "/dashboard/permissions", icon: ShieldCheckIcon, roles: ["ADMIN", "CHIEF"] },
+  { name: "Activity", href: "/dashboard/activity", icon: ClockIcon, roles: ["ADMIN", "CHIEF"] },
+  { name: "Infrastructure", href: "/dashboard/infrastructure", icon: ServerStackIcon, roles: ["ADMIN"] },
 ]
 
 interface SidebarProps {
@@ -108,11 +77,9 @@ export const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
 
       {/* Navigation */}
       <nav className="flex-1 px-3 mt-2 space-y-1">
-        {NAV_ITEMS.filter((item) => {
-          const roles = "roles" in item ? (item.roles as string[]) : null
-          if (!roles) return true
-          return roles.includes((user as { role?: string })?.role ?? "")
-        }).map((item) => {
+        {NAV_ITEMS.filter((item) =>
+          item.roles.includes((user as { role?: string })?.role ?? "")
+        ).map((item) => {
           const active = isActive(item.href)
           const Icon = item.icon
 

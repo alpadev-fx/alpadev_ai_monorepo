@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useSession } from "next-auth/react"
 import { api } from "@/lib/trpc/react"
 import { motion, AnimatePresence } from "framer-motion"
 import {
@@ -52,15 +53,27 @@ export default function PermissionsPage() {
   const [form, setForm] = useState<AssignFormData>(EMPTY_FORM)
   const [selectedPermId, setSelectedPermId] = useState<string | null>(null)
 
+  const { data: session } = useSession()
+  const currentRole = (session?.user as { role?: string })?.role
+  const isChief = currentRole === "CHIEF"
+
   const utils = api.useUtils()
   const { data: permissions, isLoading } = api.permission.getAll.useQuery()
   const { data: usersData } = api.admin.users.list.useQuery({ page: 1, limit: 50 }, { retry: false })
-  const users = usersData?.users ?? []
+  const allUsers = usersData?.users ?? []
+  const users = isChief ? allUsers.filter((u: { role: string }) => u.role === "VENDOR") : allUsers
   const { data: scopeOptions } = api.prospect.scopeOptions.useQuery()
+  const { data: myPerms } = api.permission.myPermissions.useQuery(undefined, { enabled: isChief })
+
+  const availableResources = isChief ? (["prospect"] as const) : RESOURCES
 
   const assignMutation = api.permission.assign.useMutation()
+  const assignVendorMutation = api.permission.assignVendorScope.useMutation()
 
   const revokeMutation = api.permission.revoke.useMutation({
+    onSuccess: () => utils.permission.getAll.invalidate(),
+  })
+  const revokeVendorMutation = api.permission.revokeVendorScope.useMutation({
     onSuccess: () => utils.permission.getAll.invalidate(),
   })
 
@@ -71,8 +84,9 @@ export default function PermissionsPage() {
     if (form.scope.pais.length) scopeObj.pais = form.scope.pais
     if (form.scope.nicho.length) scopeObj.nicho = form.scope.nicho
 
+    const mutate = isChief ? assignVendorMutation : assignMutation
     for (const resource of form.resources) {
-      await assignMutation.mutateAsync({
+      await mutate.mutateAsync({
         userId: form.userId,
         resource,
         actions: form.actions,
@@ -161,6 +175,24 @@ export default function PermissionsPage() {
         </button>
       </div>
 
+      {/* Chief scope banner */}
+      {isChief && myPerms && (() => {
+        const prospectPerm = myPerms.find((p: { resource: string }) => p.resource === "prospect")
+        const scope = prospectPerm?.scope as Record<string, string[]> | null | undefined
+        const cities = scope?.ciudad ?? []
+        if (!cities.length) return null
+        return (
+          <div className="rounded-2xl bg-[#8B5CF6]/10 border border-[#8B5CF6]/20 px-5 py-3">
+            <p className="text-[11px] text-[#d0bcff] uppercase tracking-wider font-medium mb-1.5">Your assigned cities</p>
+            <div className="flex flex-wrap gap-1.5">
+              {cities.map((c: string) => (
+                <span key={c} className="text-[11px] bg-[#8B5CF6]/20 text-[#d0bcff] rounded-md px-2.5 py-1">{c}</span>
+              ))}
+            </div>
+          </div>
+        )
+      })()}
+
       {/* Assign Form */}
       <AnimatePresence>
         {showForm && (
@@ -194,7 +226,7 @@ export default function PermissionsPage() {
               <div>
                 <label className="text-[11px] text-zinc-500 uppercase tracking-wider">Resources</label>
                 <div className="mt-1 flex flex-wrap gap-2">
-                  {RESOURCES.map((r) => (
+                  {availableResources.map((r) => (
                     <button
                       key={r}
                       onClick={() => toggleResource(r)}
@@ -288,15 +320,15 @@ export default function PermissionsPage() {
               </button>
               <button
                 onClick={handleAssign}
-                disabled={!form.userId || form.resources.length === 0 || form.actions.length === 0 || assignMutation.isPending}
+                disabled={!form.userId || form.resources.length === 0 || form.actions.length === 0 || assignMutation.isPending || assignVendorMutation.isPending}
                 className="rounded-xl bg-[#f751a1] px-4 py-2 text-sm font-medium text-white hover:bg-[#ec4899] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {assignMutation.isPending ? "Assigning..." : "Assign"}
+                {(assignMutation.isPending || assignVendorMutation.isPending) ? "Assigning..." : "Assign"}
               </button>
             </div>
 
-            {assignMutation.error && (
-              <p className="text-xs text-rose-400">{assignMutation.error.message}</p>
+            {(assignMutation.error || assignVendorMutation.error) && (
+              <p className="text-xs text-rose-400">{(assignMutation.error || assignVendorMutation.error)?.message}</p>
             )}
           </motion.div>
         )}
@@ -304,7 +336,7 @@ export default function PermissionsPage() {
 
       {/* Active Permissions — table + detail panel */}
       {(() => {
-        const allPerms = permissions ?? []
+        const allPerms = (permissions ?? []).filter((p) => isChief ? p.user.role === "VENDOR" : true)
         const selectedPerm = allPerms.find((p) => p.id === selectedPermId) ?? null
         const scopeLabels: Record<string, string> = { ciudad: "Cities", estado: "States", pais: "Countries", nicho: "Niches" }
 
@@ -472,10 +504,11 @@ export default function PermissionsPage() {
                       {/* Revoke button */}
                       <button
                         onClick={() => {
-                          revokeMutation.mutate({ userId: selectedPerm.user.id, resource: selectedPerm.resource as typeof RESOURCES[number] })
+                          const revoke = isChief ? revokeVendorMutation : revokeMutation
+                          revoke.mutate({ userId: selectedPerm.user.id, resource: selectedPerm.resource as typeof RESOURCES[number] })
                           setSelectedPermId(null)
                         }}
-                        disabled={revokeMutation.isPending}
+                        disabled={revokeMutation.isPending || revokeVendorMutation.isPending}
                         className="w-full mt-4 flex items-center justify-center gap-2 rounded-xl bg-rose-500/10 px-4 py-2.5 text-sm font-medium text-rose-400 hover:bg-rose-500/20 transition-colors"
                       >
                         <TrashIcon className="h-4 w-4" />
