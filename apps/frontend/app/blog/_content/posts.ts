@@ -48,6 +48,235 @@ export const siteUrl = resolveSiteUrl()
 
 const posts: BlogPost[] = [
   {
+    slug: "claude-mythos-preview-vs-gpt-54-the-model-war-is-now-operational",
+    publishedAt: "2026-04-07",
+    updatedAt: "2026-04-07",
+    readingTime: "10 min read",
+    category: "AI Strategy",
+    featured: true,
+    author: {
+      name: "Alpadev AI Editorial",
+      role: "Software, AI & Cloud Strategy",
+    },
+    tags: ["GPT-5.4", "Claude Mythos Preview", "Anthropic", "OpenAI", "Project Glasswing", "AI Models", "Cybersecurity", "Tech Stocks"],
+    seoKeywords: [
+      "Claude Mythos Preview vs GPT-5.4",
+      "Claude Mythos Preview April 2026",
+      "GPT-5.4 March 2026 launch",
+      "Project Glasswing Anthropic",
+      "AI model war 2026",
+      "cybersecurity stocks Anthropic Mythos",
+      "GPT-5.4 computer use model",
+      "Claude Mythos Preview what it is",
+      "OpenAI GPT-5.4 why it matters",
+      "AI stocks reaction 2026 models",
+    ],
+    en: {
+      title: "Claude Mythos Preview vs. GPT-5.4: The Model War Is No Longer About Chatting Better, But About Doing Real Work",
+      description: "OpenAI's GPT-5.4 and Anthropic's Claude Mythos Preview represent two different futures for frontier AI: one optimized for professional productivity, the other treated as a restricted cybersecurity capability. The market noticed the difference.",
+      intro: [
+        "The most important AI story in April 2026 is not that models keep getting smarter. It is that they are becoming operational. OpenAI's GPT-5.4 and Anthropic's Claude Mythos Preview illustrate that shift from two different angles. One is being rolled out as a professional work engine across ChatGPT, the API, and Codex. The other is being introduced under restricted access because Anthropic believes its cyber capabilities require coordinated defensive handling.",
+        "The names matter. OpenAI officially launched GPT-5.4 on March 5, 2026. Anthropic officially announced Claude Mythos Preview on April 7, 2026 as part of Project Glasswing. That distinction is worth stating clearly because the public conversation has already started to blur rumor, leak, preview, and release into a single narrative.",
+        "Seen together, these launches tell us where the frontier is moving. The next AI war is not simply about who writes cleaner prose or debugs faster. It is about which model can operate software, coordinate tools, sustain long-horizon tasks, and influence real markets, products, and security systems with less human supervision.",
+      ],
+      takeaways: [
+        "GPT-5.4 is OpenAI's flagship model for professional work, with native computer use, stronger tool orchestration, and up to 1M tokens of context.",
+        "Claude Mythos Preview is Anthropic's newly announced restricted-access model for defensive cybersecurity work, not a broadly released consumer model.",
+        "The practical gap between them is strategic: GPT-5.4 is being commercialized for broad productivity, while Mythos Preview is being contained because of dual-use cyber implications.",
+        "The clearest stock-market reaction appeared around Anthropic-related cyber narratives, especially cybersecurity names such as CrowdStrike, Palo Alto Networks, and Zscaler.",
+      ],
+      pullQuote: "This is no longer a contest over who answers better. It is a contest over which model can safely operate more of the digital economy.",
+      sections: [
+        {
+          title: "What Each Model Actually Is",
+          paragraphs: [
+            "GPT-5.4 is OpenAI's mainline frontier model for professional use. The company describes it as the first general-purpose model it has released with native, state-of-the-art computer-use capabilities. That matters because it moves the product from answer generation into action: operating software, working across tools, and handling workflows that look more like real jobs than isolated prompts.",
+            "Claude Mythos Preview is something different. Anthropic announced it alongside Project Glasswing, a coordinated effort with major technology and security partners to secure critical software. In Anthropic's own framing, Mythos Preview is a general-purpose model whose capabilities in cybersecurity are strong enough that the company is not treating it like a normal broad rollout.",
+            "That creates an important editorial distinction. GPT-5.4 is a product launch designed for wide professional adoption. Mythos Preview is a capability disclosure wrapped in a controlled-access program. Both are frontier systems. They are just being introduced to the market under very different assumptions about risk.",
+          ],
+          bullets: [
+            "GPT-5.4 launch date: March 5, 2026.",
+            "Claude Mythos Preview announcement date: April 7, 2026.",
+            "GPT-5.4 is available across ChatGPT, the API, and Codex.",
+            "Mythos Preview is being used through Project Glasswing and a limited set of additional organizations.",
+          ],
+        },
+        {
+          title: "How They Work in Practice",
+          paragraphs: [
+            "OpenAI's GPT-5.4 combines reasoning, coding, tool use, and computer interaction in a single system. The company says it supports up to 1 million tokens of context, improves how agents search for and use tools, and performs strongly on browser and desktop interaction benchmarks. On OSWorld-Verified, OpenAI reports a 75.0% success rate, which it positions as a state-of-the-art result above earlier internal generations and slightly above the human baseline cited in the launch post.",
+            "The core idea is simple: GPT-5.4 is built to carry work forward with less back and forth. It can plan, use tools, operate interfaces, and stay coherent over longer horizons. That makes it especially relevant for engineering, operations, legal workflows, finance tasks, and any environment where the model needs to move across documents, spreadsheets, presentations, or software interfaces.",
+            "Anthropic's Mythos Preview appears to be frontier-grade in a more alarming direction. In Anthropic's red-team writeup, the model produced 595 crashes at severity tiers 1 and 2 in one benchmark setup, reached higher-tier outcomes beyond prior Claude models, and achieved full control-flow hijack on ten separate fully patched targets. Anthropic explicitly says these capabilities were not trained as a narrow cyber feature but emerged from broader gains in code, reasoning, and autonomy.",
+            "That last point matters for everyone. Mythos Preview is not being presented as a cyber-only tool. It is being presented as a general frontier model whose broad improvements produce cyber capabilities strong enough to change deployment decisions.",
+          ],
+          bullets: [
+            "GPT-5.4: native computer use, stronger tool search, longer-horizon execution.",
+            "GPT-5.4 benchmark highlighted by OpenAI: 75.0% on OSWorld-Verified.",
+            "Mythos Preview: strong vulnerability discovery and exploit-development performance in Anthropic's internal evaluations.",
+            "Anthropic's stated concern is dual use: the same gains that help defenders can also help attackers.",
+          ],
+        },
+        {
+          title: "What They Are For",
+          paragraphs: [
+            "For developers and product teams, GPT-5.4 is easy to place. It is a work model. It helps build, inspect, automate, summarize, draft, revise, and operate. OpenAI has shaped the launch narrative around professionals who need useful output, not just interesting output. In that sense, GPT-5.4 is less about chat quality than about reducing the distance between asking and shipping.",
+            "Mythos Preview serves a more sensitive function. Project Glasswing puts the model in the hands of launch partners including AWS, Apple, CrowdStrike, Google, Microsoft, NVIDIA, and Palo Alto Networks, while Anthropic extends access to more than 40 other organizations involved in critical software infrastructure. The stated purpose is defensive: find major vulnerabilities, improve security posture, and share findings that help the broader ecosystem.",
+            "For non-technical readers, the practical translation is this: GPT-5.4 is designed to help knowledge workers and builders do more. Mythos Preview is being handled like a technology that could materially affect the offense-defense balance in cybersecurity. One widens productivity. The other forces the industry to think about containment, governance, and coordination.",
+          ],
+          bullets: [
+            "GPT-5.4 fits software, research, document-heavy work, and agentic automation.",
+            "Mythos Preview is being directed toward defensive cyber use on critical systems.",
+            "The business story is different from the safety story, and both now matter equally.",
+          ],
+        },
+        {
+          title: "Why This News Matters",
+          paragraphs: [
+            "This story matters because it shows that frontier models are crossing from assistance into operations. The old framing of AI as a better autocomplete or a more polished chatbot is no longer enough. GPT-5.4 demonstrates a model that can sustain complex professional workflows. Mythos Preview demonstrates a model that can reshape how critical software is defended, and potentially how it is attacked.",
+            "It also matters because the releases are asymmetric. OpenAI is scaling access. Anthropic is constraining access. That divergence tells us something important about how labs themselves are reading the current frontier. Capability progress is no longer being interpreted only as a product milestone. It is also being interpreted as a deployment-risk problem.",
+            "For software teams, that means tool selection is becoming a strategic decision rather than a convenience choice. For executives and investors, it means product velocity and security posture are starting to move together. The same capabilities that make AI more valuable in work can make it more destabilizing in infrastructure.",
+          ],
+          bullets: [
+            "Frontier AI is entering an operational phase.",
+            "Labs are now differentiating not just by capability, but by deployment posture.",
+            "Productivity gains and security risks are increasingly two sides of the same curve.",
+          ],
+        },
+        {
+          title: "What Happened to Tech Stocks",
+          paragraphs: [
+            "Neither OpenAI nor Anthropic is publicly traded, so the cleanest market signal has to be read through related public companies. The strongest reaction I found was not a one-day repricing around GPT-5.4. It was a sharper response around Anthropic-related cyber narratives, especially in cybersecurity equities.",
+            "On March 27, 2026, after reports tied to a Claude Mythos leak circulated, cybersecurity stocks sold off hard. CrowdStrike fell about 7%, Palo Alto Networks about 6%, Zscaler about 4.5%, while Okta, SentinelOne, and Fortinet lost around 3%. Earlier, on February 23, Reuters reported another selloff after Anthropic's Claude Code Security launch, with CrowdStrike, Datadog, and Zscaler down around 11%, Fortinet and Okta down roughly 6%, Palo Alto Networks down 3%, and SentinelOne down 5%.",
+            "The market logic was straightforward even if the narrative was noisy: if AI sharply lowers the skill threshold for advanced cyber offense, then existing cyber vendors may need to spend more to defend while investors reassess how durable current product moats really are. That is a very different kind of reaction from a normal software-product launch.",
+            "By contrast, I did not find an equally clean, widely cited one-day stock-market move tied specifically to GPT-5.4's launch on March 5. The broader signal around GPT-5.4 was more diffuse: increased investor anxiety that more capable AI systems could pressure legacy software categories over time, not a single dramatic event with a simple ticker-to-headline mapping.",
+          ],
+          bullets: [
+            "OpenAI and Anthropic are private, so equity reactions show up in adjacent public companies.",
+            "March 27, 2026: CrowdStrike about -7%, Palo Alto Networks about -6%, Zscaler about -4.5%, others lower on Mythos-related fears.",
+            "February 23, 2026: Reuters reported another cyber-stock selloff after Anthropic's Claude Code Security launch.",
+            "No equally clear one-day market reaction was found for GPT-5.4 alone.",
+          ],
+        },
+        {
+          title: "Who Is Winning, and What Comes Next",
+          paragraphs: [
+            "If winning means distribution, productization, and immediate adoption, GPT-5.4 has the advantage right now. It is available, integrated, and framed around clear professional value. OpenAI is pushing the frontier toward a world where models become standard work infrastructure.",
+            "If winning means signaling the edge of what these systems can become, Mythos Preview may be the more consequential name of the moment. Anthropic's decision to treat the model as a coordinated defensive capability rather than a normal public release tells us how seriously it views the cyber implications.",
+            "The deeper point is that this is no longer a clean head-to-head benchmark war. It is a contest between operating philosophies. One lab is emphasizing scaled productivity. The other is highlighting controlled deployment in a high-risk domain. Both are, in their own way, telling the market the same thing: frontier models are moving closer to real authority over software, systems, and outcomes.",
+            "That is why this story belongs in software strategy, not just AI gossip. The next durable advantage will not come from who can generate the prettiest answer. It will come from who can safely execute the most real work.",
+          ],
+          bullets: [
+            "Editorial reading: GPT-5.4 leads in accessible professional deployment.",
+            "Editorial reading: Mythos Preview currently carries the stronger frontier-risk signal.",
+            "The model war is becoming a fight over operational authority, not just quality of answers.",
+          ],
+        },
+      ],
+    },
+    es: {
+      title: "Claude Mythos Preview vs. GPT-5.4: la guerra de los modelos ya no se trata de responder mejor, sino de hacer trabajo real",
+      description: "GPT-5.4 de OpenAI y Claude Mythos Preview de Anthropic representan dos futuros distintos para la IA de frontera: uno orientado a productividad profesional y otro tratado como una capacidad restringida de ciberseguridad. El mercado ya empezó a notar la diferencia.",
+      intro: [
+        "La historia más importante de IA en abril de 2026 no es simplemente que los modelos sigan siendo más inteligentes. Es que se están volviendo operativos. GPT-5.4 de OpenAI y Claude Mythos Preview de Anthropic muestran ese cambio desde dos ángulos diferentes. Uno se está desplegando como motor de trabajo profesional en ChatGPT, la API y Codex. El otro se está introduciendo con acceso restringido porque Anthropic considera que sus capacidades en ciberseguridad requieren manejo defensivo coordinado.",
+        "Los nombres importan. OpenAI lanzó oficialmente GPT-5.4 el 5 de marzo de 2026. Anthropic anunció oficialmente Claude Mythos Preview el 7 de abril de 2026 como parte de Project Glasswing. Vale la pena decirlo así de claro porque la conversación pública ya empezó a mezclar rumor, filtración, preview y lanzamiento como si fueran lo mismo.",
+        "Vistos juntos, estos anuncios muestran hacia dónde se mueve la frontera. La próxima guerra de IA no se trata solo de qué modelo redacta mejor o programa mejor. Se trata de qué modelo puede operar software, coordinar herramientas, sostener tareas largas e influir en mercados, productos y sistemas críticos con menos supervisión humana.",
+      ],
+      takeaways: [
+        "GPT-5.4 es el modelo insignia de OpenAI para trabajo profesional, con uso nativo de computadora, mejor orquestación de herramientas y hasta 1 millón de tokens de contexto.",
+        "Claude Mythos Preview es el nuevo modelo de acceso restringido de Anthropic para trabajo defensivo en ciberseguridad, no un modelo de consumo abierto al público general.",
+        "La diferencia práctica es estratégica: GPT-5.4 se comercializa para productividad amplia, mientras Mythos Preview se contiene por sus implicaciones dual-use en seguridad.",
+        "La reacción bursátil más clara apareció alrededor de narrativas de ciberseguridad ligadas a Anthropic, especialmente en acciones como CrowdStrike, Palo Alto Networks y Zscaler.",
+      ],
+      pullQuote: "Esto ya no es una competencia por quién contesta mejor. Es una competencia por qué modelo puede operar más partes de la economía digital de forma segura.",
+      sections: [
+        {
+          title: "Qué Es Realmente Cada Modelo",
+          paragraphs: [
+            "GPT-5.4 es el modelo principal de frontera de OpenAI para trabajo profesional. La empresa lo describe como el primer modelo generalista que lanza con capacidades nativas y de primer nivel para uso de computadora. Eso importa porque mueve el producto desde generar respuestas hacia ejecutar acciones: operar software, trabajar con herramientas y sostener workflows que se parecen más a empleos reales que a prompts aislados.",
+            "Claude Mythos Preview es otra cosa. Anthropic lo anunció junto con Project Glasswing, un esfuerzo coordinado con grandes socios de tecnología y seguridad para asegurar software crítico. En el framing de la propia Anthropic, Mythos Preview es un modelo generalista cuyas capacidades en ciberseguridad son lo suficientemente fuertes como para que no lo estén tratando como un rollout comercial normal.",
+            "Eso crea una diferencia editorial importante. GPT-5.4 es un lanzamiento de producto diseñado para adopción profesional amplia. Mythos Preview es una revelación de capacidad envuelta en un programa de acceso controlado. Ambos son sistemas de frontera. Simplemente están entrando al mercado bajo supuestos de riesgo muy distintos.",
+          ],
+          bullets: [
+            "Fecha de lanzamiento de GPT-5.4: 5 de marzo de 2026.",
+            "Fecha de anuncio de Claude Mythos Preview: 7 de abril de 2026.",
+            "GPT-5.4 está disponible en ChatGPT, la API y Codex.",
+            "Mythos Preview se está usando a través de Project Glasswing y un grupo adicional limitado de organizaciones.",
+          ],
+        },
+        {
+          title: "Cómo Funcionan en la Práctica",
+          paragraphs: [
+            "GPT-5.4 combina razonamiento, coding, uso de herramientas e interacción con computadora en un solo sistema. OpenAI dice que soporta hasta 1 millón de tokens de contexto, mejora cómo los agentes buscan y usan herramientas, y rinde fuerte en benchmarks de interacción con navegador y escritorio. En OSWorld-Verified, OpenAI reporta una tasa de éxito de 75.0%, que posiciona como resultado state of the art por encima de generaciones anteriores y ligeramente por encima de la línea base humana citada en el mismo anuncio.",
+            "La idea central es simple: GPT-5.4 está construido para empujar trabajo hacia adelante con menos ida y vuelta. Puede planear, usar herramientas, operar interfaces y mantenerse coherente durante horizontes más largos. Eso lo vuelve especialmente relevante para ingeniería, operaciones, legal, finanzas y cualquier entorno donde el modelo necesite moverse entre documentos, spreadsheets, presentaciones o interfaces de software.",
+            "Mythos Preview, por su parte, parece ser frontera en una dirección más inquietante. En el writeup del equipo red de Anthropic, el modelo produjo 595 crashes en niveles 1 y 2 dentro de una de sus configuraciones de evaluación, alcanzó resultados de mayor severidad que Claude previos y logró full control flow hijack sobre diez objetivos parchados. Anthropic dice explícitamente que estas capacidades no fueron entrenadas como un feature estrechamente cyber, sino que emergieron de mejoras generales en código, razonamiento y autonomía.",
+            "Ese último punto importa para todo el mundo. Mythos Preview no se presenta como una herramienta solo de ciberseguridad. Se presenta como un modelo de frontera general cuyo progreso amplio produce capacidades cyber suficientemente fuertes como para cambiar decisiones de despliegue.",
+          ],
+          bullets: [
+            "GPT-5.4: uso nativo de computadora, mejor tool search y ejecución de tareas de horizonte largo.",
+            "Benchmark destacado por OpenAI para GPT-5.4: 75.0% en OSWorld-Verified.",
+            "Mythos Preview: alto rendimiento en descubrimiento de vulnerabilidades y desarrollo de exploits dentro de evaluaciones internas de Anthropic.",
+            "La preocupación explícita de Anthropic es dual use: lo que ayuda a defensores también puede ayudar a atacantes.",
+          ],
+        },
+        {
+          title: "Para Qué Sirve Cada Uno",
+          paragraphs: [
+            "Para developers y equipos de producto, GPT-5.4 es fácil de ubicar. Es un modelo de trabajo. Ayuda a construir, inspeccionar, automatizar, resumir, redactar, revisar y operar. OpenAI armó la narrativa de lanzamiento alrededor de profesionales que necesitan output útil, no solo output interesante. En ese sentido, GPT-5.4 trata menos de la calidad del chat y más de reducir la distancia entre pedir y entregar.",
+            "Mythos Preview sirve para algo mucho más sensible. Project Glasswing pone el modelo en manos de socios como AWS, Apple, CrowdStrike, Google, Microsoft, NVIDIA y Palo Alto Networks, mientras Anthropic extiende acceso a más de 40 organizaciones adicionales involucradas en infraestructura crítica de software. El propósito declarado es defensivo: encontrar vulnerabilidades relevantes, mejorar la postura de seguridad y compartir hallazgos que ayuden al ecosistema.",
+            "Para audiencias no técnicas, la traducción práctica es esta: GPT-5.4 está diseñado para ayudar a trabajadores del conocimiento y constructores a hacer más. Mythos Preview se está manejando como una tecnología que podría alterar materialmente el balance entre ataque y defensa en ciberseguridad. Uno expande productividad. El otro obliga a pensar en contención, gobernanza y coordinación.",
+          ],
+          bullets: [
+            "GPT-5.4 encaja en software, investigación, trabajo intensivo en documentos y automatización agéntica.",
+            "Mythos Preview se está orientando a uso defensivo en sistemas críticos.",
+            "La historia de negocio y la historia de seguridad ya importan por igual.",
+          ],
+        },
+        {
+          title: "Por Qué Esta Noticia Importa",
+          paragraphs: [
+            "Esta historia importa porque muestra que los modelos de frontera están cruzando de asistencia a operación. El viejo framing de la IA como un mejor autocomplete o un chatbot más pulido ya no alcanza. GPT-5.4 demuestra un modelo que puede sostener workflows profesionales complejos. Mythos Preview demuestra un modelo que puede cambiar cómo se defiende software crítico y, potencialmente, cómo se ataca.",
+            "También importa porque los lanzamientos son asimétricos. OpenAI está escalando acceso. Anthropic está restringiendo acceso. Esa divergencia dice algo importante sobre cómo los propios laboratorios están leyendo la frontera actual. El progreso de capacidad ya no se interpreta solo como milestone de producto. También se interpreta como problema de riesgo de despliegue.",
+            "Para equipos de software, eso significa que elegir herramientas se está convirtiendo en una decisión estratégica y no solo de conveniencia. Para ejecutivos e inversionistas, significa que velocidad de producto y postura de seguridad empiezan a moverse juntas. Las mismas capacidades que hacen a la IA más valiosa para el trabajo pueden volverla más desestabilizadora para la infraestructura.",
+          ],
+          bullets: [
+            "La IA de frontera entró en una fase operativa.",
+            "Los laboratorios ya se están diferenciando no solo por capacidad, sino por postura de despliegue.",
+            "Ganancias de productividad y riesgos de seguridad son cada vez más dos caras de la misma curva.",
+          ],
+        },
+        {
+          title: "Qué Pasó con las Acciones de Tecnología",
+          paragraphs: [
+            "Ni OpenAI ni Anthropic cotizan en bolsa, así que la señal de mercado hay que leerla a través de compañías públicas relacionadas. La reacción más fuerte que encontré no fue un repricing de un día alrededor de GPT-5.4. Fue una respuesta más dura alrededor de narrativas cyber ligadas a Anthropic, sobre todo en acciones de ciberseguridad.",
+            "El 27 de marzo de 2026, después de que circularan reportes vinculados a una filtración de Claude Mythos, las acciones de ciberseguridad cayeron con fuerza. CrowdStrike bajó alrededor de 7%, Palo Alto Networks alrededor de 6%, Zscaler cerca de 4.5%, mientras Okta, SentinelOne y Fortinet perdieron aproximadamente 3%. Antes de eso, el 23 de febrero, Reuters reportó otra venta fuerte tras el lanzamiento de Claude Code Security, con CrowdStrike, Datadog y Zscaler abajo cerca de 11%, Fortinet y Okta en torno a 6%, Palo Alto Networks 3% y SentinelOne 5%.",
+            "La lógica del mercado fue bastante directa, aunque el ruido narrativo fue alto: si la IA reduce de forma abrupta el umbral de habilidad para ciberofensiva avanzada, entonces los vendors de seguridad quizá tengan que gastar más para defender mientras los inversionistas reevalúan qué tan duraderos son sus moats actuales. Ese es un tipo de reacción muy distinto al de un lanzamiento normal de software.",
+            "En contraste, no encontré un movimiento bursátil igual de limpio y ampliamente citado atribuible específicamente al lanzamiento de GPT-5.4 el 5 de marzo. La señal alrededor de GPT-5.4 fue más difusa: más ansiedad de inversionistas por presión gradual sobre categorías legacy de software que un evento puntual con una relación simple entre titular y ticker.",
+          ],
+          bullets: [
+            "OpenAI y Anthropic son privadas, así que la reacción bursátil se ve en empresas públicas cercanas.",
+            "27 de marzo de 2026: CrowdStrike alrededor de -7%, Palo Alto Networks alrededor de -6%, Zscaler alrededor de -4.5%, otros nombres también abajo por temores ligados a Mythos.",
+            "23 de febrero de 2026: Reuters reportó otra venta en acciones cyber tras el lanzamiento de Claude Code Security de Anthropic.",
+            "No encontré una reacción de un día igual de clara para GPT-5.4 por sí solo.",
+          ],
+        },
+        {
+          title: "Quién Va Ganando y Qué Viene Después",
+          paragraphs: [
+            "Si ganar significa distribución, productización y adopción inmediata, GPT-5.4 lleva ventaja hoy. Está disponible, integrado y encuadrado alrededor de valor profesional claro. OpenAI está empujando la frontera hacia un mundo donde los modelos se vuelven infraestructura estándar de trabajo.",
+            "Si ganar significa señalar el borde de lo que estos sistemas pueden convertirse, Mythos Preview puede ser el nombre más consecuente del momento. La decisión de Anthropic de tratar el modelo como una capacidad defensiva coordinada y no como un release público normal deja claro qué tan seriamente está leyendo sus implicaciones cyber.",
+            "El punto más profundo es que esto ya no es una guerra limpia de benchmarks. Es una disputa entre filosofías operativas. Un laboratorio está enfatizando productividad escalada. El otro está enfatizando despliegue controlado en un dominio de alto riesgo. Ambos están diciendo, de maneras distintas, lo mismo: los modelos de frontera se están acercando a autoridad real sobre software, sistemas y resultados.",
+            "Por eso esta historia pertenece a estrategia de software y no solo a chisme de IA. La próxima ventaja duradera no va a venir de quién genera la respuesta más bonita. Va a venir de quién puede ejecutar más trabajo real de forma segura.",
+          ],
+          bullets: [
+            "Lectura editorial: GPT-5.4 lidera en despliegue profesional accesible.",
+            "Lectura editorial: Mythos Preview hoy carga la señal de riesgo de frontera más fuerte.",
+            "La guerra de modelos se está volviendo una disputa por autoridad operativa, no solo por calidad de respuesta.",
+          ],
+        },
+      ],
+    },
+  },
+  {
     slug: "claude-code-source-leak-512000-lines-reveal-future-of-ai-coding",
     publishedAt: "2026-03-31",
     updatedAt: "2026-03-31",
