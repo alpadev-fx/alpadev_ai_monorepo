@@ -48,9 +48,743 @@ export const siteUrl = resolveSiteUrl()
 
 const posts: BlogPost[] = [
   {
+    slug: "oracle-agentic-ai-and-the-software-stock-rally-that-matters",
+    publishedAt: "2026-04-15",
+    updatedAt: "2026-04-15",
+    readingTime: "9 min read",
+    category: "Enterprise AI",
+    featured: true,
+    author: {
+      name: "Alpadev AI Editorial",
+      role: "Software, AI & Cloud Strategy",
+    },
+    tags: ["Oracle", "Agentic AI", "Enterprise Software", "Stock Market", "HR Technology", "Fusion Applications", "Software Stocks", "IGV"],
+    seoKeywords: [
+      "Oracle agentic AI",
+      "Oracle Fusion HR agents",
+      "software stocks rally April 2026",
+      "IGV ETF rally",
+      "ORCL stock jump",
+      "enterprise agentic applications",
+      "Oracle Hilary Maxson CFO",
+      "AI agents HR software",
+    ],
+    en: {
+      title: "Oracle's Agentic AI Bet and the Software Stock Rally That Actually Means Something",
+      description: "Oracle launched 8 agentic AI applications for HR on April 9, then jumped 11% as software stocks posted their best single day in a year. Here is what happened, why it matters, and what agentic AI actually is.",
+      intro: [
+        "On April 9, 2026, Oracle quietly shipped something that has been in the works across every major enterprise software vendor for the past eighteen months: a set of AI agents that do not just answer questions, but take actions inside your company's systems on their own. Eight new Fusion Agentic Applications, all targeting HR workflows, went live for Oracle Cloud customers.",
+        "Four days later, on April 13, software stocks exploded. The IGV ETF surged 4.9% in a single session, its best day in over a year. Oracle itself jumped more than 11%. The move came after a geopolitical truce eased trade war fears, unlocking risk appetite that had been frozen since late 2025.",
+        "These two events are separate but deeply connected. To understand why Oracle's announcement landed at exactly the right moment, and what it signals for enterprise software over the next two years, you need to understand what agentic AI actually is and why the sector had been selling off so hard in the first place.",
+      ],
+      takeaways: [
+        "Oracle shipped 8 AI agents for HR that automate real workflows, not chatbots but systems that execute tasks inside Fusion Cloud without human hand-holding.",
+        "Software stocks had fallen 30%+ from late-2025 highs because investors feared AI would destroy demand for traditional SaaS. Oracle's launch is evidence that incumbents are adapting fast.",
+        "The April 13 rally was triggered by a temporary geopolitical truce, but the magnitude of the move (4.9% for IGV, 11%+ for ORCL) reflects how severely oversold the sector had become.",
+        "New CFO Hilary Maxson, appointed April 6 from Schneider Electric, brings operational scale experience at a moment when Oracle is betting its next growth chapter on cloud and AI infrastructure.",
+      ],
+      pullQuote: "Agentic AI is not a chatbot that gives you an answer. It is a system that reads your company's data, decides what needs to happen, and does it inside the software you already use.",
+      sections: [
+        {
+          title: "What Agentic AI Actually Is",
+          paragraphs: [
+            "Most AI tools you have used so far are reactive. You ask a question, they give an answer. You paste a document, they summarize it. The model waits for you to do something, then responds. That model has real value, but it still requires a human to be in the loop for every action.",
+            "Agentic AI flips this. An agent is a system that receives a goal, not just a question, and figures out the steps required to accomplish it. It can query databases, call APIs, read files, write records, send notifications, and trigger other systems. It loops, checks its own output, corrects mistakes, and keeps going until the goal is done or it hits a condition it cannot resolve.",
+            "Think of it this way: a standard AI answers 'Which employees are overdue for a performance review?' An agent answers that question, pulls up the relevant records, drafts the review requests, schedules the calendar invites, and logs the action in the HR system without you doing anything after setting the initial goal.",
+          ],
+          bullets: [
+            "Agents have memory, tools, and the ability to call external systems.",
+            "They operate in loops: act, observe result, decide next step.",
+            "They can be given guardrails (human approval before certain actions).",
+            "Multiple agents can be chained: one researches, another decides, another executes.",
+          ],
+        },
+        {
+          title: "Oracle's 8 Fusion Agentic Applications: What They Do",
+          paragraphs: [
+            "Oracle did not ship a demo or a research preview. On April 9, eight agentic applications went live inside Oracle Fusion Cloud HCM, the HR platform used by thousands of large enterprises. These agents are embedded directly into existing workflows, which means customers do not need to integrate a third-party AI tool. The agents already have access to the data inside Fusion.",
+            "The applications cover the HR lifecycle from recruiting to workforce planning. Specific agents handle tasks like screening job applicants and ranking candidates against role criteria, flagging flight risk employees based on behavioral signals in the system, and automating the administrative side of onboarding sequences. One agent focuses on total compensation analysis, surfacing equity gaps or market misalignment without requiring an HR analyst to run the report manually.",
+            "What makes this meaningful is the access. These agents are not reading exported spreadsheets. They are operating inside the system of record. When an agent updates a candidate's status or triggers a compensation review, that action is logged, auditable, and immediately reflected across the platform.",
+          ],
+          bullets: [
+            "Candidate screening and ranking agent for open roles.",
+            "Employee flight risk detection with proactive alerts.",
+            "Automated onboarding task sequencing and tracking.",
+            "Compensation equity analysis and market benchmarking.",
+            "Workforce planning recommendations based on headcount and skill data.",
+          ],
+        },
+        {
+          title: "Why Software Stocks Had Fallen 30%",
+          paragraphs: [
+            "To understand the April 13 rally, you have to understand the selloff that came before it. From late 2025 into early 2026, software stocks dropped more than 30% from their highs. That is not a correction. That is a repricing. Investors were asking a fundamental question: if AI can write code, automate workflows, and replace knowledge workers, why do enterprises need to pay $50,000 a year for HR software?",
+            "The fear was not irrational. If AI commoditizes the functionality that SaaS vendors charge for, the entire business model of companies like Oracle, Salesforce, SAP, and ServiceNow is under pressure. Why pay for a subscription to software that an AI agent could replicate? That logic drove institutional money out of the sector for months.",
+            "What the market may have gotten wrong is the timeline and the integration question. Building an AI agent that can act reliably inside a company's real data, with proper permissions, audit logs, compliance controls, and error handling, is not a weekend project. Oracle's advantage is not that it built something clever. It is that it already has the data, the integrations, and the trust relationships with enterprise IT departments.",
+          ],
+        },
+        {
+          title: "The April 13 Rally: What Triggered It and What It Signals",
+          paragraphs: [
+            "The immediate trigger for the April 13 surge was geopolitical: a temporary truce in the trade dispute eased investor anxiety enough to unlock a wave of risk-on buying. When fear subsides in markets, beaten-down sectors tend to recover sharply, and software had been beaten down hard.",
+            "IGV, the iShares Expanded Tech-Software ETF that includes Oracle, Salesforce, Microsoft, and most major software companies, gained 4.9% in a single session. Oracle outperformed the ETF significantly, closing up more than 11%. A single-day move of that size for a company with Oracle's market cap reflects more than macro relief. It reflects a reassessment of the company's positioning.",
+            "The timing of Oracle's April 9 product launch almost certainly contributed to that reassessment. Investors saw a major enterprise vendor ship real, production-ready agentic AI into a product used by large customers. Not a roadmap slide, not a demo, but a live deployment. That is the counterargument to the narrative that AI destroys SaaS demand.",
+          ],
+        },
+        {
+          title: "New CFO, New Chapter: What Hilary Maxson Brings",
+          paragraphs: [
+            "On April 6, three days before the Fusion AI launch, Oracle announced that Hilary Maxson would become its new CFO. Maxson joins from Schneider Electric, where she led finance for a global industrial company operating across more than 100 countries with revenues above $35 billion. That background is notable: Schneider Electric is a company that has staked a significant part of its growth strategy on energy efficiency software and digital infrastructure.",
+            "CFO transitions at companies Oracle's size are rarely cosmetic. They signal a shift in financial priorities: how capital gets allocated, how investor communication is framed, and how aggressive the company wants to be on expansion versus margin. Maxson's appointment suggests Oracle may be preparing to make larger infrastructure bets, possibly in data center capacity tied to its AI ambitions.",
+            "It is also worth noting the sequencing: a new CFO with industrial-scale operational experience arrives the same week that Oracle ships its first production agentic AI suite. Whether that is deliberate timing or coincidence, the signal it sends to the market is that Oracle is treating this AI transition as a structural business change, not a marketing update.",
+          ],
+        },
+      ],
+    },
+    es: {
+      title: "La Apuesta de Oracle en IA Agéntica y el Rally de las Acciones de Software Que Importa",
+      description: "Oracle lanzó 8 aplicaciones de IA agéntica para RRHH el 9 de abril, y luego subió un 11% mientras las acciones de software vivían su mejor día en un año. Qué pasó, por qué importa y qué es la IA agéntica.",
+      intro: [
+        "El 9 de abril de 2026, Oracle lanzó algo en lo que todos los grandes proveedores de software empresarial llevan dieciocho meses trabajando: un conjunto de agentes de IA que no se limitan a responder preguntas, sino que ejecutan acciones dentro de los sistemas de la empresa por su cuenta. Ocho nuevas Fusion Agentic Applications, todas orientadas a flujos de trabajo de Recursos Humanos, quedaron disponibles para los clientes de Oracle Cloud.",
+        "Cuatro días después, el 13 de abril, las acciones de software explotaron al alza. El ETF IGV subió un 4,9% en una sola sesión, su mejor día en más de un año. Oracle en particular saltó más de un 11%. El movimiento llegó tras una tregua geopolítica que alivió los temores por la guerra comercial.",
+        "Estos dos eventos son distintos pero profundamente conectados. Para entender por qué el anuncio de Oracle llegó en el momento exacto, y qué señala para el software empresarial, hace falta entender qué es realmente la IA agéntica y por qué el sector venía cayendo con tanta fuerza.",
+      ],
+      takeaways: [
+        "Oracle lanzó 8 agentes de IA para RRHH que automatizan flujos de trabajo reales, no chatbots sino sistemas que ejecutan tareas dentro de Fusion Cloud sin supervisión constante.",
+        "Las acciones de software habían caído más de un 30% desde los máximos de finales de 2025 porque los inversores temían que la IA destruyera la demanda de SaaS tradicional.",
+        "El rally del 13 de abril fue desencadenado por una tregua geopolítica temporal, pero la magnitud del movimiento refleja lo sobrevendido que estaba el sector.",
+        "La nueva CFO Hilary Maxson, nombrada el 6 de abril desde Schneider Electric, aporta experiencia en escala operativa justo cuando Oracle apuesta su próximo ciclo de crecimiento a la nube y la IA.",
+      ],
+      pullQuote: "La IA agéntica no es un chatbot que te da una respuesta. Es un sistema que lee los datos de tu empresa, decide qué hay que hacer y lo hace dentro del software que ya usas.",
+      sections: [
+        {
+          title: "Qué Es Realmente la IA Agéntica",
+          paragraphs: [
+            "La mayoría de las herramientas de IA que has usado hasta ahora son reactivas. Haces una pregunta, te dan una respuesta. La IA agéntica invierte esto. Un agente es un sistema que recibe un objetivo y determina los pasos necesarios para lograrlo. Puede consultar bases de datos, llamar a APIs, leer archivos, escribir registros y activar otros sistemas.",
+            "Piénsalo así: un sistema de IA estándar responde '¿Qué empleados llevan retraso en su evaluación de desempeño?' Un agente responde esa pregunta, accede a los registros relevantes, redacta las solicitudes de revisión, programa las invitaciones de calendario y registra la acción en el sistema de RRHH.",
+          ],
+          bullets: [
+            "Los agentes tienen memoria, herramientas y capacidad para llamar a sistemas externos.",
+            "Operan en bucles: actuar, observar resultado, decidir siguiente paso.",
+            "Se les pueden fijar límites (aprobación humana antes de ciertas acciones).",
+          ],
+        },
+        {
+          title: "Las 8 Fusion Agentic Applications de Oracle",
+          paragraphs: [
+            "Oracle no lanzó una demo ni una versión de investigación. El 9 de abril, ocho aplicaciones agénticas quedaron activas dentro de Oracle Fusion Cloud HCM. Estos agentes están integrados directamente en los flujos de trabajo existentes, lo que significa que los clientes no necesitan conectar herramientas de IA de terceros.",
+            "Las aplicaciones cubren el ciclo de vida de RRHH desde la contratación hasta la planificación de plantilla. Agentes específicos gestionan tareas como el filtrado de candidatos, la detección de riesgo de fuga de empleados y la automatización de procesos de incorporación.",
+          ],
+          bullets: [
+            "Agente de filtrado y clasificación de candidatos.",
+            "Detección de riesgo de fuga de empleados con alertas proactivas.",
+            "Secuenciación automatizada de tareas de incorporación.",
+            "Análisis de equidad retributiva y benchmarking de mercado.",
+          ],
+        },
+        {
+          title: "Por Qué las Acciones de Software Habían Caído un 30%",
+          paragraphs: [
+            "Desde finales de 2025 hasta principios de 2026, las acciones de software bajaron más de un 30% desde sus máximos. Los inversores se hacían una pregunta fundamental: si la IA puede automatizar flujos de trabajo y reemplazar trabajadores del conocimiento, ¿para qué pagan las empresas por software de RRHH?",
+            "Lo que el mercado quizás se equivocó es en los plazos y en la cuestión de la integración. Construir un agente de IA que actúe de forma fiable dentro de los datos reales de una empresa no es un proyecto de fin de semana. La ventaja de Oracle es que ya tiene los datos, las integraciones y las relaciones de confianza con los departamentos de TI.",
+          ],
+        },
+        {
+          title: "El Rally del 13 de Abril",
+          paragraphs: [
+            "IGV, el ETF de software que incluye Oracle, Salesforce y Microsoft, ganó un 4,9% en una sola sesión. Oracle superó ampliamente al ETF, cerrando con una subida superior al 11%. Un movimiento de ese tamaño refleja una reevaluación del posicionamiento de la compañía.",
+            "Los inversores vieron a un gran proveedor empresarial lanzar IA agéntica real y lista para producción en un producto usado por grandes clientes. Ese es el contraargumento a la narrativa de que la IA destruye la demanda de SaaS.",
+          ],
+        },
+        {
+          title: "Nueva CFO, Nueva Etapa",
+          paragraphs: [
+            "El 6 de abril, Oracle anunció que Hilary Maxson sería su nueva CFO. Maxson llega desde Schneider Electric, donde lideró las finanzas de una empresa industrial global con ingresos por encima de los 35 mil millones de dólares.",
+            "El nombramiento de Maxson sugiere que Oracle puede estar preparándose para hacer apuestas de infraestructura más grandes. Una nueva CFO con experiencia operativa a escala industrial llega la misma semana en que Oracle lanza su primera suite de IA agéntica en producción.",
+          ],
+        },
+      ],
+    },
+  },
+  {
+    slug: "meta-muse-spark-ai-for-three-billion-users",
+    publishedAt: "2026-04-16T20:00:00",
+    updatedAt: "2026-04-16",
+    readingTime: "8 min read",
+    category: "Consumer AI",
+    featured: false,
+    author: {
+      name: "Alpadev AI Editorial",
+      role: "Software, AI & Cloud Strategy",
+    },
+    tags: ["Meta", "Muse Spark", "Consumer AI", "Meta Superintelligence Labs", "Alexandr Wang", "AI Strategy", "Magnificent 7", "WhatsApp AI", "Instagram AI", "Facebook AI"],
+    seoKeywords: [
+      "Meta Muse Spark AI model",
+      "Meta Superintelligence Labs Alexandr Wang",
+      "Muse Spark WhatsApp Instagram Facebook",
+      "Meta AI consumer strategy 2026",
+      "META stock Magnificent 7",
+      "consumer AI vs enterprise AI",
+      "Meta $14 billion Scale AI deal",
+      "Muse Spark Ray-Ban Meta glasses",
+      "AI for 3 billion users",
+      "Meta AI assistant what it is",
+    ],
+    en: {
+      title: "Meta's Muse Spark: The First AI Model Built for Three Billion Users at Once",
+      description: "Meta's new Muse Spark is the first model out of Meta Superintelligence Labs, led by Alexandr Wang after a $14B deal. Embedded across Facebook, Instagram, WhatsApp, and Ray-Ban glasses, it is the largest consumer AI deployment in history.",
+      intro: [
+        "Most frontier AI models ship to developers first. They land on an API, get wrapped in a product, and reach consumers months later. Meta skipped that sequence entirely. Muse Spark, the first model out of Meta Superintelligence Labs, launched directly into the apps used by more than three billion people — Facebook, Instagram, WhatsApp, Messenger, and the Ray-Ban Meta AI glasses.",
+        "The model is the first major output of Meta Superintelligence Labs, the new research organization Meta built around Alexandr Wang, founder of Scale AI, after a deal that analysts valued at approximately $14 billion. That deal, and this launch, signal something specific: Meta is not trying to win the model benchmarks race. It is trying to win the distribution race.",
+        "Understanding Muse Spark requires separating it from the enterprise AI conversation that dominates most coverage. This is not a coding assistant or a business process automation tool. It is AI designed to operate at consumer scale, inside social contexts, across devices people already carry.",
+      ],
+      takeaways: [
+        "Muse Spark is the first model from Meta Superintelligence Labs, the org built around Alexandr Wang after Meta's $14B deal with Scale AI.",
+        "It is embedded across Facebook, Instagram, WhatsApp, Messenger, and Ray-Ban Meta AI glasses — reaching 3B+ users without requiring a separate app download.",
+        "Meta's consumer AI strategy is fundamentally different from OpenAI or Anthropic: distribution before differentiation.",
+        "META stock has held up as one of the stronger performers in the Magnificent 7 during the 2026 AI infrastructure spending cycle.",
+      ],
+      pullQuote: "Meta is not competing on model quality alone. It is betting that the best AI is the one already inside the app three billion people opened this morning.",
+      sections: [
+        {
+          title: "What Muse Spark Is and What It Does",
+          paragraphs: [
+            "Muse Spark is a multimodal language model optimized for consumer interaction at scale. It handles text, images, and voice, and is designed to operate within the specific constraints of social media contexts: short reply windows, high volume, diverse languages, and users who did not specifically sign up to use AI.",
+            "In practice, Muse Spark powers the Meta AI assistant that surfaces across all of Meta's major products. On WhatsApp, it answers questions and helps draft messages. On Instagram, it helps with caption writing, responds in DMs when activated, and feeds into content recommendation logic. On Facebook, it assists with group management, event planning, and search. On the Ray-Ban Meta glasses, it serves as the voice-activated ambient assistant that can answer questions about what the wearer is looking at in real time.",
+            "The through-line is that Muse Spark does not require users to navigate to a separate AI interface. It is where the users already are, which is both the model's greatest strength and the thing that makes its deployment ethically complex.",
+          ],
+        },
+        {
+          title: "Meta Superintelligence Labs and the Alexandr Wang Deal",
+          paragraphs: [
+            "Meta Superintelligence Labs is the research organization Meta created in early 2026, structured as a dedicated unit focused on building foundation models rather than integrating existing ones. Alexandr Wang, who built Scale AI into the dominant data labeling and AI evaluation company, joined to lead it under an arrangement that included equity and a multi-year commitment.",
+            "The $14 billion valuation assigned to the deal reflects not just Wang's personal contribution but the infrastructure and methodology Scale AI brings to model training. Scale AI's core competency is data quality at volume — the ability to generate, label, and evaluate training data faster and more accurately than in-house teams. For Meta, which already has vast proprietary data from its platforms, the addition of Scale's evaluation methodology is the piece that was missing.",
+            "Wang's role is to build the next generation of models that will sit underneath all of Meta's consumer products. Muse Spark is the first public output of that work, and it is almost certainly not the most capable model the lab has built. It is the one Meta judged ready for deployment at this scale.",
+          ],
+        },
+        {
+          title: "Consumer AI vs. Enterprise AI: Why the Distinction Matters",
+          paragraphs: [
+            "The AI industry in 2026 has split into two distinct product categories that require different evaluation frameworks. Enterprise AI — tools like GitHub Copilot, Oracle's Fusion agents, or Anthropic's Claude for Teams — optimizes for accuracy, auditability, and integration with business systems. The users are professionals, the stakes are high, and mistakes have real consequences.",
+            "Consumer AI operates under completely different constraints. Users are not paying for a subscription. They have not read a terms of service. They might be in their native language, might be on a slow mobile connection, and might be using the AI feature without knowing it is AI. The model needs to be helpful without being confusing, safe without being useless, and fast enough that it does not interrupt the social interaction it is embedded in.",
+            "Muse Spark is optimized for the consumer context. That means it is probably not the model you want for complex reasoning tasks or technical coding. It is the model Meta built to answer 'What does this restaurant look like?' through the Ray-Ban glasses, help a teenager in Brazil write a birthday message, and moderate content in 50 languages at once.",
+          ],
+        },
+        {
+          title: "The META Stock Position in Magnificent 7 Dynamics",
+          paragraphs: [
+            "During the AI infrastructure spending cycle that accelerated through 2025 and into 2026, META has been one of the more resilient performers among the Magnificent 7. The company benefits from AI in two ways that other hyperscalers do not: AI improves its ad targeting, which directly lifts revenue, and AI features increase engagement, which increases the inventory it can sell.",
+            "The Muse Spark launch adds a third vector: if Meta can establish AI as a core part of the WhatsApp and Instagram experience, it creates a switching cost that did not previously exist. Users who come to rely on the AI assistant inside WhatsApp are less likely to migrate to a competing messaging platform.",
+            "The risk for META is less about model quality and more about regulatory exposure. Deploying AI across three billion users in the EU, Brazil, India, and the United States simultaneously means operating under dozens of conflicting regulatory frameworks simultaneously. Any enforcement action in a major market creates headline risk that the underlying business performance would not otherwise generate.",
+          ],
+        },
+        {
+          title: "Why Distribution at This Scale Changes the AI Market",
+          paragraphs: [
+            "OpenAI reached 300 million weekly active users in early 2026 and treated it as a milestone. Meta's Muse Spark launched into 3 billion monthly active users on day one. That is not a comparable number. It is a different category of deployment.",
+            "The implications for the broader AI market are structural. If the majority of consumers worldwide get their primary AI experience through Meta's products, the models that benchmark better on academic tasks but lack Meta's distribution face a ceiling. Most people will not seek out the best model. They will use the one that is already inside the app they opened.",
+            "This is the bet Meta made when it structured the deal with Alexandr Wang. Not that Muse Spark would win the model wars, but that model quality past a certain threshold matters less than placement. If the AI is already inside WhatsApp when you open it, you do not go looking for something better.",
+          ],
+        },
+      ],
+    },
+    es: {
+      title: "Meta Muse Spark: El Primer Modelo de IA Construido para Tres Mil Millones de Usuarios a la Vez",
+      description: "Muse Spark es el primer modelo de Meta Superintelligence Labs, dirigido por Alexandr Wang tras un acuerdo de 14.000 millones. Integrado en Facebook, Instagram, WhatsApp y las gafas Ray-Ban Meta, es el mayor despliegue de IA de consumo de la historia.",
+      intro: [
+        "La mayoría de los modelos de IA frontier llegan primero a los desarrolladores. Aterrizan en una API, se envuelven en un producto y llegan al consumidor meses después. Meta se saltó esa secuencia por completo. Muse Spark, el primer modelo de Meta Superintelligence Labs, se lanzó directamente en las apps que usan más de tres mil millones de personas: Facebook, Instagram, WhatsApp, Messenger y las gafas Ray-Ban Meta.",
+        "El modelo es el primer resultado importante de Meta Superintelligence Labs, la nueva organización de investigación que Meta construyó en torno a Alexandr Wang, fundador de Scale AI, tras un acuerdo que los analistas valoraron en aproximadamente 14.000 millones de dólares.",
+        "Entender Muse Spark exige separarlo de la conversación sobre IA empresarial que domina la mayoría de la cobertura. No es un asistente de código ni una herramienta de automatización de procesos de negocio. Es IA diseñada para operar a escala de consumo, en contextos sociales, en los dispositivos que la gente ya lleva encima.",
+      ],
+      takeaways: [
+        "Muse Spark es el primer modelo de Meta Superintelligence Labs, la organización construida en torno a Alexandr Wang tras el acuerdo de Meta con Scale AI por 14.000 millones.",
+        "Está integrado en Facebook, Instagram, WhatsApp, Messenger y las gafas Ray-Ban Meta, llegando a más de 3.000 millones de usuarios sin requerir una descarga separada.",
+        "La estrategia de IA de consumo de Meta es fundamentalmente distinta a la de OpenAI o Anthropic: distribución antes que diferenciación.",
+        "La acción de META se ha mantenido como uno de los valores más fuertes de los Magnificent 7 durante el ciclo de gasto en infraestructura de IA de 2026.",
+      ],
+      pullQuote: "Meta no compite solo en calidad de modelo. Apuesta a que la mejor IA es la que ya está dentro de la app que tres mil millones de personas abrieron esta mañana.",
+      sections: [
+        {
+          title: "Qué Es Muse Spark y Qué Hace",
+          paragraphs: [
+            "Muse Spark es un modelo de lenguaje multimodal optimizado para la interacción de consumo a escala. Maneja texto, imágenes y voz, y está diseñado para operar dentro de los contextos específicos de las redes sociales: ventanas de respuesta cortas, alto volumen, múltiples idiomas y usuarios que no se registraron específicamente para usar IA.",
+            "En la práctica, Muse Spark impulsa el asistente Meta AI que aparece en todos los productos principales de Meta. En WhatsApp responde preguntas y ayuda a redactar mensajes. En Instagram ayuda con los pies de foto, responde en DMs cuando está activado y alimenta la lógica de recomendación de contenido. En Facebook asiste con la gestión de grupos, la planificación de eventos y la búsqueda. En las gafas Ray-Ban Meta funciona como asistente ambiente activado por voz.",
+            "El hilo conductor es que Muse Spark no requiere que los usuarios naveguen a una interfaz de IA separada. Está donde ya están los usuarios, lo que es a la vez la mayor fortaleza del modelo y lo que hace que su despliegue sea éticamente complejo.",
+          ],
+        },
+        {
+          title: "Meta Superintelligence Labs y el Acuerdo con Alexandr Wang",
+          paragraphs: [
+            "Meta Superintelligence Labs es la organización de investigación que Meta creó a principios de 2026, estructurada como una unidad dedicada a construir modelos fundacionales en lugar de integrar los existentes. Alexandr Wang, que convirtió Scale AI en la empresa dominante de etiquetado de datos y evaluación de IA, se unió para dirigirla.",
+            "La valoración de 14.000 millones del acuerdo refleja no solo la contribución personal de Wang sino la infraestructura y metodología que Scale AI aporta al entrenamiento de modelos. La competencia central de Scale AI es la calidad de los datos a volumen: la capacidad de generar, etiquetar y evaluar datos de entrenamiento con más rapidez y precisión que los equipos internos.",
+            "Wang tiene el mandato de construir la próxima generación de modelos que se situarán bajo todos los productos de consumo de Meta. Muse Spark es el primer resultado público de ese trabajo, y casi con certeza no es el modelo más capaz que el laboratorio ha construido. Es el que Meta consideró listo para desplegarse a esta escala.",
+          ],
+        },
+        {
+          title: "IA de Consumo vs. IA Empresarial: Por Qué Importa la Distinción",
+          paragraphs: [
+            "La industria de la IA en 2026 se ha dividido en dos categorías de producto distintas. La IA empresarial optimiza para precisión, auditabilidad e integración con sistemas de negocio. Los usuarios son profesionales, los riesgos son altos y los errores tienen consecuencias reales.",
+            "La IA de consumo opera bajo restricciones completamente distintas. Los usuarios no pagan una suscripción. Quizás están en su idioma nativo, con una conexión móvil lenta, usando la función de IA sin saber que es IA. El modelo necesita ser útil sin ser confuso, seguro sin ser inútil, y lo suficientemente rápido como para no interrumpir la interacción social en la que está integrado.",
+            "Muse Spark está optimizado para el contexto de consumo. Probablemente no es el modelo que se quiere para tareas de razonamiento complejo o codificación técnica. Es el modelo que Meta construyó para responder 'cómo es este restaurante' a través de las gafas, ayudar a un adolescente en Brasil a escribir un mensaje de cumpleaños y moderar contenido en 50 idiomas a la vez.",
+          ],
+        },
+        {
+          title: "La Posición de META en las Dinámicas de los Magnificent 7",
+          paragraphs: [
+            "Durante el ciclo de gasto en infraestructura de IA que se aceleró a lo largo de 2025 y hasta 2026, META ha sido uno de los valores más resistentes de los Magnificent 7. La empresa se beneficia de la IA de dos formas que otros hyperscalers no tienen: la IA mejora su segmentación publicitaria, lo que eleva directamente los ingresos, y las funciones de IA aumentan el engagement.",
+            "El lanzamiento de Muse Spark añade un tercer vector: si Meta puede establecer la IA como parte central de la experiencia de WhatsApp e Instagram, crea un coste de cambio que antes no existía. Los usuarios que lleguen a depender del asistente de IA dentro de WhatsApp tienen menos probabilidades de migrar a una plataforma de mensajería competidora.",
+            "El riesgo para META tiene menos que ver con la calidad del modelo y más con la exposición regulatoria. Desplegar IA entre tres mil millones de usuarios en la UE, Brasil, India y Estados Unidos simultáneamente significa operar bajo decenas de marcos regulatorios contradictorios al mismo tiempo.",
+          ],
+        },
+        {
+          title: "Por Qué la Distribución a Esta Escala Cambia el Mercado de IA",
+          paragraphs: [
+            "OpenAI alcanzó 300 millones de usuarios activos semanales a principios de 2026 y lo trató como un hito. Muse Spark de Meta se lanzó a 3.000 millones de usuarios activos mensuales el primer día. No es un número comparable. Es una categoría diferente de despliegue.",
+            "Las implicaciones para el mercado de IA en general son estructurales. Si la mayoría de los consumidores del mundo obtienen su experiencia principal de IA a través de los productos de Meta, los modelos que obtienen mejores resultados en tareas académicas pero carecen de la distribución de Meta se enfrentan a un techo.",
+            "Esta es la apuesta que Meta hizo cuando estructuró el acuerdo con Alexandr Wang. No que Muse Spark gane la guerra de los modelos, sino que la calidad del modelo más allá de un cierto umbral importa menos que la colocación. Si la IA ya está dentro de WhatsApp cuando lo abres, no vas a buscar algo mejor.",
+          ],
+        },
+      ],
+    },
+  },
+  {
+    slug: "google-gemini-31-ultra-the-2-million-token-context-revolution",
+    publishedAt: "2026-04-17T20:00:00",
+    updatedAt: "2026-04-17",
+    readingTime: "10 min read",
+    category: "AI Models",
+    featured: false,
+    author: {
+      name: "Alpadev AI Editorial",
+      role: "Software, AI & Cloud Strategy",
+    },
+    tags: ["Google", "Gemini 3.1 Ultra", "AI Models", "Context Window", "Multimodal AI", "Alphabet", "Stanford AI Index", "Grounding", "Code Execution"],
+    seoKeywords: [
+      "Gemini 3.1 Ultra 2 million token context",
+      "Google Gemini 3.1 Ultra what it is",
+      "Gemini 3.1 multimodal text image audio video",
+      "Alphabet second most valuable company 2026",
+      "Stanford AI Index 2026",
+      "Gemini sandboxed code execution",
+      "Google AI hallucination reduction",
+      "2M token context window AI",
+      "Gemini 3.1 Ultra vs GPT Claude",
+      "Google AI stock GOOGL 2026",
+    ],
+    en: {
+      title: "Gemini 3.1 Ultra and the 2-Million Token Context Window: What It Actually Changes",
+      description: "Google's Gemini 3.1 Ultra ships with a 2 million token context window, native multimodal processing, sandboxed code execution, and reduced hallucination rates. Alphabet overtook Apple as the world's second most valuable company the same week.",
+      intro: [
+        "Context windows in AI models get discussed in terms of raw token counts, which makes them sound abstract. The practical translation is simpler: how much can the model hold in its head at once? A 2 million token context window means Gemini 3.1 Ultra can process a 1,500-page document, a full codebase, or a two-hour video in a single pass without losing information from the beginning by the time it reaches the end.",
+        "Google released Gemini 3.1 Ultra as the Stanford AI Index 2026 landed, confirming what practitioners had already observed: the gap between the leading frontier models and everything else is widening, not narrowing. Gemini 3.1 Ultra is Google's claim that it belongs in that leading tier.",
+        "The release coincided with Alphabet overtaking Apple as the world's second most valuable company by market capitalization, a milestone that reflected both the AI infrastructure spending tailwind and investor confidence in Google's ability to monetize its AI investments through search, cloud, and enterprise products.",
+      ],
+      takeaways: [
+        "Gemini 3.1 Ultra has a 2 million token context window — enough to process entire codebases, lengthy legal documents, or multi-hour videos in a single inference call.",
+        "Native multimodal means text, image, audio, and video are processed by the same model architecture, not stitched together from separate models.",
+        "The Sandboxed Code Execution tool lets the model write and run code in an isolated environment, check the output, and correct itself before returning results.",
+        "Alphabet overtook Apple as the world's second most valuable company the same week — grounding stock performance in real AI product momentum.",
+      ],
+      pullQuote: "A 2 million token context window is not a number. It is the difference between an AI that reads your whole codebase and one that reads a file at a time.",
+      sections: [
+        {
+          title: "The 2-Million Token Context Window: What It Enables",
+          paragraphs: [
+            "The standard context window for frontier models through most of 2025 was 128,000 tokens — enough for about 100 pages of text. That was sufficient for most document tasks but fell short for enterprise use cases involving large codebases, lengthy legal contracts, or multi-session research synthesis.",
+            "Gemini 3.1 Ultra's 2 million token context changes the calculation for several specific workflows. A software team can feed the entire source code of a medium-sized application into a single prompt and ask the model to find all instances of a particular security vulnerability pattern. A law firm can process a complete discovery set without chunking documents and losing the relationships between them. A research team can analyze a year's worth of experimental logs in one inference call.",
+            "The challenge with very large context windows is attention degradation: models tend to give more weight to content at the beginning and end of a context, with the middle getting less reliable treatment. Google's work on Gemini 3.1 Ultra included specific training improvements targeting attention distribution across the full 2 million token range, though independent benchmarks will be the real test of how well that holds.",
+          ],
+        },
+        {
+          title: "Native Multimodal: Why Architecture Matters",
+          paragraphs: [
+            "Most multimodal AI systems in production are not truly multimodal at the architecture level. They combine separate specialized models: a vision model, a speech-to-text model, and a language model, with an orchestration layer that routes inputs to the right model and stitches outputs together. That architecture works but introduces seams: information that exists in the relationship between modalities can get lost at the handoff points.",
+            "Gemini 3.1 Ultra is native multimodal, meaning the same model architecture processes text, images, audio, and video together. When you send it a video with a spoken narration and written subtitles, the model processes all three simultaneously and can reason about the relationships between them — what the speaker says, what appears on screen, and what the subtitle says, and where those three things diverge.",
+            "The practical applications are in quality control, media analysis, and any domain where information lives across multiple formats simultaneously. A manufacturing inspection system that receives camera feed, sensor audio, and maintenance log text in one query can reason about all three together rather than synthesizing three separate model outputs.",
+          ],
+        },
+        {
+          title: "Sandboxed Code Execution: The Model That Checks Its Own Work",
+          paragraphs: [
+            "One of the most concrete additions in Gemini 3.1 Ultra is the Sandboxed Code Execution tool, which allows the model to write code, run it in an isolated environment, observe the output, and revise its answer based on what actually happened rather than what it predicted would happen.",
+            "This matters because language models generate code probabilistically. A model that writes a SQL query and cannot run it must predict whether the query is correct. A model that can execute the query, observe that it returned zero results when it should have returned fifty, and then debug and correct the query before sending the final answer is a fundamentally different tool.",
+            "The sandboxed execution environment is isolated from the broader system, so the model cannot accidentally modify production data or make network calls outside its designated scope. It can write, run, observe, and iterate — producing outputs that have been empirically verified rather than just syntactically plausible.",
+          ],
+        },
+        {
+          title: "Hallucination Reduction and Grounding Improvements",
+          paragraphs: [
+            "Hallucination — the tendency of language models to generate plausible-sounding but factually incorrect information — remains the primary obstacle to deploying AI in high-stakes professional contexts. Google has made grounding improvements in Gemini 3.1 Ultra a headline feature, though the details of exactly how much hallucination rates have improved require independent evaluation to verify.",
+            "The approach involves two mechanisms. First, tighter integration with Google Search allows the model to verify factual claims against current web content before returning an answer, rather than relying solely on what was in its training data. Second, the model's training specifically optimized for calibrated uncertainty — the model is trained to express low confidence when it is actually uncertain, rather than generating confident-sounding text regardless of actual certainty.",
+            "The Stanford AI Index 2026 noted that across the frontier model providers, hallucination rates have improved meaningfully since 2024 but remain higher than what most professional deployment contexts require for fully autonomous operation. Gemini 3.1 Ultra's grounding improvements are a step in the right direction, but the practical implication is still human review for high-stakes outputs.",
+          ],
+        },
+        {
+          title: "Alphabet Overtakes Apple: What the Market Is Pricing In",
+          paragraphs: [
+            "The same week Gemini 3.1 Ultra shipped, Alphabet briefly overtook Apple as the world's second most valuable public company. Microsoft holds the top position. The moment was symbolic but grounded in real financial dynamics: Alphabet's cloud business (Google Cloud) has been growing faster than Azure and AWS on a percentage basis, and advertising revenue has benefited from AI-powered targeting improvements.",
+            "The Stanford AI Index 2026 provided context for why investors are repricing AI infrastructure companies upward: AI is transitioning from experimental to production, and the companies that own the infrastructure layer — compute, cloud, and frontier models — are positioned to capture a disproportionate share of the value being created.",
+            "For Gemini specifically, the commercial path runs through Google Cloud's Vertex AI platform, where enterprise customers access the model via API. Each improvement in Gemini's capabilities translates directly into an argument for why enterprises should run their AI workloads on Google Cloud rather than Azure or AWS. The 2 million token context window and code execution capabilities are exactly the features that enterprise customers with complex technical workflows need.",
+          ],
+        },
+      ],
+    },
+    es: {
+      title: "Gemini 3.1 Ultra y la Ventana de Contexto de 2 Millones de Tokens: Qué Cambia en Realidad",
+      description: "Gemini 3.1 Ultra de Google llega con una ventana de contexto de 2 millones de tokens, procesamiento multimodal nativo, ejecución de código en sandbox y tasas de alucinación reducidas. Alphabet superó a Apple como la segunda empresa más valiosa del mundo la misma semana.",
+      intro: [
+        "Las ventanas de contexto en los modelos de IA se discuten en términos de recuentos de tokens, lo que las hace sonar abstractas. La traducción práctica es más simple: ¿cuánto puede mantener el modelo en mente a la vez? Una ventana de contexto de 2 millones de tokens significa que Gemini 3.1 Ultra puede procesar un documento de 1.500 páginas, una base de código completa o un vídeo de dos horas en una sola pasada.",
+        "Google lanzó Gemini 3.1 Ultra mientras el Stanford AI Index 2026 confirmaba lo que los profesionales ya habían observado: la brecha entre los modelos frontier líderes y todo lo demás se está ampliando, no reduciendo. Gemini 3.1 Ultra es la apuesta de Google por pertenecer a ese nivel líder.",
+        "El lanzamiento coincidió con que Alphabet superara a Apple como la segunda empresa más valiosa del mundo por capitalización de mercado, un hito que reflejó tanto el viento de cola del gasto en infraestructura de IA como la confianza de los inversores en la capacidad de Google para monetizar sus inversiones.",
+      ],
+      takeaways: [
+        "Gemini 3.1 Ultra tiene una ventana de contexto de 2 millones de tokens, suficiente para procesar bases de código completas, documentos legales extensos o vídeos de varias horas en una sola llamada.",
+        "Multimodal nativo significa que el texto, la imagen, el audio y el vídeo son procesados por la misma arquitectura de modelo, no unidos a partir de modelos separados.",
+        "La herramienta de Ejecución de Código en Sandbox permite al modelo escribir y ejecutar código en un entorno aislado, verificar el resultado y corregirse antes de devolver la respuesta.",
+        "Alphabet superó a Apple como la segunda empresa más valiosa del mundo la misma semana, vinculando el rendimiento bursátil al impulso real de los productos de IA.",
+      ],
+      pullQuote: "Una ventana de contexto de 2 millones de tokens no es un número. Es la diferencia entre una IA que lee toda tu base de código y una que lee un archivo a la vez.",
+      sections: [
+        {
+          title: "La Ventana de Contexto de 2 Millones de Tokens: Qué Permite",
+          paragraphs: [
+            "La ventana de contexto estándar para los modelos frontier durante la mayor parte de 2025 era de 128.000 tokens, suficiente para unas 100 páginas de texto. Era suficiente para la mayoría de las tareas documentales, pero insuficiente para casos de uso empresarial con grandes bases de código, contratos legales extensos o síntesis de investigación multi-sesión.",
+            "La ventana de 2 millones de tokens de Gemini 3.1 Ultra cambia el cálculo para varios flujos de trabajo específicos. Un equipo de software puede introducir el código fuente completo de una aplicación de tamaño mediano en un solo prompt. Un bufete de abogados puede procesar un conjunto completo de documentación sin dividirlos y perder las relaciones entre ellos.",
+            "El desafío con ventanas de contexto muy grandes es la degradación de la atención: los modelos tienden a dar más peso al contenido al principio y al final del contexto, con la parte central recibiendo un tratamiento menos fiable. El trabajo de Google en Gemini 3.1 Ultra incluyó mejoras de entrenamiento específicas para la distribución de atención en el rango completo de 2 millones de tokens.",
+          ],
+        },
+        {
+          title: "Multimodal Nativo: Por Qué Importa la Arquitectura",
+          paragraphs: [
+            "La mayoría de los sistemas de IA multimodal en producción no son verdaderamente multimodales a nivel de arquitectura. Combinan modelos especializados separados con una capa de orquestación que enruta las entradas al modelo correcto y une las salidas. Esa arquitectura funciona pero introduce costuras: la información que existe en la relación entre modalidades puede perderse en los puntos de transferencia.",
+            "Gemini 3.1 Ultra es multimodal nativo, lo que significa que la misma arquitectura de modelo procesa texto, imágenes, audio y vídeo juntos. Cuando se le envía un vídeo con narración hablada y subtítulos escritos, el modelo procesa los tres simultáneamente y puede razonar sobre las relaciones entre ellos.",
+            "Las aplicaciones prácticas están en el control de calidad, el análisis de medios y cualquier dominio donde la información reside en múltiples formatos simultáneamente.",
+          ],
+        },
+        {
+          title: "Ejecución de Código en Sandbox: El Modelo Que Verifica Su Propio Trabajo",
+          paragraphs: [
+            "Una de las adiciones más concretas en Gemini 3.1 Ultra es la herramienta de Ejecución de Código en Sandbox, que permite al modelo escribir código, ejecutarlo en un entorno aislado, observar el resultado y revisar su respuesta basándose en lo que realmente ocurrió.",
+            "Esto importa porque los modelos de lenguaje generan código de forma probabilística. Un modelo que puede ejecutar la consulta, observar que devolvió cero resultados cuando debería haber devuelto cincuenta, y luego depurar y corregir la consulta antes de enviar la respuesta final es una herramienta fundamentalmente diferente.",
+            "El entorno de ejecución en sandbox está aislado del sistema más amplio, por lo que el modelo no puede modificar accidentalmente datos de producción ni hacer llamadas de red fuera de su ámbito designado.",
+          ],
+        },
+        {
+          title: "Reducción de Alucinaciones y Mejoras en el Grounding",
+          paragraphs: [
+            "La alucinación sigue siendo el principal obstáculo para desplegar IA en contextos profesionales de alto riesgo. Google ha hecho de las mejoras de grounding en Gemini 3.1 Ultra una característica destacada, aunque los detalles sobre cuánto han mejorado las tasas de alucinación requieren evaluación independiente para verificarse.",
+            "El enfoque implica dos mecanismos. Primero, una integración más estrecha con Google Search permite al modelo verificar afirmaciones factuales antes de devolver una respuesta. Segundo, el entrenamiento del modelo optimizó específicamente para la incertidumbre calibrada: el modelo está entrenado para expresar baja confianza cuando realmente está inseguro.",
+            "El Stanford AI Index 2026 señaló que las tasas de alucinación han mejorado desde 2024 pero siguen siendo más altas de lo que la mayoría de los contextos de despliegue profesional requieren para una operación totalmente autónoma.",
+          ],
+        },
+        {
+          title: "Alphabet Supera a Apple: Qué Está Descontando el Mercado",
+          paragraphs: [
+            "La misma semana que se lanzó Gemini 3.1 Ultra, Alphabet superó brevemente a Apple como la segunda empresa pública más valiosa del mundo. El momento fue simbólico pero está fundamentado en dinámicas financieras reales: el negocio cloud de Google ha crecido más rápido que Azure y AWS en términos porcentuales.",
+            "El Stanford AI Index 2026 proporcionó contexto para entender por qué los inversores están revalorizando al alza las empresas de infraestructura de IA: la IA está pasando de experimental a producción, y las empresas que poseen la capa de infraestructura están posicionadas para capturar una parte desproporcionada del valor.",
+            "Para Gemini específicamente, el camino comercial pasa por la plataforma Vertex AI de Google Cloud. Cada mejora en las capacidades de Gemini se traduce directamente en un argumento para que las empresas ejecuten sus cargas de trabajo de IA en Google Cloud. La ventana de contexto de 2 millones de tokens y las capacidades de ejecución de código son exactamente las características que los clientes empresariales con flujos de trabajo técnicos complejos necesitan.",
+          ],
+        },
+      ],
+    },
+  },
+  {
+    slug: "500-billion-ai-infrastructure-spending-the-new-arms-race",
+    publishedAt: "2026-04-18T20:00:00",
+    updatedAt: "2026-04-18",
+    readingTime: "9 min read",
+    category: "AI Infrastructure",
+    featured: false,
+    author: {
+      name: "Alpadev AI Editorial",
+      role: "Software, AI & Cloud Strategy",
+    },
+    tags: ["AI Infrastructure", "Hyperscalers", "Nvidia", "CapEx", "PwC", "AI Investment", "Magnificent 7", "$3 Trillion Club", "AI Arms Race"],
+    seoKeywords: [
+      "AI infrastructure spending $500 billion 2026",
+      "hyperscaler capex AI 2026",
+      "Nvidia $99.2 billion net income",
+      "PwC AI value concentration study",
+      "3 trillion dollar club Nvidia Apple Alphabet Microsoft",
+      "AI leaders vs laggards gap",
+      "enterprise AI ROI PwC 74 percent",
+      "AI arms race data centers 2026",
+      "AI capex Microsoft Google Amazon Meta",
+      "AI infrastructure investment what it means",
+    ],
+    en: {
+      title: "$500 Billion in AI Infrastructure: Who Is Spending It, Who Captures the Value, and Why the Gap Is Widening",
+      description: "Hyperscaler capital expenditures have crossed $500 billion. Nvidia posted $99.2 billion in net income. A PwC study found that 74% of AI value is captured by 20% of companies. Here is what is driving the spending and what it means for everyone outside the top tier.",
+      intro: [
+        "The AI infrastructure spending cycle that began in earnest in 2024 crossed a threshold in early 2026: aggregate capital expenditures from the major hyperscalers — Microsoft, Google, Amazon, and Meta — exceeded $500 billion on an annualized basis. That number covers data center construction, GPU procurement, networking equipment, and the power infrastructure required to run it all.",
+        "The scale of the spending has produced equally dramatic financial results at the top of the stack. Nvidia, the primary beneficiary of GPU demand, reported $99.2 billion in net income for fiscal year 2026, a number that would have seemed implausible as a revenue figure for most companies just five years ago. Four companies — Nvidia, Apple, Alphabet, and Microsoft — have at various points in 2026 held market capitalizations above $3 trillion.",
+        "The concentration of that spending and those returns is not evenly distributed. A PwC study published in early 2026 found that 74% of the measurable economic value generated by AI is being captured by 20% of companies. That finding has significant implications for how enterprises outside the top tier should think about AI investment strategy.",
+      ],
+      takeaways: [
+        "Hyperscaler AI capex exceeded $500 billion annualized in early 2026 — covering data centers, GPUs, networking, and power infrastructure.",
+        "Nvidia reported $99.2 billion in net income for fiscal 2026, making it one of the most profitable companies in history on a per-year basis.",
+        "PwC found that 74% of measurable AI economic value flows to 20% of companies — the gap between AI leaders and laggards is structural, not temporary.",
+        "The $3 trillion club (Nvidia, Apple, Alphabet, Microsoft) captures most of the market cap created by the AI cycle. Every company outside it is navigating the cycle as a buyer, not a beneficiary.",
+      ],
+      pullQuote: "When 74% of AI value goes to 20% of companies, every enterprise not in that 20% is facing a structural disadvantage that compounds each year they do not close the gap.",
+      sections: [
+        {
+          title: "Where the $500 Billion Is Actually Going",
+          paragraphs: [
+            "Capital expenditure at this scale is not spent in one place. Microsoft's $80 billion in FY2026 capex alone covers data center construction across multiple continents, GPU cluster buildouts for Azure AI services, and the physical power infrastructure — including dedicated generation and grid connection agreements — required to run those clusters at scale.",
+            "GPU procurement dominates the conversation, but it is only one piece of the spending. For every dollar spent on Nvidia H100 and H200 chips, roughly two to three dollars are spent on the surrounding infrastructure: the server chassis, networking switches, power distribution units, cooling systems, and the buildings that house them. The ratio shifts further toward infrastructure at the hyperscale level.",
+            "The power problem is increasingly the binding constraint. A single large-scale GPU cluster running at full capacity can consume as much electricity as a small city. Hyperscalers are signing 20-year power purchase agreements with utility companies, investing in dedicated nuclear capacity, and in some cases building their own generation facilities. The energy infrastructure buildout is a second capex cycle running in parallel with the compute buildout.",
+          ],
+        },
+        {
+          title: "Nvidia's $99.2 Billion Net Income: What That Number Means",
+          paragraphs: [
+            "Nvidia's fiscal year 2026 net income of $99.2 billion is not a revenue figure. It is profit after all costs, taxes, and expenses. For context, Apple — one of the most profitable companies in history — has generated peak annual net income around $97 billion. Nvidia, a semiconductor company that designs chips it does not manufacture, matched or exceeded that in a single year.",
+            "The economics that produced that number are specific to Nvidia's position. Nvidia does not fabricate its own chips; TSMC does. Nvidia's gross margins on H100 and H200 chips have been estimated at 70%+ because the primary costs are chip design (largely amortized across a large volume) and TSMC's manufacturing fee. When demand exceeds supply as dramatically as it did in 2025 and early 2026, and when customers will pay whatever Nvidia asks, the profitability is extraordinary.",
+            "The risk embedded in that number is the assumption that the GPU demand cycle continues at current intensity. If hyperscalers reach a point of adequate capacity, reduce their procurement, or if a meaningful competitor to Nvidia's CUDA ecosystem emerges, the revenue and margin profile changes quickly. The $99.2 billion is a peak reading, not necessarily a floor.",
+          ],
+        },
+        {
+          title: "The PwC Finding: 74% of Value to 20% of Companies",
+          paragraphs: [
+            "The PwC study's methodology is worth understanding. The firm analyzed measurable AI-driven economic outcomes across a sample of large enterprises — productivity improvements, cost reductions, revenue increases attributable to AI — and found that the distribution was highly concentrated. The top quintile of companies by AI maturity captured nearly three-quarters of the total value generated.",
+            "The companies in that top 20% share several characteristics: they started AI adoption earlier, they have more complete data infrastructure (the prerequisite to building effective AI systems), they have dedicated AI teams rather than distributed ownership, and they have leadership alignment that allows AI investment to be prioritized over competing short-term budget demands.",
+            "The implication for companies outside the top tier is uncomfortable. The gap is not primarily about which AI tools you buy. It is about the underlying data infrastructure, organizational structure, and leadership commitment that determines how much value you can extract from those tools. Those structural factors take years to build and cannot be purchased from a vendor.",
+          ],
+        },
+        {
+          title: "The $3 Trillion Club and What It Concentrates",
+          paragraphs: [
+            "Four companies have at various points in 2026 held market capitalizations above $3 trillion: Nvidia, Apple, Alphabet, and Microsoft. The composition of that list tells you what the market is pricing: two AI infrastructure plays (Nvidia, Microsoft through Azure), one that has both infrastructure and consumer distribution (Alphabet through Google Cloud and Search), and one that has the most powerful consumer hardware ecosystem and cash balance but has been slower to deploy AI features (Apple).",
+            "The combined market cap of these four companies at their 2026 peaks represents a concentration of market value that reflects how much of the AI cycle's economic upside is expected to flow through a small number of firms. Every hyperscaler capex dollar that flows to Nvidia's chips, runs on Microsoft's or Google's cloud, and generates AI-enhanced advertising through Alphabet's search stays within or returns to this cluster.",
+            "Companies outside this tier are navigating the AI cycle primarily as buyers. They purchase GPU time from hyperscalers, API access from model providers, and software licenses from enterprise AI vendors. The economics of being a buyer in a supply-constrained market mean that much of the value created by their AI investments accrues upstream, not within the buying company.",
+          ],
+        },
+        {
+          title: "What the Widening Gap Means for Enterprises",
+          paragraphs: [
+            "The PwC finding that AI value is concentrating is consistent with how technology adoption cycles typically work. In the early years of the internet, companies that built for the web first captured disproportionate returns. In the mobile era, companies that built native mobile experiences first captured disproportionate returns. AI is following the same pattern, with the same compounding effect.",
+            "Each year that a company delays building its data infrastructure, training its teams, and deploying AI in production workflows is a year of compounding disadvantage relative to the leaders. The companies in the top 20% are not standing still. They are deploying more sophisticated AI systems each quarter, building proprietary datasets that competitors cannot replicate, and training institutional knowledge about AI deployment that does not exist in companies that have not yet started.",
+            "The practical implication for enterprise leadership is that the decision is no longer whether to invest in AI, but how to invest given limited budgets and competing priorities. The PwC data suggests that the ROI from AI investment is highly dependent on having the right foundation — and that companies investing in AI tooling before they have that foundation will capture far less value than the headline technology promises.",
+          ],
+        },
+      ],
+    },
+    es: {
+      title: "500.000 Millones en Infraestructura de IA: Quién Gasta, Quién Captura el Valor y Por Qué la Brecha Se Amplía",
+      description: "El capex de los hyperscalers ha superado los 500.000 millones de dólares. Nvidia registró 99.200 millones en beneficio neto. Un estudio de PwC encontró que el 74% del valor de la IA lo captura el 20% de las empresas.",
+      intro: [
+        "El ciclo de gasto en infraestructura de IA que comenzó en serio en 2024 cruzó un umbral a principios de 2026: los gastos de capital agregados de los principales hyperscalers — Microsoft, Google, Amazon y Meta — superaron los 500.000 millones de dólares anualizados.",
+        "La escala del gasto ha producido resultados financieros igualmente dramáticos en lo más alto de la cadena. Nvidia, el principal beneficiario de la demanda de GPU, registró 99.200 millones de dólares en beneficio neto para el ejercicio fiscal 2026. Cuatro empresas — Nvidia, Apple, Alphabet y Microsoft — han tenido en distintos momentos de 2026 capitalizaciones de mercado por encima de los 3 billones de dólares.",
+        "La concentración de ese gasto y esos retornos no está distribuida uniformemente. Un estudio de PwC publicado a principios de 2026 encontró que el 74% del valor económico medible generado por la IA está siendo capturado por el 20% de las empresas.",
+      ],
+      takeaways: [
+        "El capex de IA de los hyperscalers superó los 500.000 millones de dólares anualizados a principios de 2026.",
+        "Nvidia reportó 99.200 millones en beneficio neto para el ejercicio 2026, convirtiéndola en una de las empresas más rentables de la historia.",
+        "PwC encontró que el 74% del valor económico medible de la IA fluye hacia el 20% de las empresas — la brecha entre líderes y rezagados es estructural, no temporal.",
+        "El club de los 3 billones (Nvidia, Apple, Alphabet, Microsoft) captura la mayor parte de la capitalización de mercado creada por el ciclo de IA.",
+      ],
+      pullQuote: "Cuando el 74% del valor de la IA va al 20% de las empresas, cada empresa fuera de ese 20% enfrenta una desventaja estructural que se agrava cada año que no cierra la brecha.",
+      sections: [
+        {
+          title: "A Dónde Va Realmente el Gasto de 500.000 Millones",
+          paragraphs: [
+            "El gasto de capital a esta escala no se destina a un solo lugar. El capex de 80.000 millones de dólares de Microsoft en el ejercicio 2026 cubre la construcción de centros de datos en múltiples continentes, la construcción de clústeres de GPU para los servicios de Azure AI y la infraestructura eléctrica física necesaria para operar esos clústeres a escala.",
+            "La adquisición de GPU domina la conversación, pero es solo una parte del gasto. Por cada dólar gastado en chips Nvidia H100 y H200, se gastan aproximadamente dos o tres dólares en la infraestructura circundante: el chasis del servidor, los switches de red, las unidades de distribución de energía, los sistemas de refrigeración y los edificios que los alojan.",
+            "El problema energético es cada vez más la restricción vinculante. Un solo clúster de GPU a gran escala funcionando a plena capacidad puede consumir tanta electricidad como una ciudad pequeña. Los hyperscalers están firmando acuerdos de compra de energía a 20 años con las empresas de servicios públicos.",
+          ],
+        },
+        {
+          title: "Los 99.200 Millones de Beneficio Neto de Nvidia",
+          paragraphs: [
+            "El beneficio neto de Nvidia de 99.200 millones de dólares para el ejercicio fiscal 2026 no es una cifra de ingresos. Es el beneficio después de todos los costes, impuestos y gastos. Para contextualizar, Apple — una de las empresas más rentables de la historia — ha generado un beneficio neto anual máximo de alrededor de 97.000 millones de dólares. Nvidia lo igualó o superó en un solo año.",
+            "Los márgenes brutos de Nvidia en los chips H100 y H200 se han estimado en más del 70% porque los costes principales son el diseño de chips (amortizado en gran volumen) y la tarifa de fabricación de TSMC. Cuando la demanda supera la oferta de forma tan dramática como en 2025 y principios de 2026, la rentabilidad es extraordinaria.",
+            "El riesgo incorporado en ese número es la suposición de que el ciclo de demanda de GPU continúa con la intensidad actual. Si los hyperscalers alcanzan un punto de capacidad adecuada o si surge un competidor significativo al ecosistema CUDA de Nvidia, el perfil de ingresos y márgenes cambia rápidamente.",
+          ],
+        },
+        {
+          title: "El Hallazgo de PwC: 74% del Valor para el 20% de las Empresas",
+          paragraphs: [
+            "PwC analizó resultados económicos medibles impulsados por IA en una muestra de grandes empresas — mejoras de productividad, reducciones de costes, aumentos de ingresos atribuibles a la IA — y encontró que la distribución estaba muy concentrada. El quintil superior de empresas por madurez en IA capturó casi tres cuartas partes del valor total generado.",
+            "Las empresas en ese 20% superior comparten varias características: comenzaron la adopción de IA antes, tienen una infraestructura de datos más completa (el prerrequisito para construir sistemas de IA efectivos), tienen equipos de IA dedicados y tienen alineación de liderazgo que permite priorizar la inversión en IA.",
+            "La implicación para las empresas fuera del nivel superior es incómoda. La brecha no tiene que ver principalmente con qué herramientas de IA compras. Tiene que ver con la infraestructura de datos subyacente, la estructura organizativa y el compromiso del liderazgo que determinan cuánto valor puedes extraer de esas herramientas.",
+          ],
+        },
+        {
+          title: "El Club de los 3 Billones y lo Que Concentra",
+          paragraphs: [
+            "Cuatro empresas han tenido en distintos momentos de 2026 capitalizaciones de mercado por encima de los 3 billones de dólares: Nvidia, Apple, Alphabet y Microsoft. La composición de esa lista indica lo que el mercado está descontando: dos apuestas de infraestructura de IA (Nvidia, Microsoft a través de Azure), una que tiene tanto infraestructura como distribución de consumo (Alphabet) y una que tiene el ecosistema de hardware de consumo más potente pero ha sido más lenta en desplegar funciones de IA (Apple).",
+            "La capitalización de mercado combinada de estas cuatro empresas en sus picos de 2026 representa una concentración de valor de mercado que refleja cuánta ventaja económica del ciclo de IA se espera que fluya a través de un pequeño número de empresas.",
+            "Las empresas fuera de este nivel navegan el ciclo de IA principalmente como compradores. Compran tiempo de GPU a los hyperscalers, acceso a API de los proveedores de modelos y licencias de software de los vendedores de IA empresarial.",
+          ],
+        },
+        {
+          title: "Qué Significa la Brecha que se Amplía para las Empresas",
+          paragraphs: [
+            "El hallazgo de PwC de que el valor de la IA se está concentrando es consistente con cómo funcionan típicamente los ciclos de adopción tecnológica. En los primeros años de internet, las empresas que construyeron para la web primero capturaron retornos desproporcionados. En la era móvil, las empresas que construyeron experiencias móviles nativas primero capturaron retornos desproporcionados. La IA sigue el mismo patrón.",
+            "Cada año que una empresa retrasa la construcción de su infraestructura de datos, la formación de sus equipos y el despliegue de IA en flujos de trabajo de producción es un año de desventaja compuesta relativa a los líderes. Las empresas en el 20% superior no están quietas. Están desplegando sistemas de IA más sofisticados cada trimestre.",
+            "La implicación práctica para el liderazgo empresarial es que la decisión ya no es si invertir en IA, sino cómo invertir dado un presupuesto limitado. Los datos de PwC sugieren que el ROI de la inversión en IA depende en gran medida de tener la base adecuada — y que las empresas que invierten en herramientas de IA antes de tener esa base capturarán mucho menos valor del que promete la tecnología.",
+          ],
+        },
+      ],
+    },
+  },
+  {
+    slug: "claude-code-routines-and-managed-agents-the-developer-toolkit-revolution",
+    publishedAt: "2026-04-19T20:00:00",
+    updatedAt: "2026-04-19",
+    readingTime: "10 min read",
+    category: "Developer Tools",
+    featured: false,
+    author: {
+      name: "Alpadev AI Editorial",
+      role: "Software, AI & Cloud Strategy",
+    },
+    tags: ["Claude Code", "Anthropic", "Routines", "Managed Agents", "Developer Tools", "Claude Sonnet 4.6", "Computer Use", "GitHub Integration", "ant CLI"],
+    seoKeywords: [
+      "Claude Code Routines research preview",
+      "Claude Managed Agents public beta",
+      "ant CLI Anthropic agents",
+      "Claude Sonnet 4.6 1M context",
+      "Claude Code computer use 2026",
+      "GitHub triggers Claude Code sessions",
+      "Anthropic developer tools April 2026",
+      "Claude Code Cowork",
+      "agentic coding tools 2026",
+      "Claude Code vs GitHub Copilot Cursor",
+    ],
+    en: {
+      title: "Claude Code Routines and Managed Agents: Anthropic's Bet on the Developer Workflow",
+      description: "Anthropic shipped Routines in Claude Code as a research preview, enabling GitHub-triggered automated sessions. Claude Managed Agents entered public beta with the ant CLI. Claude Sonnet 4.6 now ships with 1M context. Here is what changed and what it means for how developers work.",
+      intro: [
+        "Anthropic has been shipping fast in April 2026. In the span of two weeks, the company released Routines for Claude Code in a research preview, moved Claude Managed Agents to public beta with a new command-line tool called ant, and updated Claude Sonnet 4.6 to support a 1 million token context window. Taken separately, each of these is a useful incremental update. Taken together, they represent a coherent bet on where developer AI tooling is heading.",
+        "The direction is toward agents that run autonomously, triggered by events in the developer's existing workflow rather than by manual prompting. Routines in Claude Code let GitHub events — a pull request opened, a commit pushed, a CI run failed — automatically create a new Claude Code session that can investigate, diagnose, and in some cases fix the issue without a developer typing a prompt.",
+        "This is the next step past the AI coding assistant model that tools like GitHub Copilot and Cursor represent. Those tools make individual developers faster at writing code. What Anthropic is building with Routines and Managed Agents is infrastructure for agents that work in parallel to developers, handling tasks in the background while the human focuses on the work that requires judgment.",
+      ],
+      takeaways: [
+        "Claude Code Routines (research preview) lets GitHub triggers — PRs, commits, CI failures — automatically spawn new Claude Code sessions without manual developer intervention.",
+        "Claude Managed Agents entered public beta with the ant CLI, giving developers a programmatic way to create, configure, and monitor autonomous Claude agents.",
+        "Claude Sonnet 4.6 now supports a 1 million token context window, enabling single-prompt analysis of large codebases, documentation sets, or conversation histories.",
+        "Computer use is now available in both Claude Code and Cowork, allowing agents to interact with GUIs, not just APIs and text interfaces.",
+      ],
+      pullQuote: "The coding assistant era asked: how do I write code faster? The agentic era asks: which tasks should never require a human to type a prompt in the first place?",
+      sections: [
+        {
+          title: "Claude Code Routines: What They Are and How They Work",
+          paragraphs: [
+            "Routines in Claude Code are pre-configured agent behaviors that trigger automatically based on events in external systems. In the current research preview, the primary integration is GitHub. A developer configures a Routine by specifying a trigger condition (a PR opened against the main branch, a failing test run, a specific label applied to an issue) and an instruction set for what Claude Code should do when that trigger fires.",
+            "When the trigger fires, GitHub sends a webhook to Anthropic's infrastructure, which creates a new Claude Code session with the relevant context — the PR diff, the failing test output, the issue description — already loaded. The session then executes the instruction set, which might involve analyzing the failure, identifying the root cause, proposing a fix, and opening a comment on the PR with its findings. The developer receives a notification and can review, approve, or redirect the agent's work.",
+            "The research preview label is significant. Routines are not yet a production-grade feature — the instruction sets are limited, the integrations beyond GitHub are not yet available, and the session reliability is explicitly described as research-grade. But the preview gives developers a concrete way to test whether the model works well enough for their specific use cases before the feature hardens.",
+          ],
+          bullets: [
+            "GitHub triggers: PR opened, commit pushed, CI run failed, issue labeled.",
+            "Claude Code receives pre-loaded context: diffs, test output, issue text.",
+            "Agent executes instruction set, posts findings as PR comments or issue updates.",
+            "Developer reviews output and approves or redirects before any code is merged.",
+          ],
+        },
+        {
+          title: "Claude Managed Agents and the ant CLI",
+          paragraphs: [
+            "Claude Managed Agents are a separate but complementary capability to Routines. Where Routines are triggered by external events and follow pre-configured instruction sets, Managed Agents are persistent agent instances that developers can create, configure, and query programmatically through the ant CLI.",
+            "The ant CLI is a command-line tool that wraps the Claude Managed Agents API. A developer can use it to create an agent with a specific persona and instruction set, assign it tools (web search, code execution, file system access within specified directories), and then interact with it via the CLI or trigger it from other scripts and automation. The agent maintains state between calls, so a developer can build up a long-running investigation across multiple sessions without re-establishing context each time.",
+            "The public beta status means that the API is stable enough for production experimentation but that breaking changes may still occur before general availability. The pricing is usage-based on Claude API token consumption, which means the cost scales with how much work the agent is actually doing rather than a flat monthly fee regardless of use.",
+          ],
+        },
+        {
+          title: "Claude Sonnet 4.6 with 1 Million Token Context",
+          paragraphs: [
+            "Claude Sonnet 4.6 is Anthropic's mid-tier model — positioned between Haiku (fast and cheap) and Opus (most capable and expensive). The 1 million token context window on Sonnet 4.6 is significant because it brings very large context capability to the model tier that most production applications use. Opus-level context windows were previously reserved for the most expensive model tier.",
+            "In practical developer terms, 1 million tokens is roughly 750,000 words or around 3,000 pages of text. For software engineering use cases, it means you can feed an entire medium-sized codebase into a single prompt and ask questions about it without chunking, without losing the relationships between files, and without the retrieval-augmented generation complexity that previously required separate infrastructure.",
+            "The combination of Sonnet 4.6's 1M context with Claude Code Routines is particularly relevant. When a Routine triggers on a CI failure, Claude Code can load not just the failing test output but the entire relevant section of the codebase, the recent git history, and the full test suite into context simultaneously — giving it enough information to diagnose root causes that span multiple files and multiple recent changes.",
+          ],
+        },
+        {
+          title: "Computer Use in Claude Code and Cowork",
+          paragraphs: [
+            "Computer use — the capability for Claude to interact with graphical user interfaces, not just APIs and text — has been available in Anthropic's API since late 2024. In April 2026, Anthropic extended computer use into Claude Code and into Cowork, the collaborative agent workspace tool.",
+            "In Claude Code, computer use means the agent can interact with applications that do not have APIs. If a developer is debugging an issue that involves a GUI-based database tool or a web interface, Claude Code can take screenshots, read what is on screen, click interface elements, and fill in forms — the same actions a human would take, but automated. This is particularly valuable for testing and QA workflows where the thing being tested is a visual interface.",
+            "In Cowork, computer use extends to collaborative sessions where multiple agents and human participants share a workspace. An agent can take over a browser session, navigate to a specific URL, extract information from a page that does not have an API, and share what it found back to the shared workspace. The capability is limited to contexts where the user has explicitly granted computer use permissions — it is not on by default.",
+          ],
+        },
+        {
+          title: "The Competitive Landscape and What These Releases Signal",
+          paragraphs: [
+            "The developer AI tooling market in 2026 has four main players at the frontier: GitHub Copilot (Microsoft/OpenAI), Cursor, Devin (Cognition), and Claude Code (Anthropic). Each has made different bets on where the value lies. Copilot optimizes for inline code completion and IDE integration. Cursor optimizes for whole-file and whole-project editing with strong chat capabilities. Devin optimizes for fully autonomous software engineering tasks from a high-level specification.",
+            "Claude Code's bet with Routines and Managed Agents is on workflow integration rather than IDE integration. Rather than trying to be the best experience inside a specific code editor, Anthropic is building the infrastructure for agents that operate in the spaces between developer actions: the CI pipeline, the PR review queue, the issue tracker. The developer does not have to switch to Claude Code. Claude Code fits into the workflow the developer already has.",
+            "The 1 million token context and computer use capabilities are supporting features for this bet. Large context means agents can work with full codebases without losing information. Computer use means agents are not limited to systems that have APIs — they can interact with any interface a human can use. Together, these capabilities make the Routines and Managed Agents model viable for a much wider range of real-world workflows than was possible six months ago.",
+          ],
+        },
+      ],
+    },
+    es: {
+      title: "Claude Code Routines y Managed Agents: La Apuesta de Anthropic por el Flujo de Trabajo del Desarrollador",
+      description: "Anthropic lanzó Routines en Claude Code como preview de investigación, habilitando sesiones automatizadas activadas por GitHub. Claude Managed Agents entró en beta pública con el CLI ant. Claude Sonnet 4.6 ahora incluye contexto de 1M de tokens.",
+      intro: [
+        "Anthropic ha enviado mucho en abril de 2026. En el lapso de dos semanas, la empresa lanzó Routines para Claude Code en una preview de investigación, movió Claude Managed Agents a beta pública con una nueva herramienta de línea de comandos llamada ant, y actualizó Claude Sonnet 4.6 para soportar una ventana de contexto de 1 millón de tokens.",
+        "La dirección apunta hacia agentes que se ejecutan de forma autónoma, activados por eventos en el flujo de trabajo existente del desarrollador en lugar de por prompts manuales. Routines en Claude Code permite que eventos de GitHub — una pull request abierta, un commit enviado, una ejecución de CI fallida — creen automáticamente una nueva sesión de Claude Code que puede investigar, diagnosticar y en algunos casos solucionar el problema.",
+        "Esto es el paso siguiente al modelo de asistente de codificación con IA que representan herramientas como GitHub Copilot y Cursor. Lo que Anthropic está construyendo con Routines y Managed Agents es infraestructura para agentes que trabajan en paralelo a los desarrolladores, manejando tareas en segundo plano mientras el humano se enfoca en el trabajo que requiere juicio.",
+      ],
+      takeaways: [
+        "Claude Code Routines (preview de investigación) permite que los triggers de GitHub — PRs, commits, fallos de CI — generen automáticamente nuevas sesiones de Claude Code sin intervención manual del desarrollador.",
+        "Claude Managed Agents entró en beta pública con el CLI ant, dando a los desarrolladores una forma programática de crear, configurar y monitorear agentes Claude autónomos.",
+        "Claude Sonnet 4.6 ahora soporta una ventana de contexto de 1 millón de tokens, permitiendo análisis de grandes bases de código en un solo prompt.",
+        "El uso del ordenador (computer use) ahora está disponible en Claude Code y Cowork, permitiendo a los agentes interactuar con interfaces gráficas, no solo con APIs.",
+      ],
+      pullQuote: "La era del asistente de código preguntaba: ¿cómo escribo código más rápido? La era agéntica pregunta: ¿qué tareas no deberían requerir nunca que un humano escriba un prompt?",
+      sections: [
+        {
+          title: "Claude Code Routines: Qué Son y Cómo Funcionan",
+          paragraphs: [
+            "Las Routines en Claude Code son comportamientos de agente preconfigurados que se activan automáticamente basándose en eventos en sistemas externos. En la preview de investigación actual, la integración principal es con GitHub. Un desarrollador configura una Routine especificando una condición de activación y un conjunto de instrucciones para lo que Claude Code debe hacer cuando ese trigger se activa.",
+            "Cuando se activa el trigger, GitHub envía un webhook a la infraestructura de Anthropic, que crea una nueva sesión de Claude Code con el contexto relevante ya cargado — el diff del PR, la salida del test fallido, la descripción del issue. La sesión luego ejecuta el conjunto de instrucciones, que puede implicar analizar el fallo, identificar la causa raíz, proponer una solución y abrir un comentario en el PR con sus hallazgos.",
+            "La etiqueta de preview de investigación es significativa. Las Routines no son todavía una función de nivel de producción — los conjuntos de instrucciones son limitados y las integraciones más allá de GitHub no están disponibles aún. Pero la preview da a los desarrolladores una forma concreta de probar si el modelo funciona suficientemente bien para sus casos de uso específicos.",
+          ],
+          bullets: [
+            "Triggers de GitHub: PR abierta, commit enviado, CI fallido, issue etiquetado.",
+            "Claude Code recibe contexto precargado: diffs, salida de tests, texto del issue.",
+            "El agente ejecuta el conjunto de instrucciones y publica hallazgos como comentarios en PRs.",
+            "El desarrollador revisa y aprueba o redirige antes de que se fusione cualquier código.",
+          ],
+        },
+        {
+          title: "Claude Managed Agents y el CLI ant",
+          paragraphs: [
+            "Claude Managed Agents son una capacidad separada pero complementaria a las Routines. Mientras que las Routines son activadas por eventos externos y siguen conjuntos de instrucciones preconfiguradas, los Managed Agents son instancias de agente persistentes que los desarrolladores pueden crear, configurar y consultar programáticamente a través del CLI ant.",
+            "El CLI ant es una herramienta de línea de comandos que envuelve la API de Claude Managed Agents. Un desarrollador puede usarla para crear un agente con una persona e instrucciones específicas, asignarle herramientas (búsqueda web, ejecución de código, acceso al sistema de archivos dentro de directorios especificados), y luego interactuar con él a través del CLI o activarlo desde otros scripts y automatizaciones.",
+            "El estado de beta pública significa que la API es suficientemente estable para experimentación en producción pero que pueden producirse cambios disruptivos antes de la disponibilidad general. El precio se basa en el consumo de tokens de la API de Claude, lo que significa que el coste escala con la cantidad de trabajo que el agente está haciendo realmente.",
+          ],
+        },
+        {
+          title: "Claude Sonnet 4.6 con Contexto de 1 Millón de Tokens",
+          paragraphs: [
+            "Claude Sonnet 4.6 es el modelo de nivel medio de Anthropic, posicionado entre Haiku (rápido y económico) y Opus (el más capaz y caro). La ventana de contexto de 1 millón de tokens en Sonnet 4.6 es significativa porque trae capacidad de contexto muy grande al nivel de modelo que la mayoría de las aplicaciones de producción usan.",
+            "En términos prácticos para desarrolladores, 1 millón de tokens equivale aproximadamente a 750.000 palabras o alrededor de 3.000 páginas de texto. Para casos de uso de ingeniería de software, significa que puedes introducir toda una base de código de tamaño mediano en un solo prompt y hacer preguntas sin dividirla, sin perder las relaciones entre archivos.",
+            "La combinación del contexto de 1M de Sonnet 4.6 con Claude Code Routines es particularmente relevante. Cuando una Routine se activa por un fallo de CI, Claude Code puede cargar no solo la salida del test fallido sino toda la sección relevante de la base de código, el historial reciente de git y la suite de tests completa en contexto simultáneamente.",
+          ],
+        },
+        {
+          title: "Computer Use en Claude Code y Cowork",
+          paragraphs: [
+            "El computer use — la capacidad de Claude para interactuar con interfaces gráficas de usuario, no solo con APIs y texto — ha estado disponible en la API de Anthropic desde finales de 2024. En abril de 2026, Anthropic extendió el computer use a Claude Code y a Cowork, la herramienta de espacio de trabajo colaborativo de agentes.",
+            "En Claude Code, el computer use significa que el agente puede interactuar con aplicaciones que no tienen APIs. Si un desarrollador está depurando un problema que involucra una herramienta de base de datos basada en GUI o una interfaz web, Claude Code puede tomar capturas de pantalla, leer lo que hay en la pantalla, hacer clic en elementos de la interfaz y rellenar formularios.",
+            "En Cowork, el computer use se extiende a sesiones colaborativas donde múltiples agentes y participantes humanos comparten un espacio de trabajo. Un agente puede tomar el control de una sesión del navegador, navegar a una URL específica, extraer información de una página que no tiene una API y compartir lo que encontró de vuelta al espacio de trabajo compartido.",
+          ],
+        },
+        {
+          title: "El Panorama Competitivo y Qué Señalan Estos Lanzamientos",
+          paragraphs: [
+            "El mercado de herramientas de IA para desarrolladores en 2026 tiene cuatro actores principales en la frontera: GitHub Copilot (Microsoft/OpenAI), Cursor, Devin (Cognition) y Claude Code (Anthropic). Cada uno ha apostado de forma diferente sobre dónde está el valor. Copilot optimiza para el completado de código en línea. Cursor optimiza para la edición de archivos y proyectos completos. Devin optimiza para tareas de ingeniería de software totalmente autónomas.",
+            "La apuesta de Claude Code con Routines y Managed Agents es sobre la integración en el flujo de trabajo en lugar de la integración en el IDE. En vez de intentar ser la mejor experiencia dentro de un editor de código específico, Anthropic está construyendo la infraestructura para agentes que operan en los espacios entre las acciones del desarrollador: el pipeline de CI, la cola de revisión de PRs, el gestor de issues.",
+            "Las capacidades de contexto de 1 millón de tokens y el computer use son funciones de apoyo para esta apuesta. El contexto grande significa que los agentes pueden trabajar con bases de código completas sin perder información. El computer use significa que los agentes no están limitados a sistemas que tienen APIs. Juntas, estas capacidades hacen que el modelo de Routines y Managed Agents sea viable para una gama mucho más amplia de flujos de trabajo del mundo real.",
+          ],
+        },
+      ],
+    },
+  },
+  {
     slug: "claude-mythos-preview-vs-gpt-54-the-model-war-is-now-operational",
-    publishedAt: "2026-04-07",
-    updatedAt: "2026-04-07",
+    publishedAt: "2026-04-15",
+    updatedAt: "2026-04-15",
     readingTime: "10 min read",
     category: "AI Strategy",
     featured: true,
@@ -282,7 +1016,7 @@ const posts: BlogPost[] = [
     updatedAt: "2026-03-31",
     readingTime: "12 min read",
     category: "AI Strategy",
-    featured: true,
+    featured: false,
     author: {
       name: "Alpadev AI Editorial",
       role: "Software, AI & Cloud Strategy",
@@ -599,7 +1333,7 @@ const posts: BlogPost[] = [
     updatedAt: "2026-03-30",
     readingTime: "10 min read",
     category: "AI Strategy",
-    featured: true,
+    featured: false,
     author: {
       name: "Alpadev AI Editorial",
       role: "Software, AI & Cloud Strategy",
@@ -864,7 +1598,7 @@ const posts: BlogPost[] = [
     updatedAt: "2026-03-28",
     readingTime: "9 min read",
     category: "AI Strategy",
-    featured: true,
+    featured: false,
     author: {
       name: "Alpadev AI Editorial",
       role: "Software, AI & Cloud Strategy",
@@ -1069,7 +1803,7 @@ const posts: BlogPost[] = [
     updatedAt: "2026-03-26",
     readingTime: "8 min read",
     category: "AI Strategy",
-    featured: true,
+    featured: false,
     author: {
       name: "Alpadev AI Editorial",
       role: "Software, AI & Cloud Strategy",
@@ -1262,7 +1996,7 @@ const posts: BlogPost[] = [
     updatedAt: "2026-03-25",
     readingTime: "7 min read",
     category: "AI Strategy",
-    featured: true,
+    featured: false,
     author: {
       name: "Alpadev AI Editorial",
       role: "Digital Strategy",
@@ -1446,7 +2180,7 @@ const posts: BlogPost[] = [
     updatedAt: "2026-03-18",
     readingTime: "9 min read",
     category: "AI Strategy",
-    featured: true,
+    featured: false,
     author: {
       name: "Alpadev AI Editorial",
       role: "Software, AI & Cloud Strategy",
@@ -1629,7 +2363,7 @@ const posts: BlogPost[] = [
     updatedAt: "2026-04-02",
     readingTime: "9 min read",
     category: "AI Strategy",
-    featured: true,
+    featured: false,
     author: {
       name: "Alpadev AI Editorial",
       role: "Software, AI & Cloud Strategy",
@@ -1838,7 +2572,7 @@ const posts: BlogPost[] = [
     updatedAt: "2026-03-29",
     readingTime: "8 min read",
     category: "AI Strategy",
-    featured: true,
+    featured: false,
     author: {
       name: "Alpadev AI Editorial",
       role: "Software, AI & Cloud Strategy",
@@ -2024,7 +2758,10 @@ const posts: BlogPost[] = [
 ]
 
 export function getBlogPosts() {
-  return posts.slice().sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+  const now = new Date()
+  return posts
+    .filter((post) => new Date(post.publishedAt).getTime() <= now.getTime())
+    .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
 }
 
 export function getBlogPostBySlug(slug: string) {
