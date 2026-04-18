@@ -1,3 +1,11 @@
+import bundleAnalyzer from "@next/bundle-analyzer"
+
+const withBundleAnalyzer = bundleAnalyzer({
+  enabled: process.env.ANALYZE === "true",
+})
+
+const isProd = process.env.NODE_ENV === "production"
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   transpilePackages: [
@@ -8,7 +16,7 @@ const nextConfig = {
     "@package/validations",
     "@package/email",
   ],
-  
+
   // Standalone build for docker/production
   output: "standalone",
   // Performance optimizations
@@ -59,8 +67,16 @@ const nextConfig = {
 
   // Experimental features for better performance
   experimental: {
-    // ✅ ACTUALIZADO: Optimizamos Drei para que el dev server no sea lento
-    // optimizePackageImports: ["@heroui/react", "@iconify/react", "@react-three/drei"],
+    // Only in prod — barrel-file optimization slows dev cold starts on R3F/drei
+    ...(isProd && {
+      optimizePackageImports: [
+        "@heroui/react",
+        "@iconify/react",
+        "@react-three/drei",
+        "lucide-react",
+        "date-fns",
+      ],
+    }),
   },
 
   // Include Prisma engine binaries in standalone build (pnpm monorepo paths)
@@ -138,7 +154,7 @@ const nextConfig = {
         headers: [
           {
             key: "Cache-Control",
-            value: "public, s-maxage=60, stale-while-revalidate=300",
+            value: "no-store, must-revalidate",
           },
         ],
       },
@@ -146,20 +162,10 @@ const nextConfig = {
   },
 
   eslint: {
+    // Pre-existing lint debt (100+ errors: unused vars, function-component style, no-explicit-any).
+    // Separate audit needed. TypeScript type-checking remains strict — ignoreBuildErrors stays off.
     ignoreDuringBuilds: true,
   },
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  
-  // (OPCIONAL) Si en el futuro decides usar archivos .glsl separados en lugar de strings
-  // webpack: (config) => {
-  //   config.module.rules.push({
-  //     test: /\.(glsl|vs|fs|vert|frag)$/,
-  //     use: ['raw-loader', 'glslify-loader'],
-  //   });
-  //   return config;
-  // },
 }
 
-export default nextConfig// Build trigger Sun Jan 25 01:51:58 -05 2026
+export default withBundleAnalyzer(nextConfig)

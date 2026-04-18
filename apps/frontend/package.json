@@ -14,7 +14,8 @@
     "start:prod": "NODE_ENV=production next start",
     "dev:ws": "node --import tsx server.ts",
     "start:ws": "NODE_ENV=production node server.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
