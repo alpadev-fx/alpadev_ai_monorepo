@@ -8,7 +8,7 @@ import { LockClosedIcon, UserIcon } from "@heroicons/react/24/outline"
 
 function LoginForm() {
   const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard"
+  const callbackUrl = searchParams?.get("callbackUrl") ?? "/dashboard"
 
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
@@ -54,9 +54,7 @@ function LoginForm() {
           <h1 className="text-2xl font-bold tracking-tight text-white">
             Open Manager
           </h1>
-          <p className="mt-2 text-sm text-zinc-400">
-            Sign in to your account
-          </p>
+          <p className="mt-2 text-sm text-zinc-400">Sign in to your account</p>
         </div>
 
         {/* Error display */}

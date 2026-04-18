@@ -13,7 +13,7 @@ import { columns, DEFAULT_VISIBLE_COLUMNS } from "./columns"
 import { ProspectsTable } from "./ProspectsTable"
 import { ProspectsToolbar } from "./ProspectsToolbar"
 import { ProspectsTablePagination } from "./ProspectsTablePagination"
-import { FilterPanel } from "./FilterPanel"
+import { FilterPanel, type ProspectFilters } from "./FilterPanel"
 import { ImportModal } from "./ImportModal"
 import { ProspectDetailModal } from "./ProspectDetailModal"
 import type { Prospect } from "@package/db"
@@ -26,22 +26,20 @@ export function ProspectsPage() {
   const [sorting, setSorting] = useState<SortingState>([
     { id: "createdAt", desc: true },
   ])
-  const [columnVisibility, setColumnVisibility] =
-    useState<VisibilityState>(DEFAULT_VISIBLE_COLUMNS)
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+    DEFAULT_VISIBLE_COLUMNS
+  )
   const [showFilters, setShowFilters] = useState(false)
   const [showImport, setShowImport] = useState(false)
-  const [selectedProspect, setSelectedProspect] = useState<Prospect | null>(null)
-  const [filters, setFilters] = useState({
-    nicho: [] as string[],
-    webStatus: [] as string[],
-    scoreMin: undefined as number | undefined,
-    scoreMax: undefined as number | undefined,
+  const [selectedProspect, setSelectedProspect] = useState<Prospect | null>(
+    null
+  )
+  const [filters, setFilters] = useState<ProspectFilters>({
+    nicho: [],
+    webStatus: [],
     ciudad: "",
     estado: "",
     pais: "",
-    hasEmail: undefined as boolean | undefined,
-    hasSocialMedia: undefined as boolean | undefined,
-    verified: undefined as boolean | undefined,
     source: "",
   })
 
@@ -66,7 +64,7 @@ export function ProspectsPage() {
       setSearch(value)
       debouncedSearchFn(value)
     },
-    [debouncedSearchFn],
+    [debouncedSearchFn]
   )
 
   const queryInput = useMemo(
@@ -88,19 +86,20 @@ export function ProspectsPage() {
       hasSocialMedia: filters.hasSocialMedia,
       verified: filters.verified,
       source: filters.source || undefined,
-      sortBy: (sorting[0]?.id as
-        | "nombre"
-        | "nicho"
-        | "ciudad"
-        | "score"
-        | "webStatus"
-        | "createdAt"
-        | "email"
-        | "pais"
-        | "estado") || "createdAt",
+      sortBy:
+        (sorting[0]?.id as
+          | "nombre"
+          | "nicho"
+          | "ciudad"
+          | "score"
+          | "webStatus"
+          | "createdAt"
+          | "email"
+          | "pais"
+          | "estado") || "createdAt",
       sortOrder: (sorting[0]?.desc ? "desc" : "asc") as "asc" | "desc",
     }),
-    [page, pageSize, debouncedSearch, sorting, filters],
+    [page, pageSize, debouncedSearch, sorting, filters]
   )
 
   const { data, isLoading } = api.prospect.getAll.useQuery(queryInput, {
@@ -122,7 +121,8 @@ export function ProspectsPage() {
     let count = 0
     if (filters.nicho.length > 0) count++
     if (filters.webStatus.length > 0) count++
-    if (filters.scoreMin !== undefined || filters.scoreMax !== undefined) count++
+    if (filters.scoreMin !== undefined || filters.scoreMax !== undefined)
+      count++
     if (filters.ciudad || filters.estado || filters.pais) count++
     if (filters.hasEmail !== undefined) count++
     if (filters.hasSocialMedia !== undefined) count++
@@ -159,13 +159,13 @@ export function ProspectsPage() {
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
     },
-    [utils.prospect.export, debouncedSearch, filters],
+    [utils.prospect.export, debouncedSearch, filters]
   )
 
   const handleImport = useCallback(
     (input: { format: "csv" | "json"; data: string }) =>
       importMutation.mutateAsync(input),
-    [importMutation],
+    [importMutation]
   )
 
   const table = useReactTable({
@@ -190,7 +190,9 @@ export function ProspectsPage() {
     <div className="flex flex-col h-full gap-4">
       {/* Header — fixed */}
       <div className="shrink-0">
-        <h1 className="text-2xl font-bold tracking-tight text-white">Prospects</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-white">
+          Prospects
+        </h1>
         <p className="mt-0.5 text-xs text-zinc-500">
           {isLoading ? "Loading..." : `${totalCount.toLocaleString()} total`}
         </p>
@@ -227,7 +229,11 @@ export function ProspectsPage() {
       </AnimatePresence>
 
       {/* Table — fills remaining space, scrolls internally */}
-      <ProspectsTable isLoading={isLoading} table={table} onRowClick={setSelectedProspect} />
+      <ProspectsTable
+        isLoading={isLoading}
+        table={table}
+        onRowClick={setSelectedProspect}
+      />
 
       {/* Pagination — page navigation hidden when "All" is selected */}
       <div className="shrink-0 pb-2">

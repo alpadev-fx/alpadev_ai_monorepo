@@ -5,7 +5,13 @@ import { Icon } from "@iconify/react/dist/iconify.js"
 import dynamic from "next/dynamic"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
-import { Modal, ModalContent, ModalHeader, ModalBody, useDisclosure } from "@heroui/react"
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  useDisclosure,
+} from "@heroui/react"
 
 import { useLanguage } from "@/contexts/LanguageContext"
 
@@ -89,44 +95,77 @@ export default function Pricing() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-        // Title Animation
-        const titleTl = gsap.timeline({
-            scrollTrigger: {
-                trigger: containerRef.current,
-                start: "top bottom",
-                end: "bottom top",
-                scrub: 1
-            }
-        })
+      // Title Animation
+      const titleTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: containerRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1,
+        },
+      })
 
-        titleTl.fromTo(".pricing-title",
-            { y: 50, opacity: 0, filter: "blur(10px)" },
-            { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.2, ease: "power2.out" }
+      titleTl
+        .fromTo(
+          ".pricing-title",
+          { y: 50, opacity: 0, filter: "blur(10px)" },
+          {
+            y: 0,
+            opacity: 1,
+            filter: "blur(0px)",
+            duration: 0.2,
+            ease: "power2.out",
+          }
         )
-        .to(".pricing-title",
-            { y: -50, opacity: 0, filter: "blur(10px)", duration: 0.2, ease: "power2.in" },
-            0.8
-        )
-
-        // Cards Animation
-        const cardsTl = gsap.timeline({
-            scrollTrigger: {
-                trigger: cardsRef.current,
-                start: "top bottom",
-                end: "bottom top",
-                scrub: 1
-            }
-        })
-
-        cardsTl.fromTo(".pricing-card",
-            { y: 100, opacity: 0, scale: 0.9, filter: "blur(10px)" },
-            { y: 0, opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.25, stagger: 0.1, ease: "power2.out" }
-        )
-        .to(".pricing-card",
-            { y: -100, opacity: 0, scale: 0.9, filter: "blur(10px)", duration: 0.25, stagger: 0.1, ease: "power2.in" },
-            0.7
+        .to(
+          ".pricing-title",
+          {
+            y: -50,
+            opacity: 0,
+            filter: "blur(10px)",
+            duration: 0.2,
+            ease: "power2.in",
+          },
+          0.8
         )
 
+      // Cards Animation
+      const cardsTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: cardsRef.current,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1,
+        },
+      })
+
+      cardsTl
+        .fromTo(
+          ".pricing-card",
+          { y: 100, opacity: 0, scale: 0.9, filter: "blur(10px)" },
+          {
+            y: 0,
+            opacity: 1,
+            scale: 1,
+            filter: "blur(0px)",
+            duration: 0.25,
+            stagger: 0.1,
+            ease: "power2.out",
+          }
+        )
+        .to(
+          ".pricing-card",
+          {
+            y: -100,
+            opacity: 0,
+            scale: 0.9,
+            filter: "blur(10px)",
+            duration: 0.25,
+            stagger: 0.1,
+            ease: "power2.in",
+          },
+          0.7
+        )
     }, containerRef)
 
     return () => ctx.revert()
@@ -153,7 +192,7 @@ export default function Pricing() {
       id="pricing"
     >
       {/* Background Decor - Minimalist */}
-       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-zinc-900/20 via-black to-black blur-3xl -z-10 pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-zinc-900/20 via-black to-black blur-3xl -z-10 pointer-events-none" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mb-10 md:mb-20 text-center pricing-title">
@@ -161,102 +200,112 @@ export default function Pricing() {
             {t("pricing.program.title")}
           </h1>
           <p className="text-base md:text-lg text-gray-400 font-normal leading-relaxed max-w-2xl mx-auto">
-             {t("pricing.program.subtitle")}
+            {t("pricing.program.subtitle")}
           </p>
         </div>
 
         {/* Cards Grid - Apple One Style */}
-        <div ref={cardsRef} className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-3 items-start">
-            
-            {/* Plan 1: Start Scaling */}
-            <div className="pricing-card group relative flex flex-col overflow-hidden rounded-[2rem] md:rounded-[2.5rem] bg-[#1c1c1e] p-6 md:p-10 transition-transform duration-500 hover:scale-[1.02] border border-white/5 hover:border-white/10">
-                <h2 className="text-xl md:text-2xl font-semibold text-white mb-2 !leading-none">{plans[0].title}</h2>
-                <div className="mb-4">
-                    {/* Price removed */}
-                </div>
-                <p className="text-sm text-gray-400 mb-6 md:mb-8 leading-relaxed">
-                   {plans[0].description}
-                </p>
-                
-                <div className="w-full h-px bg-white/10 mb-6 md:mb-8" />
-                
-                <ul className="flex-1 space-y-4 mb-8 md:mb-10">
-                    {plans[0].features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-3 text-sm font-medium text-gray-300">
-                            <span className="mt-0.5 text-indigo-400 text-lg">•</span>
-                            {feature}
-                        </li>
-                     ))}
-                </ul>
+        <div
+          ref={cardsRef}
+          className="grid grid-cols-1 gap-6 md:gap-8 lg:grid-cols-3 items-start"
+        >
+          {/* Plan 1: Start Scaling */}
+          <div className="pricing-card group relative flex flex-col overflow-hidden rounded-[2rem] md:rounded-[2.5rem] bg-[#1c1c1e] p-6 md:p-10 transition-transform duration-500 hover:scale-[1.02] border border-white/5 hover:border-white/10">
+            <h2 className="text-xl md:text-2xl font-semibold text-white mb-2 !leading-none">
+              {plans[0].title}
+            </h2>
+            <div className="mb-4">{/* Price removed */}</div>
+            <p className="text-sm text-gray-400 mb-6 md:mb-8 leading-relaxed">
+              {plans[0].description}
+            </p>
 
-                <button 
-                    onClick={() => handlePlanClick(plans[0].title)}
-                    className="w-full rounded-full border border-white/20 py-3 text-sm font-medium text-white transition-colors hover:bg-white hover:text-black hover:border-transparent"
+            <div className="w-full h-px bg-white/10 mb-6 md:mb-8" />
+
+            <ul className="flex-1 space-y-4 mb-8 md:mb-10">
+              {plans[0].features.map((feature, idx) => (
+                <li
+                  key={idx}
+                  className="flex items-start gap-3 text-sm font-medium text-gray-300"
                 >
-                    {plans[0].cta}
-                </button>
-            </div>
+                  <span className="mt-0.5 text-indigo-400 text-lg">•</span>
+                  {feature}
+                </li>
+              ))}
+            </ul>
 
-            {/* Plan 2: Medium Scaling (Highlighted) */}
-            <div className="pricing-card group relative flex flex-col overflow-hidden rounded-[2rem] md:rounded-[2.5rem] bg-[#1c1c1e] p-6 md:p-10 transition-transform duration-500 hover:scale-[1.02] ring-1 ring-cyan-500/50 shadow-[0_0_50px_-12px_rgba(6,182,212,0.3)]">
-                <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-cyan-500 to-blue-600 opacity-100" />
-                
-                <h2 className="text-xl md:text-2xl font-semibold text-white mb-2 !leading-none">{plans[1].title}</h2>
-                <div className="mb-4">
-                    {/* Price removed */}
-                </div>
-                 <p className="text-sm text-gray-400 mb-6 md:mb-8 leading-relaxed">
-                   {plans[1].description}
-                </p>
+            <button
+              onClick={() => handlePlanClick(plans[0].title)}
+              className="w-full rounded-full border border-white/20 py-3 text-sm font-medium text-white transition-colors hover:bg-white hover:text-black hover:border-transparent"
+            >
+              {plans[0].cta}
+            </button>
+          </div>
 
-                <div className="w-full h-px bg-white/10 mb-6 md:mb-8" />
+          {/* Plan 2: Medium Scaling (Highlighted) */}
+          <div className="pricing-card group relative flex flex-col overflow-hidden rounded-[2rem] md:rounded-[2.5rem] bg-[#1c1c1e] p-6 md:p-10 transition-transform duration-500 hover:scale-[1.02] ring-1 ring-cyan-500/50 shadow-[0_0_50px_-12px_rgba(6,182,212,0.3)]">
+            <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-cyan-500 to-blue-600 opacity-100" />
 
-                <ul className="flex-1 space-y-4 mb-8 md:mb-10">
-                    {plans[1].features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-3 text-sm font-medium text-gray-300">
-                             <span className="mt-0.5 text-cyan-400 text-lg">•</span>
-                            {feature}
-                        </li>
-                     ))}
-                </ul>
+            <h2 className="text-xl md:text-2xl font-semibold text-white mb-2 !leading-none">
+              {plans[1].title}
+            </h2>
+            <div className="mb-4">{/* Price removed */}</div>
+            <p className="text-sm text-gray-400 mb-6 md:mb-8 leading-relaxed">
+              {plans[1].description}
+            </p>
 
-                <button 
-                    onClick={() => handlePlanClick(plans[1].title)}
-                    className="w-full rounded-full bg-white py-3 text-sm font-medium text-black transition-transform hover:scale-105 active:scale-95"
+            <div className="w-full h-px bg-white/10 mb-6 md:mb-8" />
+
+            <ul className="flex-1 space-y-4 mb-8 md:mb-10">
+              {plans[1].features.map((feature, idx) => (
+                <li
+                  key={idx}
+                  className="flex items-start gap-3 text-sm font-medium text-gray-300"
                 >
-                    {plans[1].cta}
-                </button>
-            </div>
+                  <span className="mt-0.5 text-cyan-400 text-lg">•</span>
+                  {feature}
+                </li>
+              ))}
+            </ul>
 
-             {/* Plan 3: Advanced Scaling */}
-             <div className="pricing-card group relative flex flex-col overflow-hidden rounded-[2rem] md:rounded-[2.5rem] bg-[#1c1c1e] p-6 md:p-10 transition-transform duration-500 hover:scale-[1.02] border border-white/5 hover:border-white/10">
-                <h2 className="text-xl md:text-2xl font-semibold text-white mb-2 !leading-none">{plans[2].title}</h2>
-                <div className="mb-4">
-                     {/* Price removed */}
-                </div>
-                 <p className="text-sm text-gray-400 mb-6 md:mb-8 leading-relaxed">
-                   {plans[2].description}
-                </p>
+            <button
+              onClick={() => handlePlanClick(plans[1].title)}
+              className="w-full rounded-full bg-white py-3 text-sm font-medium text-black transition-transform hover:scale-105 active:scale-95"
+            >
+              {plans[1].cta}
+            </button>
+          </div>
 
-                <div className="w-full h-px bg-white/10 mb-6 md:mb-8" />
+          {/* Plan 3: Advanced Scaling */}
+          <div className="pricing-card group relative flex flex-col overflow-hidden rounded-[2rem] md:rounded-[2.5rem] bg-[#1c1c1e] p-6 md:p-10 transition-transform duration-500 hover:scale-[1.02] border border-white/5 hover:border-white/10">
+            <h2 className="text-xl md:text-2xl font-semibold text-white mb-2 !leading-none">
+              {plans[2].title}
+            </h2>
+            <div className="mb-4">{/* Price removed */}</div>
+            <p className="text-sm text-gray-400 mb-6 md:mb-8 leading-relaxed">
+              {plans[2].description}
+            </p>
 
-                <ul className="flex-1 space-y-4 mb-8 md:mb-10">
-                    {plans[2].features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-3 text-sm font-medium text-gray-300">
-                             <span className="mt-0.5 text-purple-400 text-lg">•</span>
-                            {feature}
-                        </li>
-                     ))}
-                </ul>
+            <div className="w-full h-px bg-white/10 mb-6 md:mb-8" />
 
-                <button 
-                    onClick={() => handlePlanClick(plans[2].title)}
-                    className="w-full rounded-full border border-white/20 py-3 text-sm font-medium text-white transition-colors hover:bg-white hover:text-black hover:border-transparent"
+            <ul className="flex-1 space-y-4 mb-8 md:mb-10">
+              {plans[2].features.map((feature, idx) => (
+                <li
+                  key={idx}
+                  className="flex items-start gap-3 text-sm font-medium text-gray-300"
                 >
-                    {plans[2].cta}
-                </button>
-            </div>
+                  <span className="mt-0.5 text-purple-400 text-lg">•</span>
+                  {feature}
+                </li>
+              ))}
+            </ul>
 
+            <button
+              onClick={() => handlePlanClick(plans[2].title)}
+              className="w-full rounded-full border border-white/20 py-3 text-sm font-medium text-white transition-colors hover:bg-white hover:text-black hover:border-transparent"
+            >
+              {plans[2].cta}
+            </button>
+          </div>
         </div>
 
         <div className="mt-20 text-center pricing-title">
@@ -279,14 +328,13 @@ export default function Pricing() {
         onClose={onClose}
         size="5xl"
         backdrop="blur"
-        isTransparent
         hideCloseButton
         classNames={{
-            base: "bg-transparent shadow-none flex justify-center items-center", // Added center alignment
-            header: "hidden",
-            body: "p-0 flex justify-center items-center",
-            backdrop: "bg-black/80 backdrop-blur-xl",
-            closeButton: "hidden"
+          base: "bg-transparent shadow-none flex justify-center items-center", // Added center alignment
+          header: "hidden",
+          body: "p-0 flex justify-center items-center",
+          backdrop: "bg-black/80 backdrop-blur-xl",
+          closeButton: "hidden",
         }}
       >
         <ModalContent>

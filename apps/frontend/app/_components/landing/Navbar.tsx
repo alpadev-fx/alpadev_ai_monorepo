@@ -47,7 +47,7 @@ export default function Component(props: NavbarProps) {
   return (
     <Navbar
       {...props}
-      {...props}
+      // @ts-expect-error TS2590 — HeroUI Navbar slot union exceeds TS union-complexity budget
       classNames={{
         base: cn("bg-black", {
           "bg-black": isMenuOpen,
@@ -198,9 +198,7 @@ export default function Component(props: NavbarProps) {
         isTransparent={formType === "contact"}
         open={isModalOpen}
         size="xl"
-        title={
-          formType === "contact" ? undefined : t("hero.cta.primary")
-        }
+        title={formType === "contact" ? undefined : t("hero.cta.primary")}
         onClose={() => setIsModalOpen(false)}
       >
         <SimpleForm onSuccess={() => setIsModalOpen(false)} />

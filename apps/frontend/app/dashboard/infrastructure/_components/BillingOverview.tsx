@@ -29,16 +29,20 @@ function fmt(n: number) {
 }
 
 export function BillingOverview() {
-  const { data, isLoading, error } = api.infrastructure.billingOverview.useQuery(
-    undefined,
-    { staleTime: 60_000, refetchInterval: 60_000 },
-  )
+  const { data, isLoading, error } =
+    api.infrastructure.billingOverview.useQuery(undefined, {
+      staleTime: 60_000,
+      refetchInterval: 60_000,
+    })
 
   if (isLoading) {
     return (
       <div className="space-y-6">
         {Array.from({ length: 3 }).map((_, i) => (
-          <div key={i} className="h-48 rounded-2xl bg-[#161616] animate-pulse" />
+          <div
+            key={i}
+            className="h-48 rounded-2xl bg-[#161616] animate-pulse"
+          />
         ))}
       </div>
     )
@@ -58,21 +62,33 @@ export function BillingOverview() {
   const { currentMonth: cm, history, budgets } = data
 
   // Find the primary budget (first USD one, or first available)
-  const primaryBudget = budgets.find((b) => b.amount?.currency === "USD") ?? budgets[0]
-  const budgetAmount = primaryBudget?.amount ? Number(primaryBudget.amount.units) : null
-  const budgetPct = budgetAmount && budgetAmount > 0 ? (cm.total / budgetAmount) * 100 : null
+  const primaryBudget =
+    budgets.find((b) => b.amount?.currency === "USD") ?? budgets[0]
+  const budgetAmount = primaryBudget?.amount
+    ? Number(primaryBudget.amount.units)
+    : null
+  const budgetPct =
+    budgetAmount && budgetAmount > 0 ? (cm.total / budgetAmount) * 100 : null
 
   // Previous month for % change
   const prevMonth = history.length >= 2 ? history[history.length - 2] : null
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="space-y-6"
+    >
       {/* Overview Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <Card
           label="Current Month"
           value={fmt(cm.total)}
-          sub={cm.grossTotal > cm.total ? `${fmt(cm.grossTotal)} without credits` : undefined}
+          sub={
+            cm.grossTotal > cm.total
+              ? `${fmt(cm.grossTotal)} without credits`
+              : undefined
+          }
           subColor="text-amber-400/70"
           accent={cm.total === 0 ? "text-emerald-400" : "text-white"}
         />
@@ -84,13 +100,21 @@ export function BillingOverview() {
         <Card
           label="Month Projection"
           value={fmt(cm.projectedMonth)}
-          sub={cm.projectedGross > cm.projectedMonth ? `${fmt(cm.projectedGross)} without credits` : undefined}
+          sub={
+            cm.projectedGross > cm.projectedMonth
+              ? `${fmt(cm.projectedGross)} without credits`
+              : undefined
+          }
           subColor="text-amber-400/70"
         />
         <Card
           label="Budget Status"
           value={budgetPct !== null ? `${budgetPct.toFixed(0)}%` : "No budget"}
-          sub={budgetAmount ? `${fmt(cm.total)} of ${fmt(budgetAmount)}` : "Create one in Alerts tab"}
+          sub={
+            budgetAmount
+              ? `${fmt(cm.total)} of ${fmt(budgetAmount)}`
+              : "Create one in Alerts tab"
+          }
           accent={
             budgetPct === null
               ? "text-zinc-500"
@@ -120,7 +144,11 @@ export function BillingOverview() {
               style={{
                 width: `${Math.min(budgetPct, 100)}%`,
                 backgroundColor:
-                  budgetPct > 90 ? "#f87171" : budgetPct > 75 ? "#fbbf24" : "#4ade80",
+                  budgetPct > 90
+                    ? "#f87171"
+                    : budgetPct > 75
+                      ? "#fbbf24"
+                      : "#4ade80",
               }}
             />
           </div>
@@ -160,7 +188,10 @@ export function BillingOverview() {
           </h3>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={history}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
+              <CartesianGrid
+                strokeDasharray="3 3"
+                stroke="rgba(255,255,255,0.04)"
+              />
               <XAxis
                 dataKey="month"
                 tick={{ fontSize: 10, fill: "#71717a" }}
@@ -181,13 +212,28 @@ export function BillingOverview() {
                   borderRadius: 8,
                   fontSize: 12,
                 }}
-                formatter={(v: number, name: string) => [`$${v.toFixed(2)}`, name]}
+                formatter={(value, name) => [
+                  `$${Number(value).toFixed(2)}`,
+                  String(name),
+                ]}
                 labelStyle={{ color: "#a1a1aa" }}
               />
               <Legend wrapperStyle={{ fontSize: 11, color: "#71717a" }} />
-              <Bar dataKey="requests" stackId="a" fill={COLORS.requests} name="Requests" radius={[0, 0, 0, 0]} />
+              <Bar
+                dataKey="requests"
+                stackId="a"
+                fill={COLORS.requests}
+                name="Requests"
+                radius={[0, 0, 0, 0]}
+              />
               <Bar dataKey="cpu" stackId="a" fill={COLORS.cpu} name="CPU" />
-              <Bar dataKey="memory" stackId="a" fill={COLORS.memory} name="Memory" radius={[4, 4, 0, 0]} />
+              <Bar
+                dataKey="memory"
+                stackId="a"
+                fill={COLORS.memory}
+                name="Memory"
+                radius={[4, 4, 0, 0]}
+              />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -289,7 +335,9 @@ function Card({
 }) {
   return (
     <div className="rounded-2xl bg-[#161616] p-4">
-      <p className="text-[10px] text-zinc-600 uppercase tracking-wider">{label}</p>
+      <p className="text-[10px] text-zinc-600 uppercase tracking-wider">
+        {label}
+      </p>
       <p className={`text-2xl font-bold mt-1 ${accent}`}>{value}</p>
       {sub && <p className={`text-[10px] mt-0.5 ${subColor}`}>{sub}</p>}
     </div>
@@ -318,7 +366,10 @@ function ServiceRow({
     <tr>
       <td className="py-2">
         <div className="flex items-center gap-2">
-          <div className="h-2.5 w-2.5 rounded-sm" style={{ backgroundColor: color }} />
+          <div
+            className="h-2.5 w-2.5 rounded-sm"
+            style={{ backgroundColor: color }}
+          />
           <span>{name}</span>
         </div>
       </td>
@@ -343,16 +394,27 @@ function ServiceRow({
   )
 }
 
-function ChangeTag({ current, previous }: { current: number; previous: number }) {
-  if (previous === 0 && current === 0) return <span className="text-zinc-600">—</span>
-  if (previous === 0) return <span className="text-rose-400 text-[10px]">NEW</span>
+function ChangeTag({
+  current,
+  previous,
+}: {
+  current: number
+  previous: number
+}) {
+  if (previous === 0 && current === 0)
+    return <span className="text-zinc-600">—</span>
+  if (previous === 0)
+    return <span className="text-rose-400 text-[10px]">NEW</span>
 
   const change = ((current - previous) / previous) * 100
   if (Math.abs(change) < 1) return <span className="text-zinc-600">~0%</span>
 
   return (
-    <span className={`text-[10px] font-medium ${change > 0 ? "text-rose-400" : "text-emerald-400"}`}>
-      {change > 0 ? "+" : ""}{change.toFixed(0)}%
+    <span
+      className={`text-[10px] font-medium ${change > 0 ? "text-rose-400" : "text-emerald-400"}`}
+    >
+      {change > 0 ? "+" : ""}
+      {change.toFixed(0)}%
     </span>
   )
 }

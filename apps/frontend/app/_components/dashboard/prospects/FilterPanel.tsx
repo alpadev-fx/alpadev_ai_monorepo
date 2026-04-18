@@ -2,22 +2,24 @@
 
 import { motion } from "framer-motion"
 
+export interface ProspectFilters {
+  nicho: string[]
+  webStatus: string[]
+  scoreMin?: number
+  scoreMax?: number
+  ciudad: string
+  estado: string
+  pais: string
+  hasEmail?: boolean
+  hasSocialMedia?: boolean
+  verified?: boolean
+  source: string
+}
+
 interface FilterPanelProps {
-  filters: {
-    nicho: string[]
-    webStatus: string[]
-    scoreMin?: number
-    scoreMax?: number
-    ciudad: string
-    estado: string
-    pais: string
-    hasEmail?: boolean
-    hasSocialMedia?: boolean
-    verified?: boolean
-    source: string
-  }
+  filters: ProspectFilters
   nichoOptions: string[]
-  onFiltersChange: (filters: FilterPanelProps["filters"]) => void
+  onFiltersChange: (filters: ProspectFilters) => void
 }
 
 const WEB_STATUS_OPTIONS = [
@@ -45,12 +47,11 @@ export function FilterPanel({
     onFiltersChange({ ...filters, webStatus: updated })
   }
 
-  const cycleTriState = (
-    field: "hasEmail" | "hasSocialMedia" | "verified",
-  ) => {
+  const cycleTriState = (field: "hasEmail" | "hasSocialMedia" | "verified") => {
     const current = filters[field]
     // undefined → true → false → undefined
-    const next = current === undefined ? true : current === true ? false : undefined
+    const next =
+      current === undefined ? true : current === true ? false : undefined
     onFiltersChange({ ...filters, [field]: next })
   }
 
@@ -170,21 +171,27 @@ export function FilterPanel({
               placeholder="Pais"
               type="text"
               value={filters.pais}
-              onChange={(e) => onFiltersChange({ ...filters, pais: e.target.value })}
+              onChange={(e) =>
+                onFiltersChange({ ...filters, pais: e.target.value })
+              }
             />
             <input
               className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-white placeholder-zinc-600 focus:border-pink-500/50 focus:outline-none"
               placeholder="Estado"
               type="text"
               value={filters.estado}
-              onChange={(e) => onFiltersChange({ ...filters, estado: e.target.value })}
+              onChange={(e) =>
+                onFiltersChange({ ...filters, estado: e.target.value })
+              }
             />
             <input
               className="w-full rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-sm text-white placeholder-zinc-600 focus:border-pink-500/50 focus:outline-none"
               placeholder="Ciudad"
               type="text"
               value={filters.ciudad}
-              onChange={(e) => onFiltersChange({ ...filters, ciudad: e.target.value })}
+              onChange={(e) =>
+                onFiltersChange({ ...filters, ciudad: e.target.value })
+              }
             />
           </div>
         </div>
@@ -226,7 +233,9 @@ export function FilterPanel({
             placeholder="e.g. newyork_codex"
             type="text"
             value={filters.source}
-            onChange={(e) => onFiltersChange({ ...filters, source: e.target.value })}
+            onChange={(e) =>
+              onFiltersChange({ ...filters, source: e.target.value })
+            }
           />
         </div>
       </div>

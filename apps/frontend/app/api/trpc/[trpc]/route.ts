@@ -1,11 +1,11 @@
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch"
 import { type NextRequest } from "next/server"
-import { getServerSession } from "next-auth"
+import { getServerSession, type NextAuthOptions } from "next-auth"
 import { appRouter, createTRPCContext } from "@package/api"
 import { authOptions } from "@/lib/auth"
 
 const handler = async (req: NextRequest) => {
-  const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions as NextAuthOptions)
 
   return fetchRequestHandler({
     endpoint: "/api/trpc",
