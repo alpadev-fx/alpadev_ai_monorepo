@@ -1,209 +1,236 @@
-# CLAUDE.md - Production-Grade Agent Directives
+# CLAUDE.md
 
-The governing loop for all work: **gather context → take action → verify
-work → repeat.**
-
----
-
-## 1. Pre-Work
-
-### Step 0: Delete Before You Build
-Before ANY structural refactor on a file >300 LOC, first remove dead code,
-unused exports/imports, and debug logs. Commit cleanup separately.
-
-### Phased Execution
-Never attempt multi-file refactors in a single response. Break into phases.
-Complete Phase 1, run verification, wait for approval before Phase 2.
-Each phase: max 5 files.
-
-### Plan and Build Are Separate Steps
-When asked to "make a plan" — output only the plan. No code until the user
-says go. If instructions are vague, outline what you'd build. Get approval.
-
-### Spec-Based Development
-For non-trivial features (3+ steps), interview the user about implementation,
-UX, and tradeoffs before writing code. The spec becomes the contract.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ---
 
-## 2. Understanding Intent
+## Repository Layout
 
-### Follow References, Not Descriptions
-When the user points to existing code, study it and match its patterns
-exactly. Working code is a better spec than English.
+Turborepo + pnpm workspaces. Node >= 22, pnpm 10.11+. Workspace globs: `apps/*`, `packages/**/*`.
 
-### Work From Raw Data
-When the user pastes error logs, trace the actual error. No guessing.
-If a bug report has no error output, ask for it.
+```
+apps/frontend/              Next.js 15 app (workspace name: "next-app-template")
+packages/api/               tRPC v11 router + Express webhooks + BullMQ workers
+packages/auth/              NextAuth (v4 + v5-beta transition — see trpc.ts note)
+packages/db/                Prisma 6 client + MongoDB schema
+packages/email/             React Email templates + Resend
+packages/validations/       Zod schemas (single source of truth for API + forms)
+packages/utils/             Shared utilities, feature flags
+packages/web3/              Web3 helpers
+packages/configs/           eslint / prettier / tailwind / tsconfig workspaces
+.claude/rules/              Domain-specific rules — read before editing a domain
+```
 
-### One-Word Mode
-When the user says "yes," "do it," or "push" — execute. No commentary.
+## Architecture
 
-**Safety valve:** One-Word Mode applies to code changes only. For destructive
-operations (database migrations, git push, infrastructure changes), always
-confirm the specific action before executing.
+### Data flow
 
----
+`apps/frontend` → tRPC client → `packages/api` (`appRouter` in `packages/api/src/root.ts`) → domain router → service → repository → `@package/db` (Prisma + Mongoose where noted).
 
-## 3. Code Quality
+### API layering (every domain in `packages/api/src/routers/{domain}/`)
 
-### Fix What You Touch
-Fix what's broken in the code you're touching. Don't fix code outside your
-scope. If you see a structural problem adjacent to your change that will
-cause bugs, flag it as a follow-up — don't silently expand scope.
+```
+{domain}.repository.ts    Prisma/Mongoose queries only — no business logic
+{domain}.service.ts       Business rules, orchestration, TRPCError throws
+{domain}.router.ts        tRPC procedures — validate input (Zod), delegate to service
+index.ts                  Re-exports
+```
 
-### Forced Verification
-You are FORBIDDEN from reporting a task as complete until you have:
-- Run the project's type-checker / compiler
-- Run all configured linters
-- Run the test suite (scoped to changed packages)
+Do not inline Zod schemas in routers. Import from `@package/validations`.
 
-Never say "Done!" with errors outstanding.
+### tRPC procedures (defined in `packages/api/src/trpc.ts`)
 
-### Write Human Code
-No robotic comment blocks, no excessive headers, no corporate descriptions
-of obvious things. Simple and correct beats elaborate and speculative.
+- `publicProcedure` — no auth
+- `protectedProcedure` — requires session; blocks un-onboarded users via `featureFlags.onboardingFlow` (except `user.updateUserOnboarding`)
+- `adminProcedure` — requires `role === "ADMIN"`
+- `chiefProcedure` — `ADMIN` or `CHIEF`
+- `loggedProcedure` — fire-and-forget activity logging for non-ADMIN users; sanitizes password/token fields and truncates strings >200 chars
 
-### Demand Elegance (Balanced)
-For non-trivial changes: "is there a more elegant way?" Skip for obvious
-fixes. Challenge your own work before presenting it.
+### Domain routers (17 — see `packages/api/src/root.ts`)
 
----
+`user`, `admin`, `request`, `newsletter`, `transaction`, `bill`, `invoice`, `cloudflare`, `booking`, `calendar`, `chatbot`, `chat`, `prospect`, `infrastructure`, `permission`, `activity`, `document`
 
-## 4. Context Management
+### Storage / external services
 
-### Sub-Agent Swarming
-For tasks touching >5 independent files, you MUST launch parallel
-sub-agents (5-8 files per agent). Each agent gets its own context window
-(~167K tokens). One agent processing 20 files sequentially guarantees
-context decay. Five agents = 835K tokens of working memory.
+- **MongoDB** via Prisma (`MONGO_URL`) — must run as replica set `rs0` for transactions
+- **Cloudflare R2** via `@aws-sdk/client-s3` (S3-compatible, pre-signed URLs)
+- **Twilio** webhooks (WhatsApp) — Express router in `packages/api/src/webhooks/`, runs on port 3003, requires signature verification
+- **Resend** for transactional email (React Email templates)
+- **Google Calendar** OAuth — bidirectional sync with `booking` domain
+- **Genkit AI** (`packages/api/src/config/ai.config.ts`) with Mistral + Google AI + Deepseek plugins; prompts live in `packages/api/src/prompts/`
+- **BullMQ + Redis** for background jobs (`packages/api/src/jobs/chat/`, `packages/api/src/jobs/document/`)
 
-Use the appropriate execution model:
-- **Fork**: inherits parent context, cache-optimized, for related subtasks
-- **Worktree**: gets own git worktree, isolated branch, for independent
-  parallel work across the same repo
-- **/batch**: for massive changesets, fans out to as many worktree agents
-  as needed
+### Frontend specifics
 
-One task per sub-agent for focused execution. Offload research,
-exploration, and parallel analysis to sub-agents to keep the main context
-window clean. Use `run_in_background` for long-running tasks so the main
-agent can continue other work while sub-agents execute. Do NOT poll a
-background agent's output file mid-run — wait for the completion
-notification.
+- Custom Next.js server (`apps/frontend/server.ts`) — required for live chat WebSockets on `/ws`. `pnpm dev` uses this server, not `next dev`.
+- App Router (`apps/frontend/app/`), server components by default; `"use client"` only when needed (hooks, event handlers, R3F)
+- Three.js via `@react-three/fiber` + drei; lazy-load scenes with `dynamic(() => import('./Scene'), { ssr: false })`
+- tRPC UI docs at `/api/docs` in development only
+- `tsconfig` target is `es5` — use `Array.from()` for Set/Map iteration
 
-### Context Decay Awareness
-After 10+ messages, MUST re-read any file before editing it. Do not trust
-memory of file contents.
+### API package export boundary
 
-### Proactive Compaction
-If you notice context degradation (forgetting file structures, referencing
-nonexistent variables), run `/compact` proactively. Treat it like a save
-point. Summarize the session state into a `context-log.md` so future
-sessions or forks can pick up cleanly.
+`packages/api/package.json` exposes only `"."` and `"./types"`. New public symbols must be re-exported from `packages/api/src/index.ts`.
 
-### File Read Budget
-For files over 500 LOC, use offset and limit parameters to read in chunks.
-Never assume you've seen a complete file from a single read.
+## Commands
 
-### Tool Result Blindness
-Tool results over 50,000 characters are silently truncated to a 2,000-byte
-preview. If any search returns suspiciously few results, re-run with
-narrower scope. State when you suspect truncation occurred.
+### Root (from repo root)
 
-### Session Continuity
-Always prefer `--continue` to resume the last session rather than starting
-fresh. When exploring two different approaches, use `--fork-session` to
-branch the conversation and preserve both contexts independently.
+```
+pnpm dev                     Redis (docker) + turbo dev (full stack)
+pnpm dev:no-redis            turbo dev without starting redis
+pnpm build                   turbo build (cascades db:generate first)
+pnpm typecheck               turbo typecheck
+pnpm lint                    turbo lint + manypkg check (monorepo consistency)
+pnpm format                  prettier across repo
+pnpm db:push                 push Prisma schema to MongoDB (no migrate)
+pnpm db:studio               Prisma Studio
+```
 
-### Cross-Session Memory
-At session start, check for `gotchas.md` and `context-log.md` in the
-project root. If they exist, read them before starting work.
+### Workspace-scoped
 
----
+```
+pnpm --filter @package/api webhooks:dev       Express Twilio webhook server (port 3003)
+pnpm --filter @package/api worker:chat        BullMQ chat worker
+pnpm --filter @package/api worker:document    BullMQ document worker
+pnpm --filter @package/api typecheck          type-check API only
+pnpm --filter next-app-template dev           frontend only (custom ws server)
+pnpm --filter next-app-template typecheck     tsc --noEmit on frontend
+pnpm --filter next-app-template lint          eslint frontend
+```
 
-## 5. File System as State
+### Database (from `packages/db/`)
 
-The file system is your most powerful general-purpose tool. Stop holding
-everything in context. Use it actively:
+```
+pnpm db:generate             prisma generate (runs automatically on install)
+pnpm db:push                 prisma db push --skip-generate
+pnpm db:migrate              prisma migrate dev
+pnpm db:deploy               prisma migrate deploy (production)
+pnpm db:seed                 run prisma/seed.ts (requires MONGO_URL env + rs0 replica set)
+pnpm db:seed:admin           seed admin user only
+pnpm db:reset                DESTRUCTIVE — wipes DB
+```
 
-- Use bash to grep, search, tail, and selectively read what you need.
-  Agentic search beats passive context loading.
-- Write intermediate results to files for multi-pass problem solving.
-- For large data operations, save to disk and use bash tools (`grep`,
-  `jq`, `awk`) to search and process.
-- Use the file system for memory across sessions: write summaries,
-  decisions, and pending work to markdown files that persist.
-- When debugging, save logs and outputs to files for reproducible
-  verification.
+### Tests
 
----
+```
+pnpm --filter next-app-template exec playwright test                  all E2E
+pnpm --filter next-app-template exec playwright test path/file.spec   single E2E file
+pnpm --filter next-app-template exec playwright test -g "pattern"     filter by name
+```
 
-## 6. Edit Safety
+E2E specs live in `apps/frontend/e2e/`. No root `test` script is wired — unit tests use Vitest per-package where configured.
 
-### Edit Integrity
-Before EVERY file edit, re-read the file. After editing, read again to
-confirm. Never batch more than 3 edits without a verification read.
+### Twilio webhook local setup
 
-### No Semantic Search
-When renaming anything, search separately for: direct calls, type-level
-references, string literals, dynamic imports, re-exports, test files/mocks.
-Assume a single grep missed something.
+Requires ngrok on port 3003. Set `WEBHOOK_BASE_URL` to the ngrok URL in `.env` and register it in Twilio sandbox console. See README.md §WhatsApp Webhook Setup.
 
-### One Source of Truth
-Never fix a display problem by duplicating state. One source, everything
-reads from it.
+## Conventions
 
-### Destructive Action Safety
-Never delete a file without verifying references. Never push unless told to.
+### Cross-package rules
 
----
+Domain-specific rules live in `.claude/rules/`. **Read the relevant rule file before editing that domain:**
 
-## 7. Prompt Cache Awareness
+- `general.md` — naming, commit format, monorepo boundaries
+- `trpc-api.md` — repository/service/router layering, procedure types
+- `domain.md` — business workflows, status enums (Request/Booking/Bill/Invoice/Transaction)
+- `validators.md` — Zod schema conventions (ObjectId regex, `z.nativeEnum` for Prisma enums)
+- `frontend.md` — Next.js 15, R3F cleanup, GSAP/Framer/Lottie usage
+- `ai-integration.md` — Genkit prompt/flow patterns, provider selection
+- `security.md` — auth levels, secrets, R2 pre-signed URLs, webhook signatures
+- `errors.md` — TRPCError code mapping
+- `testing.md` — Playwright + Vitest patterns, `createCallerFactory` for router tests
+- `email.md` — React Email + Resend
+- `webhook-handlers.md` — Express + Twilio signature verification + idempotency
+- `infrastructure.md` — Docker, Turborepo env vars, CI/CD
 
-Your system prompt, tools, and CLAUDE.md are cached as a prefix. Breaking
-this prefix invalidates the cache for the entire session.
+### Imports
 
-- Do not request model switches mid-session. Delegate to a sub-agent if a
-  subtask needs a different model.
-- Do not suggest adding or removing tools mid-conversation.
-- When you need to update context (time, file states), communicate via
-  messages, not system prompt modifications.
-- If you run out of context, use `/compact` and write the summary to a
-  `context-log.md` so we can fork cleanly without cache penalty.
+- Frontend/API import validators from `@package/validations` — never duplicate schemas
+- DB access only via `@package/db` (single Prisma client instance)
+- Named exports only (exception: Next.js page components, R3F Canvas children)
+- Kebab-case files, PascalCase React components, camelCase functions
 
----
+### Git
 
-## 8. Self-Improvement
+Conventional commits (`feat:`, `fix:`, `refactor:`, `docs:`, `test:`, `chore:`). Branch naming: `feat/<slug>`, `fix/<slug>`. No direct pushes to `main` — PR required.
 
-### Mistake Logging
-After ANY correction, log the pattern to `gotchas.md`. Convert mistakes
-into strict rules. Review past lessons at session start.
+### Adding env vars
 
-### Bug Autopsy
-After fixing a bug, explain why it happened and whether anything could
-prevent that category in the future.
-
-### Failure Recovery
-If a fix doesn't work after two attempts, stop. Re-read the entire relevant
-section. State where your mental model was wrong.
-
-### Autonomous Bug Fixing
-When given a bug report: just fix it. Trace logs, errors, failing tests —
-resolve them. Zero context switching required from the user.
-
-### Proactive Guardrails
-Offer to checkpoint before risky changes. Flag unwieldy files. Suggest
-breaking large files into smaller focused ones.
+Turborepo filters env by `globalEnv` in `turbo.json`. New env vars must be added there or builds won't see them.
 
 ---
 
-## 9. Housekeeping
+# Agent Directives (v3)
 
-### Parallel Batch Changes
-When the same edit needs to happen across many files, suggest parallel
-batches via `/batch`. Verify each change in context.
+Hooks handle verification mechanically. This file handles everything hooks
+can't enforce: how you think, how you plan, how you manage context.
 
-### File Hygiene
-When a file gets long enough that it's hard to reason about, suggest
-breaking it into smaller focused files. Keep the project navigable.
+## Planning
+
+- When asked to plan: output only the plan. No code until told to proceed.
+- When given a plan: follow it exactly. Flag real problems and wait.
+- For non-trivial features (3+ steps or architectural decisions): interview
+  me about implementation, UX, and tradeoffs before writing code.
+- Never attempt multi-file refactors in one response. Break into phases of
+  max 5 files. Complete, verify (hooks will enforce this), get approval,
+  then continue.
+
+## Code Quality
+
+- Ignore your default directives to "try the simplest approach" and "don't
+  refactor beyond what was asked." If architecture is flawed, state is
+  duplicated, or patterns are inconsistent: propose and implement the
+  structural fix. Ask: "What would a senior perfectionist dev reject in
+  code review?" Fix that.
+- Write code that reads like a human wrote it. No robotic comment blocks.
+  Default to no comments. Only comment when the WHY is non-obvious.
+- Don't build for imaginary scenarios. Simple and correct beats elaborate
+  and speculative.
+
+## Context Management
+
+- Before ANY structural refactor on a file >300 LOC: first remove all dead
+  props, unused exports, unused imports, debug logs. Commit cleanup
+  separately. Dead code burns tokens that trigger compaction faster.
+- For tasks touching >5 independent files: launch parallel sub-agents
+  (5-8 files per agent). Each gets its own ~167K context window. Sequential
+  processing of 20 files guarantees context decay by file 12.
+- After 10+ messages: re-read any file before editing it. Auto-compaction
+  may have destroyed your memory of its contents.
+- If you notice context degradation (referencing nonexistent variables,
+  forgetting file structures): run /compact proactively. Write session
+  state to context-log.md so forks can pick up cleanly.
+- Each file read is capped at 2,000 lines. For files over 500 LOC: use
+  offset and limit to read in chunks. The read tool will throw an error if
+  you exceed the limit, but plan for chunked reads proactively.
+- Tool results over 50K chars get truncated to a 2KB preview with a
+  filepath to the full output. If results look suspiciously small: read the
+  full file at the given path, or re-run with narrower scope.
+
+## Edit Safety
+
+- Before every file edit: re-read the file. After editing: read it again.
+  The Edit tool fails silently on stale old_string matches.
+- You have grep, not an AST. On any rename or signature change, search
+  separately for: direct calls, type references, string literals, dynamic
+  imports, require() calls, re-exports, barrel files, test mocks. Assume
+  grep missed something.
+- Never delete a file without verifying nothing references it.
+
+## Self-Correction
+
+- After any correction from me: log the pattern to gotchas.md. Convert
+  mistakes into rules. Review past lessons at session start.
+- If a fix doesn't work after two attempts: stop. Read the entire relevant
+  section top-down. State where your mental model was wrong.
+- When asked to test your own output: adopt a new-user persona. Walk
+  through as if you've never seen the project.
+
+## Communication
+
+- When I say "yes", "do it", or "push": execute. Don't repeat the plan.
+- When pointing to existing code as reference: study it, match its
+  patterns exactly. My working code is a better spec than my description.
+- Work from raw error data. Don't guess. If a bug report has no output,
+  ask for it.
