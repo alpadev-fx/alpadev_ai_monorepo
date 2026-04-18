@@ -7,7 +7,7 @@
  * The pieces you will need to use are documented accordingly near the end
  */
 import { serverSession } from "@package/auth"
-import { db } from "@package/db"
+import { db, type Prisma, type Role } from "@package/db"
 import { featureFlags } from "@package/utils"
 import { initTRPC, TRPCError } from "@trpc/server"
 import { ActivityService } from "./routers/activity/service/activity.service"
@@ -27,13 +27,26 @@ import { ZodError } from "zod"
  *
  * @see https://trpc.io/docs/server/context
  */
-type CreateContextOptions = (FetchCreateContextFnOptions | { headers: Headers }) & {
-  session?: { user: { id: string; name?: string | null; email?: string | null; role: string; hasOnboarded?: boolean; isBanned?: boolean } } | null
+type CreateContextOptions = (
+  | FetchCreateContextFnOptions
+  | { headers: Headers }
+) & {
+  session?: {
+    user: {
+      id: string
+      name?: string | null
+      email?: string | null
+      role: Role
+      hasOnboarded: boolean
+      isBanned: boolean
+    }
+  } | null
 }
 
 export const createTRPCContext = async (opts: CreateContextOptions) => {
   // Use injected session (from v5-beta auth()) if available, otherwise fall back to v4 serverSession
-  const session = opts.session !== undefined ? opts.session : await serverSession()
+  const session =
+    opts.session !== undefined ? opts.session : await serverSession()
 
   if ("req" in opts) {
     const { req, resHeaders, info } = opts
@@ -126,34 +139,32 @@ export const publicProcedure = t.procedure
  *
  * @see https://trpc.io/docs/procedures
  */
-export const protectedProcedure = t.procedure.use(
-  ({ ctx, next, path }) => {
-    const user = ctx.session?.user
+export const protectedProcedure = t.procedure.use(({ ctx, next, path }) => {
+  const user = ctx.session?.user
 
-    if (!user) {
-      throw new TRPCError({ code: "UNAUTHORIZED" })
-    }
+  if (!user) {
+    throw new TRPCError({ code: "UNAUTHORIZED" })
+  }
 
-    // Check if the user has completed the onboarding process
-    if (
-      !user.hasOnboarded &&
-      path !== "user.updateUserOnboarding" &&
-      featureFlags.onboardingFlow
-    ) {
-      throw new TRPCError({
-        code: "FORBIDDEN",
-        message: "You need to complete the onboarding process.",
-      })
-    }
-
-    return next({
-      ctx: {
-        // infers the `session` as non-nullable
-        session: { ...ctx.session, user },
-      },
+  // Check if the user has completed the onboarding process
+  if (
+    !user.hasOnboarded &&
+    path !== "user.updateUserOnboarding" &&
+    featureFlags.onboardingFlow
+  ) {
+    throw new TRPCError({
+      code: "FORBIDDEN",
+      message: "You need to complete the onboarding process.",
     })
   }
-)
+
+  return next({
+    ctx: {
+      // infers the `session` as non-nullable
+      session: { ...ctx.session, user },
+    },
+  })
+})
 
 /**
  * Protected (admin) procedure
@@ -162,24 +173,22 @@ export const protectedProcedure = t.procedure.use(
  *
  * @see https://trpc.io/docs/procedures
  */
-export const adminProcedure = t.procedure.use(
-  ({ ctx, next }) => {
-    if (!ctx.session?.user) {
-      throw new TRPCError({ code: "UNAUTHORIZED" })
-    }
-
-    if (ctx.session.user.role !== "ADMIN") {
-      throw new TRPCError({ code: "FORBIDDEN" })
-    }
-
-    return next({
-      ctx: {
-        // infers the `session` as non-nullable
-        session: { ...ctx.session, user: ctx.session.user },
-      },
-    })
+export const adminProcedure = t.procedure.use(({ ctx, next }) => {
+  if (!ctx.session?.user) {
+    throw new TRPCError({ code: "UNAUTHORIZED" })
   }
-)
+
+  if (ctx.session.user.role !== "ADMIN") {
+    throw new TRPCError({ code: "FORBIDDEN" })
+  }
+
+  return next({
+    ctx: {
+      // infers the `session` as non-nullable
+      session: { ...ctx.session, user: ctx.session.user },
+    },
+  })
+})
 
 /**
  * Chief procedure — ADMIN or CHIEF role
@@ -187,14 +196,12 @@ export const adminProcedure = t.procedure.use(
  * Chiefs can view vendor activity and manage vendor permissions within their assigned scope.
  * They cannot access full admin features (user CRUD, statistics, infrastructure).
  */
-export const chiefProcedure = protectedProcedure.use(
-  ({ ctx, next }) => {
-    if (ctx.session.user.role !== "ADMIN" && ctx.session.user.role !== "CHIEF") {
-      throw new TRPCError({ code: "FORBIDDEN" })
-    }
-    return next({ ctx })
+export const chiefProcedure = protectedProcedure.use(({ ctx, next }) => {
+  if (ctx.session.user.role !== "ADMIN" && ctx.session.user.role !== "CHIEF") {
+    throw new TRPCError({ code: "FORBIDDEN" })
   }
-)
+  return next({ ctx })
+})
 
 /**
  * Logged procedure — tracks vendor activity
@@ -207,7 +214,13 @@ function sanitizeInput(raw: unknown): Record<string, unknown> | null {
   if (!raw || typeof raw !== "object") return null
   const input = raw as Record<string, unknown>
   const sanitized: Record<string, unknown> = {}
-  const SKIP = new Set(["password", "token", "secret", "accessToken", "refreshToken"])
+  const SKIP = new Set([
+    "password",
+    "token",
+    "secret",
+    "accessToken",
+    "refreshToken",
+  ])
   for (const [k, v] of Object.entries(input)) {
     if (SKIP.has(k)) continue
     if (typeof v === "string" && v.length > 200) {
@@ -235,12 +248,23 @@ export const loggedProcedure = protectedProcedure.use(
         userId: ctx.session.user.id,
         action: path,
         resource: resource ?? path,
-        resourceId: (inputData?.id as string) ?? (inputData?.userId as string) ?? null,
-        method: action?.startsWith("get") || action === "metrics" || action === "export" ? "query" : "mutation",
-        details: inputData ? (inputData as Record<string, unknown>) : null,
+        resourceId:
+          (inputData?.id as string) ?? (inputData?.userId as string) ?? null,
+        method:
+          action?.startsWith("get") ||
+          action === "metrics" ||
+          action === "export"
+            ? "query"
+            : "mutation",
+        details: inputData
+          ? (inputData as unknown as Prisma.InputJsonValue)
+          : null,
         success: result.ok,
         duration,
-        ipAddress: ctx.req.headers.get("x-forwarded-for") ?? ctx.req.headers.get("x-real-ip") ?? null,
+        ipAddress:
+          ctx.req.headers.get("x-forwarded-for") ??
+          ctx.req.headers.get("x-real-ip") ??
+          null,
         userAgent: ctx.req.headers.get("user-agent") ?? null,
       })
     }
