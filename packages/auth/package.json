@@ -16,6 +16,7 @@
     "@package/email": "workspace:*",
     "@package/utils": "workspace:*",
     "bcryptjs": "^3.0.3",
+    "next": "15.0.4",
     "next-auth": "^4.24.11"
   },
   "devDependencies": {
@@ -25,7 +26,6 @@
     "@types/bcryptjs": "^3.0.0"
   },
   "peerDependencies": {
-    "next": "^15.3.2",
     "nodemailer": "^6.6.5"
   }
 }
