@@ -1,0 +1,13 @@
+@font-face{font-family:'Alpadev Inter Tight';src:url('/brand/fonts/inter-tight-400.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Alpadev Inter Tight';src:url('/brand/fonts/inter-tight-500.woff2') format('woff2');font-weight:500;font-display:swap}
+@font-face{font-family:'Alpadev Inter Tight';src:url('/brand/fonts/inter-tight-600.woff2') format('woff2');font-weight:600 900;font-display:swap}
+@font-face{font-family:'Alpadev Roboto Mono';src:url('/brand/fonts/roboto-mono-400.woff2') format('woff2');font-weight:400;font-display:swap}
+@font-face{font-family:'Alpadev Roboto Mono';src:url('/brand/fonts/roboto-mono-500.woff2') format('woff2');font-weight:500 900;font-display:swap}
+.alpadev-dashboard{font-family:'Alpadev Inter Tight',Inter,sans-serif;background:#0b0d10;color:#f2f4f6}
+.alpadev-dashboard .brand-overline{font:500 10px/1.4 'Alpadev Roboto Mono',monospace;letter-spacing:.18em;text-transform:uppercase;color:#8d96a0}
+.alpadev-dashboard .brand-overline:before{content:'';display:inline-block;width:6px;height:6px;margin-right:10px;background:#c9cfd6;vertical-align:middle}
+.alpadev-dashboard .brand-heading{font-size:clamp(30px,3.5vw,48px);font-weight:500;line-height:1.05;letter-spacing:-.035em;color:#f2f4f6}
+.alpadev-dashboard .brand-copy{font-size:15px;line-height:1.5;color:#8d96a0}
+.alpadev-dashboard .brand-rule{border-color:#232830}
+.alpadev-dashboard .brand-panel{border:1px solid #232830;background:#12151a;border-radius:2px}
+.alpadev-dashboard .brand-label{font:500 10px/1.4 'Alpadev Roboto Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#8d96a0}

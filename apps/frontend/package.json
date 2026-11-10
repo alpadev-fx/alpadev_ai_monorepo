@@ -61,7 +61,7 @@
     "lucide-react": "^0.562.0",
     "mongoose": "^9.1.5",
     "motion": "^12.28.1",
-    "next": "15.0.4",
+    "next": "15.5.29",
     "next-auth": "4.24.11",
     "next-themes": "^0.4.6",
     "ogl": "^1.0.11",
@@ -84,7 +84,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "15.0.4",
+    "@next/bundle-analyzer": "15.5.29",
     "@package/eslint-config": "workspace:*",
     "@package/tailwind-config": "workspace:*",
     "@playwright/test": "^1.57.0",

@@ -4,14 +4,16 @@ import { Suspense, useState } from "react"
 import { signIn } from "next-auth/react"
 import { useSearchParams } from "next/navigation"
 import { motion } from "framer-motion"
-import { LockClosedIcon, UserIcon } from "@heroicons/react/24/outline"
+import { LockClosedIcon, UserIcon, EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline"
 
 function LoginForm() {
   const searchParams = useSearchParams()
-  const callbackUrl = searchParams?.get("callbackUrl") ?? "/dashboard"
+  const requested = searchParams?.get("callbackUrl") ?? "/dashboard/aegis"
+  const callbackUrl = requested.startsWith("/") && !requested.startsWith("//") && !/[\\\u0000-\u001f]/.test(requested) ? requested : "/dashboard/aegis"
 
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
@@ -22,19 +24,19 @@ function LoginForm() {
 
     try {
       const result = await signIn("credentials", {
-        username,
+        username: username.trim(),
         password,
         redirect: false,
       })
 
       if (result?.error) {
-        setError("Invalid username or password")
+        setError("Usuario o contraseña incorrectos")
       } else if (result?.ok) {
         // Use window.location.href instead of router.push so cookies are sent correctly
         window.location.href = callbackUrl
       }
     } catch {
-      setError("An unexpected error occurred")
+      setError("No se pudo iniciar sesión. Inténtalo de nuevo.")
     } finally {
       setLoading(false)
     }
@@ -50,11 +52,11 @@ function LoginForm() {
       <div className="rounded-3xl border border-white/10 bg-white/5 p-8 backdrop-blur-2xl">
         {/* Logo */}
         <div className="mb-8 flex flex-col items-center">
-          <div className="mb-4 h-12 w-12 rounded-full bg-gradient-to-tr from-pink-500 to-violet-500" />
-          <h1 className="text-2xl font-bold tracking-tight text-white">
-            Open Manager
+          <img className="mb-4 h-12 w-12" src="/brand/alpadev-logo.svg" alt="Alpadev" width={48} height={48} />
+          <h1 className="text-[24px] leading-tight font-bold tracking-tight text-white">
+            Alpadev · Administración
           </h1>
-          <p className="mt-2 text-sm text-zinc-400">Sign in to your account</p>
+          <p className="mt-2 text-sm text-zinc-400">Acceso privado al laboratorio AEGIS</p>
         </div>
 
         {/* Error display */}
@@ -75,16 +77,19 @@ function LoginForm() {
               className="mb-2 block text-sm font-medium text-zinc-400"
               htmlFor="username"
             >
-              Username
+              Usuario
             </label>
             <div className="relative">
               <UserIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-500" />
               <input
                 autoComplete="username"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
                 className="w-full rounded-xl border border-white/10 bg-white/5 py-3 pl-10 pr-4 text-white placeholder-zinc-600 transition-colors focus:border-pink-500/50 focus:outline-none focus:ring-1 focus:ring-pink-500/30"
                 id="username"
                 name="username"
-                placeholder="Enter your username"
+                placeholder="Tu usuario"
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
@@ -97,20 +102,23 @@ function LoginForm() {
               className="mb-2 block text-sm font-medium text-zinc-400"
               htmlFor="password"
             >
-              Password
+              Contraseña
             </label>
             <div className="relative">
               <LockClosedIcon className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-500" />
               <input
                 autoComplete="current-password"
-                className="w-full rounded-xl border border-white/10 bg-white/5 py-3 pl-10 pr-4 text-white placeholder-zinc-600 transition-colors focus:border-pink-500/50 focus:outline-none focus:ring-1 focus:ring-pink-500/30"
+                className="w-full rounded-xl border border-white/10 bg-white/5 py-3 pl-10 pr-10 text-white placeholder-zinc-600 transition-colors focus:border-pink-500/50 focus:outline-none focus:ring-1 focus:ring-pink-500/30"
                 id="password"
                 name="password"
-                placeholder="Enter your password"
-                type="password"
+                placeholder="Tu contraseña"
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
+              <button type="button" aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"} aria-pressed={showPassword} className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-white" onClick={() => setShowPassword(!showPassword)}>
+                {showPassword ? <EyeSlashIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
+              </button>
             </div>
           </div>
 
@@ -119,7 +127,7 @@ function LoginForm() {
             disabled={loading || !username || !password}
             type="submit"
           >
-            {loading ? "Signing in..." : "Sign In"}
+            {loading ? "Entrando…" : "Entrar"}
           </button>
         </form>
       </div>

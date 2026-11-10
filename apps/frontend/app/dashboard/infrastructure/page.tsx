@@ -1,70 +1,33 @@
 "use client"
 
 import { useState } from "react"
-import { motion } from "framer-motion"
-import { ServerIcon, AdjustmentsHorizontalIcon, CalculatorIcon, BellAlertIcon, BanknotesIcon } from "@heroicons/react/24/outline"
-import { MetricsOverview } from "./_components/MetricsOverview"
-import { ScalingControls } from "./_components/ScalingControls"
-import { CostSimulator } from "./_components/CostSimulator"
-import { AlertsBudget } from "./_components/AlertsBudget"
-import { BillingOverview } from "./_components/BillingOverview"
 
-const TABS = [
-  { id: "overview" as const, label: "Metrics", icon: ServerIcon },
-  { id: "scaling" as const, label: "Scaling", icon: AdjustmentsHorizontalIcon },
-  { id: "billing" as const, label: "Billing", icon: BanknotesIcon },
-  { id: "simulator" as const, label: "Cost Simulator", icon: CalculatorIcon },
-  { id: "alerts" as const, label: "Alerts", icon: BellAlertIcon },
-]
-
-type TabId = (typeof TABS)[number]["id"]
+type Provider = "railway" | "gcp" | "combined"
 
 export default function InfrastructurePage() {
-  const [tab, setTab] = useState<TabId>("overview")
+  const [provider, setProvider] = useState<Provider>("railway")
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.3 }}
-      className="space-y-6 h-full overflow-y-auto"
-    >
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">
-            GCP Infrastructure
-          </h1>
-          <p className="mt-0.5 text-xs text-zinc-500">
-            alpadev-ai-prod &middot; us-central1
-          </p>
-        </div>
+    <div className="space-y-6 h-full overflow-y-auto text-white">
+      <div>
+        <h1 className="brand-heading">Infraestructura</h1>
+        <p className="mt-1 text-sm text-zinc-400">Producción en Railway y consulta del proyecto histórico de GCP.</p>
       </div>
-
-      {/* Tabs */}
-      <div className="flex gap-1 rounded-xl bg-[#161616] p-1 w-fit">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setTab(t.id)}
-            className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all ${
-              tab === t.id
-                ? "bg-white/[0.08] text-white"
-                : "text-zinc-500 hover:text-zinc-300"
-            }`}
-          >
-            <t.icon className="h-4 w-4" />
-            {t.label}
-          </button>
+      <div role="group" aria-label="Proveedor de infraestructura" className="flex flex-wrap gap-2">
+        {([['railway', 'Railway'], ['gcp', 'GCP histórico'], ['combined', 'Combinado']] as const).map(([id, label]) => (
+          <button key={id} type="button" onClick={() => setProvider(id)} aria-pressed={provider === id} className={`rounded-[2px] px-4 py-2 text-sm ${provider === id ? 'bg-white text-black' : 'bg-[#12151a] text-[#c9cfd6]'}`}>{label}</button>
         ))}
       </div>
-
-      {/* Content */}
-      {tab === "overview" && <MetricsOverview />}
-      {tab === "scaling" && <ScalingControls />}
-      {tab === "billing" && <BillingOverview />}
-      {tab === "simulator" && <CostSimulator />}
-      {tab === "alerts" && <AlertsBudget />}
-    </motion.div>
+      {(provider === "railway" || provider === "combined") && <section className="brand-panel p-6 space-y-2">
+        <h2 className="font-semibold">Railway · producción</h2>
+        <p className="text-sm text-zinc-400">Servicios: alpadev-admin y alpadev-hechizo. Dominio público: alpadev.xyz.</p>
+        <p className="text-xs text-zinc-500">Inventario documentado el 10 de noviembre de 2026. Estado actual, métricas y costos: sin conexión de lectura en este panel.</p>
+      </section>}
+      {provider === "combined" && <div className="space-y-2"><p className="text-sm text-zinc-400">No se suman costos: las fuentes no están conciliadas y Railway no dispone de métricas en este panel.</p><a className="text-sm text-[#c9cfd6]" href="/dashboard/aegis/servicios">Ver catálogo de otros servicios y su estado de integración →</a></div>}
+      {(provider === "gcp" || provider === "combined") && <section className="space-y-4">
+        <div><h2 className="font-semibold">GCP · alpadev-ai-prod</h2><p className="text-xs text-zinc-500">Consulta de la integración existente; los datos dependen de su disponibilidad y no representan Railway.</p></div>
+        <p className="brand-panel p-4 text-sm text-zinc-400">Lectura del 10 nov 2026, 06:53:16 UTC: Cloud Run alpadev-frontend Ready=True, revisión alpadev-frontend-00052-rlz; URL histórica respondió HTTP 200. Facturación habilitada, importes no consultados. API Compute deshabilitada: inventario de VM desconocido.</p><p className="brand-panel p-4 text-sm text-zinc-400">Métricas y facturación no verificadas. La integración anterior puede sustituir consultas fallidas por ceros y producir estimaciones; se conservan sus componentes, pero no se presentan como lecturas confirmadas.</p>
+      </section>}
+    </div>
   )
 }
