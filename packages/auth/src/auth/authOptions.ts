@@ -6,6 +6,7 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import EmailProvider from "next-auth/providers/email"
 import GitHubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
+import { labRoot, verifyLabRoot } from "./labRoot"
 
 import type { UserSession } from "../types"
 import type { $Enums, Account } from "@package/db"
@@ -137,8 +138,14 @@ const authOptions: NextAuthOptions = {
         username: { label: "Username", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials, request) {
         if (!credentials?.username || !credentials?.password) return null
+        const root = labRoot()
+        if (root && credentials.username === root.username) {
+          const ip = String(request.headers?.["x-forwarded-for"] || "unknown").split(",")[0].trim()
+          return verifyLabRoot(credentials.username, credentials.password, ip)
+        }
+        if (process.env.LAB_ROOT_ONLY === "1") return null
         const user = await db.user.findFirst({
           where: { username: credentials.username },
         })
@@ -192,6 +199,11 @@ const authOptions: NextAuthOptions = {
   },
   callbacks: {
     async jwt({ token, user, account }) {
+      const root = labRoot()
+      if (root && (user?.id === root.id || token.id === root.id)) {
+        return { ...token, id: root.id, name: root.name, email: root.email, role: "ADMIN", hasOnboarded: true, isBanned: false }
+      }
+      if (process.env.LAB_ROOT_ONLY === "1") throw new Error("Invalid owner session")
       // User and account is only returned on sign in
       // Token is returned for every authentication session
 
@@ -222,6 +234,11 @@ const authOptions: NextAuthOptions = {
       }
     },
     async session({ token, session }) {
+      const root = labRoot()
+      if (root && token.id === root.id && token.role === "ADMIN") {
+        session.user = { ...session.user, id: root.id, name: root.name, email: root.email, role: "ADMIN", hasOnboarded: true, isBanned: false }
+        return session
+      }
       const dbAccount = await db.account.findFirst({
         where: {
           userId: token.id,

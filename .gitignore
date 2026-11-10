@@ -49,3 +49,6 @@ yarn-error.log*
 
 
 .env.production
+
+# Corporate mark used by the authenticated admin
+!apps/frontend/public/brand/alpadev-logo.svg
