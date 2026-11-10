@@ -49,7 +49,7 @@ export const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
     <motion.aside
       animate={{ width: collapsed ? 72 : 280 }}
       transition={{ duration: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
-      className="fixed left-0 top-0 bottom-0 z-40 flex flex-col bg-[#1b1b1b] overflow-hidden"
+      className="fixed left-0 top-0 bottom-0 z-40 flex flex-col bg-[#0b0d10] border-r border-[#232830] overflow-hidden"
     >
       {/* Logo */}
       <Link
@@ -61,7 +61,7 @@ export const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
           alt="Alpadev"
           width={36}
           height={36}
-          className="shrink-0 rounded-xl"
+          className="shrink-0"
           sizes="36px"
           priority
         />
@@ -89,7 +89,7 @@ export const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
               key={item.href}
               href={item.href}
               onClick={() => { if (!collapsed && window.matchMedia("(max-width: 767px)").matches) onToggle() }}
-              className={`flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all duration-200 ${
+              className={`flex items-center gap-3 rounded-[2px] px-3 py-2.5 transition-all duration-200 ${
                 active
                   ? "bg-white/[0.06] text-white"
                   : "text-zinc-500 hover:bg-white/[0.04] hover:text-zinc-300"
@@ -98,7 +98,7 @@ export const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
             >
               <Icon
                 className={`h-5 w-5 shrink-0 ${
-                  active ? "text-[#ffb0cd]" : "text-zinc-600"
+                  active ? "text-[#f2f4f6]" : "text-zinc-600"
                 }`}
               />
               {!collapsed && (
@@ -113,13 +113,13 @@ export const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
       <div className="px-3 pb-3 space-y-2">
         {/* User info */}
         <div
-          className={`rounded-xl bg-white/[0.03] p-3 ${
+          className={`rounded-[2px] bg-white/[0.03] p-3 ${
             collapsed ? "flex justify-center" : ""
           }`}
         >
           <div className={`flex items-center gap-3 ${collapsed ? "" : ""}`}>
             {/* Avatar */}
-            <div className="h-8 w-8 shrink-0 rounded-lg bg-gradient-to-br from-[#f751a1] to-[#8B5CF6] flex items-center justify-center">
+            <div className="h-8 w-8 shrink-0 rounded-[2px] bg-[#343b46] flex items-center justify-center">
               <span className="text-xs font-bold text-white">
                 {user?.name?.[0]?.toUpperCase() || "U"}
               </span>
@@ -137,7 +137,7 @@ export const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
           </div>
           {!collapsed && (
             <div className="mt-2.5 flex items-center justify-between">
-              <span className="text-[10px] uppercase tracking-wider font-medium bg-[#8B5CF6]/20 text-[#d0bcff] rounded-full px-2 py-0.5">
+              <span className="text-[10px] uppercase tracking-wider font-medium bg-white/10 text-[#c9cfd6] rounded-[2px] px-2 py-0.5">
                 {(user as { role?: string })?.role || "USER"}
               </span>
               <button

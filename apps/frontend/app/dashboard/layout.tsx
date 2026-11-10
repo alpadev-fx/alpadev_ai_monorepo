@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import "./dashboard-brand.css"
 import { Sidebar } from "@/app/_components/dashboard/Sidebar"
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -15,7 +16,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, [])
 
   return (
-    <div className="flex min-h-screen bg-[#131313] isolate">
+    <div className="alpadev-dashboard flex min-h-screen bg-[#0b0d10] isolate">
       <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
       <main
         className={`flex-1 transition-all duration-300 ease-out ml-[72px] p-4 md:p-8 overflow-hidden h-screen ${
