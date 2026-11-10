@@ -40,3 +40,5 @@
 .aegis-lab .eyebrow,.aegis-lab th,.aegis-lab .finance-card small,.aegis-lab .lab-breadcrumb,.aegis-lab .lab-save{font-family:"Alpadev Roboto Mono",monospace;letter-spacing:.08em}
 .aegis-lab .progress-track i{background:#4f8dff}.aegis-lab .lab-save i.on{background:#4f8dff}.aegis-lab .tag.red{color:#f2555a;border-color:#f2555a;background:#171b21}
 .aegis-lab .architecture{background:#0b0d10;border-color:#232830}.aegis-lab .architecture g[stroke='#604535']{stroke:#58606a}.aegis-lab .architecture [stroke='#d16b32']{stroke:#c9cfd6}.aegis-lab .architecture circle[fill='#d16b32']{fill:#c9cfd6}.aegis-lab .architecture text[fill='#c78558']{fill:#c9cfd6}
+.aegis-lab .lab-more{position:relative;flex-shrink:0}
+@media(max-width:700px){.aegis-lab{overflow-x:hidden}.aegis-lab .lab-header{flex-wrap:wrap}.aegis-lab .lab-save{max-width:100%}}
