@@ -1,0 +1,59 @@
+--- a/apps/web/src/features/connect/ConnectScreen.tsx
++++ b/apps/web/src/features/connect/ConnectScreen.tsx
+@@ -43,6 +43,7 @@
+     }
+   };
+ 
++  const remote = location.pathname.startsWith('/dashboard/aegis/spectra/');
+   const probe_ =
+     probe.state === 'found'
+       ? { text: probe.health?.origin === 'simulation' ? 'Simulador de red' : 'Detectado', level: 'nominal' as const }
+@@ -59,7 +60,7 @@
+       {/* The brand's headline voice: one line, its last words in grey (brand.json → typography). */}
+       <div className="mt-7 mb-9">
+         <p className="title-hero max-w-[18ch]">
+-          Tu radar, <span className="text-ink-3">en tu propia red.</span>
++          Tu radar, <span className="text-ink-3">{remote ? 'desde el laboratorio.' : 'en tu propia red.'}</span>
+         </p>
+         <p className="label mt-4 flex items-center gap-2.5">
+           <span aria-hidden="true" className="sq" />
+@@ -77,8 +78,7 @@
+             <p className="value mt-2 text-[12.5px] text-ink-2">{detail}</p>
+             {mode === 'device' && status === 'reconnecting' && (
+               <p className="mt-3 text-[14px] leading-snug text-ink-2">
+-                ¿El iPhone está en la misma red que el radar? En su propia red <span className="value text-ink">RADAR-AI05-XXXX</span> la dirección es 192.168.4.1; en tu
+-                Wi-Fi de casa, usa la IP que tiene el radar en esa red.
++                {remote ? 'Comprueba que el puente del Mac esté conectado y que el Mac pueda alcanzar el radar en la red local.' : 'Comprueba que este dispositivo esté en la misma red que el radar y que uses su dirección local.'}
+               </p>
+             )}
+             <button type="button" className="btn btn-sm mt-4" onClick={() => client.disconnect()}>
+@@ -142,12 +142,17 @@
+               )}
+ 
+               <ol className="mt-6 space-y-3.5 border-t border-line pt-5 text-[14px] leading-snug">
+-                {[
++                {(remote ? [
++                  ['Enciende el Mac y el radar', 'El puente local debe estar conectado y el Mac debe poder alcanzar el radar.'],
++                  ['Conecta el radar a la red local', 'Usa la configuración de red ya establecida para el radar; comprueba su alimentación y conexión.'],
++                  ['Conecta desde Alpadev', 'Pulsa el botón de conexión desde este panel remoto.'],
++                  ['Empareja', 'Introduce el PIN de seis dígitos mostrado por el radar.'],
++                ] : [
+                   ['Enciende el radar', 'La OLED muestra la red RADAR-AI05-XXXX, su contraseña y un PIN de 6 dígitos.'],
+                   ['Misma red que el radar', 'En el iPhone: Ajustes → Wi-Fi → RADAR-AI05-XXXX (si iOS avisa “sin Internet”, mantén la conexión). Si el radar ya está en tu Wi-Fi de casa, no cambies de red.'],
+                   ['Abre Safari', 'Escribe http://192.168.4.1 en la red del radar, o la IP del radar en tu Wi-Fi de casa (con http://, no https).'],
+                   ['Empareja', 'Introduce el PIN. El token queda guardado en este iPhone.'],
+-                ].map(([t, d], i) => (
++                ]).map(([t, d], i) => (
+                   <li key={t} className="flex gap-3">
+                     <span className="value grid h-6 w-6 shrink-0 place-items-center rounded-[2px] text-[11.5px] text-ink shadow-[inset_0_0_0_1px_var(--rule-2)]">{i + 1}</span>
+                     <span>
+@@ -174,8 +179,7 @@
+         </div>
+       )}
+       <p className="mt-8 max-w-2xl text-[12px] leading-relaxed text-ink-3">
+-        Funciona sin Internet: el panel lo sirve el propio ESP32-S3. Usa HTTP local (no HTTPS), así que la seguridad del enlace depende de la contraseña WPA2 de la red
+-        del radar; en una red doméstica compartida, cualquiera en esa red podría observar el tráfico.
++        {remote ? 'Acceso remoto por Alpadev: el Mac conecta el panel con el radar local. El puente conectado no garantiza que el radar esté disponible.' : 'Funciona sin Internet: el panel lo sirve el propio ESP32-S3. En una red compartida, el tráfico local HTTP puede ser visible para otros equipos de esa red.'}
+       </p>
+       <div className="absolute top-[calc(env(safe-area-inset-top)+12px)] right-[max(16px,env(safe-area-inset-right))]">
+         <ThemeButton />
