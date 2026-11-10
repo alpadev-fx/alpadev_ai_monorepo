@@ -18,7 +18,7 @@ export default async function AegisAdminPage() {
     <section className="h-full overflow-y-auto space-y-8 text-white">
       <div className="space-y-3">
         <p className="text-xs uppercase tracking-widest text-[#ffb0cd]">Alpadev / AEGIS</p>
-        <h1 className="!text-2xl md:!text-3xl !leading-tight font-bold tracking-tight">Laboratorio y finanzas</h1>
+        <h1 className="text-[24px] md:text-[32px] leading-tight font-bold tracking-tight">Laboratorio y finanzas</h1>
         <p className="text-sm text-zinc-400">AEGIS es un proyecto de Alpadev. WE BUILD WHAT’S NEXT.</p>
       </div>
       <div className="grid gap-4 md:grid-cols-2">
